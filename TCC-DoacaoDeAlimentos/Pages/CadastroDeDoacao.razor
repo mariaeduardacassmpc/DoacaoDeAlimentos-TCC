@@ -1,0 +1,136 @@
+﻿@page "/CadastroDeDoacao"
+@using TCCDoacaoDeAlimentos.Models;
+@inject NavigationManager Navigation
+
+<div class="min-vh-100 py-5" style="background-color: #d4edda;">
+    <div class="container text-center my-5">
+        <h1>Registro de Doação</h1>
+        <h5>Cadastre os alimentos disponíveis para doação e selecione a ONG beneficiada</h5>
+    </div>
+
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <EditForm Model="@NovaDoacao">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="row g-4">
+                        <!-- Seção ONG -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">ONG Beneficiada</label>
+                                @if (ongs == null)
+                                {
+                                    <div class="spinner-border text-success" role="status"></div>
+                                }
+                                else
+                                {
+                                    <InputSelect class="form-control" @bind-Value="NovaDoacao.IdOng">
+                                        <option value="">Selecione a ONG...</option>
+                                        @foreach (var ong in ongs)
+                                        {
+                                            <option value="@ong.IdOng">@ong.RazaoSocial</option>
+                                        }
+                                    </InputSelect>
+                                }
+                                <ValidationMessage For="@(() => NovaDoacao.IdOng)" />
+                            </div>
+                        </div>
+
+                        <!-- Seção Observações -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Observações</label>
+                                <InputTextArea class="form-control"
+                                               @bind-Value="NovaDoacao.Observacao"
+                                               placeholder="Ex: Alimentos devem ser retirados até sexta-feira..." />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Itens da Doação -->
+                    <div class="border-top pt-4 mt-4">
+                        <h5 class="mb-4">Itens da Doação</h5>
+
+                        @foreach (var item in Itens)
+                        {
+                            <div class="border p-3 mb-4 rounded bg-light">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Alimento</label>
+                                            <InputSelect class="form-control" @bind-Value="item.AlimentoId">
+                                                <option value="">Selecione o alimento...</option>
+                                                @foreach (var alimento in alimentos)
+                                                {
+                                                    <option value="@alimento.Id">@alimento.Nome (@alimento.Categoria)</option>
+                                                }
+                                            </InputSelect>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label class="form-label">Quantidade</label>
+                                            <InputNumber class="form-control" @bind-Value="item.Quantidade" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label class="form-label">Unidade</label>
+                                            <InputSelect class="form-control" @bind-Value="item.UnidadeMedida">
+                                                <option value="Kg">Kg</option>
+                                                <option value="g">g</option>
+                                                <option value="L">L</option>
+                                                <option value="ml">ml</option>
+                                                <option value="Unidades">Unidades</option>
+                                            </InputSelect>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Validade</label>
+                                            <InputDate class="form-control" @bind-Value="item.Validade" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 text-end">
+                                        <button type="button"
+                                                class="btn btn-danger mt-2"
+                                                >
+                                            Remover Item
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="text-center mt-4">
+                            <button type="button"
+                                    class="btn btn-success"
+                                    >
+                                <i class="bi bi-plus-circle me-2"></i>Adicionar Alimento
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border-top pt-4 mt-4 text-end">
+                        <button type="submit" class="btn btn-primary px-5">
+                            <i class="bi bi-save me-2"></i>Salvar Doação
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Doacao NovaDoacao { get; set; } = new Doacao();
+    private List<Alimento> alimentos;
+    private List<AlimentoDoacao> Itens = new();
+    private List<Ong> ongs = new();
+}

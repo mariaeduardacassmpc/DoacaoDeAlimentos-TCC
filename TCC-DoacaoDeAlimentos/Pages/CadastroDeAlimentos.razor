@@ -1,0 +1,100 @@
+﻿@page "/CadastroDeAlimento"
+@using TCCDoacaoDeAlimentos.Models;
+@inject NavigationManager Navigation
+
+<div class="min-vh-100 py-5" style="background-color: #d4edda;">
+    <div class="container text-center my-5">
+        <h1>Catálogo de Alimentos</h1>
+        <h5>Cadastre e gerencie os tipos de alimentos aceitos para doação</h5>
+    </div>
+
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Adicionar Novo Alimento</h5>
+
+                        <EditForm Model="@NovoAlimento">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+
+                            <div class="mb-3">
+                                <InputText id="nome" @bind-Value="NovoAlimento.Nome" class="form-control" placeholder="Ex: Arroz Integral" />
+                                <ValidationMessage For="@(() => NovoAlimento.Nome)" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="categoria" class="form-label">Categoria</label>
+                                <InputSelect id="categoria" @bind-Value="NovoAlimento.Categoria" class="form-control">
+                                    <option value="">Selecione...</option>
+                                    <option value="Grãos e Cereais">Grãos e Cereais</option>
+                                    <option value="Frutas">Frutas</option>
+                                    <option value="Verduras e Legumes">Verduras e Legumes</option>
+                                    <option value="Laticínios">Laticínios</option>
+                                    <option value="Carnes">Carnes</option>
+                                    <option value="Enlatados">Enlatados</option>
+                                    <option value="Padaria">Padaria</option>
+                                    <option value="Outros">Outros</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => NovoAlimento.Categoria)" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição <small class="text-muted">(opcional)</small></label>
+                                <InputTextArea id="descricao" @bind-Value="NovoAlimento.Descricao" class="form-control" placeholder="Ex: Alimento Perecível." />
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100">Cadastrar Alimento</button>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Alimentos Cadastrados</h5>
+
+                        @if (alimentos == null)
+                        {
+                            <p>Carregando...</p>
+                        }
+                        else if (!alimentos.Any())
+                        {
+                            <p class="text-muted">Nenhum alimento cadastrado ainda. Adicione alimentos usando o formulário ao lado.</p>
+                        }
+                        else
+                        {
+                            <table class="table table-bordered table-striped">
+                                <thead class="table-success">
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Categoria</th>
+                                        <th>Descrição</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var alimento in alimentos)
+                                    {
+                                        <tr>
+                                            <td>@alimento.Nome</td>
+                                            <td>@alimento.Categoria</td>
+                                            <td>@alimento.Descricao</td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Alimento NovoAlimento { get; set; } = new Alimento();
+    private List<Alimento> alimentos;
+}

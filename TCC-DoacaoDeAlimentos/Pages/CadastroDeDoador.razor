@@ -1,0 +1,95 @@
+﻿@page "/CadastroDeDoador"
+
+<PageTitle>Cadastro</PageTitle>
+<h3>Cadastro Pessoa</h3>
+
+
+<div class="row">
+    <label>Nome:</label>
+    <InputText @bind-Value="nome" class="form-control"></InputText>
+</div>
+
+<div class="row">
+    <label>Telefone:</label>
+    <InputText @bind-Value="telefone" class="form-control"></InputText>
+</div>
+
+<div class="row">
+    <label>E-mail:</label>
+    <InputText @bind-Value="email" class="form-control"></InputText>
+</div>
+
+<div class="form-group">
+    <label>Tipo de Pessoa:</label>
+    <InputRadioGroup @bind-Value="tipoPessoa" class="radio-group">
+        <InputRadio Value=@("F") /> Física
+        <InputRadio Value=@("J") /> Jurídica
+    </InputRadioGroup>
+</div>
+
+<div class="row">
+    <label>Endereço:</label>
+    <InputText @bind-Value="endereco" class="form-control"></InputText>
+</div>
+
+<div class="row">
+    <label>Bairro:</label>
+    <InputText @bind-Value="bairro" class="form-control"></InputText>
+</div>
+
+<div class="row">
+    <label>CEP:</label>
+    <InputText @bind-Value="cep" class="form-control"></InputText>
+</div>
+
+<div class="form-group">
+    <label>Sexo:</label>
+    <InputRadioGroup @bind-Value="sexo" class="radio-group">
+        <InputRadio Value=@("M") /> Masculino
+        <InputRadio Value=@("F") /> Feminino
+    </InputRadioGroup>
+</div>
+
+
+
+<button class="btn btn-success" @onclick="Salvar">Salvar</button>
+
+
+@code {
+    private string nome = "";
+    private string telefone = "";
+    private string email = "";
+    private string tipoPessoa = "";
+    private string endereco = "";
+    private string bairro = "";
+    private string cep = "";
+    private string sexo = "";
+    private string dados = "";
+
+    private void Salvar()
+    {
+        dados += $"Nome {nome}\n";
+        dados += $"Telefone {telefone}\n";
+        dados += $"E-mail {email}\n";
+        dados += $"Tipo Pessoa {tipoPessoa}\n";
+        dados += $"Endereço {endereco}\n";
+        dados += $"Bairro {bairro}\n";
+        dados += $"Cep {cep}\n";
+        dados += $"Sexo {sexo}\n";
+        Limpar();
+    }
+
+    private void Limpar()
+    {
+        nome = "";
+        telefone = "";
+        email = "";
+        tipoPessoa = "";
+        endereco = "";
+        bairro = "";
+        cep = "";
+        sexo = "";
+    }
+}
+
+

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35919.96 d17.13
+VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCC-DoacaoDeAlimentos", "TCC-DoacaoDeAlimentos.csproj", "{28C112EB-2B0F-444D-841C-926F9D246591}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontDoacaoDeAlimentos", "FrontDoacaoDeAlimentos.csproj", "{28C112EB-2B0F-444D-841C-926F9D246591}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
