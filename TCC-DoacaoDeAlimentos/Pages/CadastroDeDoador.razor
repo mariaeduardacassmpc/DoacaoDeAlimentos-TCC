@@ -1,6 +1,5 @@
 ﻿@page "/CadastroDeDoador"
 @using TCCDoacaoDeAlimentos.Models;
-@using Blazorise;
 @inject NavigationManager Navigation
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
@@ -45,7 +44,7 @@
                             {
                                 <div class="mb-3">
                                     <label for="cpf" class="form-label">CPF</label>
-                                    <TextEdit @bind-Value="doador.CPF_CNPJ" class="form-control" id="cpf" Mask="000.000.000-00" Placeholder="000.000.000-00" />
+                                    @* <TextEdit @bind-Value="doador.CPF_CNPJ" class="form-control" id="cpf" Mask="000.000.000-00" Placeholder="000.000.000-00" /> *@
                                     <ValidationMessage For="@(() => doador.CPF_CNPJ)" />
                                 </div>
                             }
@@ -53,7 +52,7 @@
                             {
                                 <div class="mb-3">
                                     <label for="cnpj" class="form-label">CNPJ</label>
-                                    <TextEdit @bind-Value="doador.CPF_CNPJ" class="form-control" id="cnpj" Mask="00.000.000/0000-00" Placeholder="00.000.000/0000-00" />
+                                    @* <TextEdit @bind-Value="doador.CPF_CNPJ" class="form-control" id="cnpj" Mask="00.000.000/0000-00" Placeholder="00.000.000/0000-00" /> *@
                                     <ValidationMessage For="@(() => doador.CPF_CNPJ)" />
                                 </div>
                             }
@@ -61,7 +60,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Telefone:</label>
-                                    <TextEdit @bind-Value="doador.Telefone" class="form-control" Mask="(00) 00000-0000" Placeholder="(00) 00000-0000" />
+                                    @* <TextEdit @bind-Value="doador.Telefone" class="form-control" Mask="(00) 00000-0000" Placeholder="(00) 00000-0000" /> *@
                                     <ValidationMessage For="@(() => doador.Telefone)" />
                                 </div>
                                 <div class="col-md-6">
@@ -74,7 +73,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="cep" class="form-label">CEP</label>
-                                    <TextEdit @bind-Value="doador.CEP" class="form-control" id="cep" Mask="00000-000" Placeholder="00000-000" />
+                                    @* <TextEdit @bind-Value="doador.CEP" class="form-control" id="cep" Mask="00000-000" Placeholder="00000-000" /> *@
                                     <ValidationMessage For="@(() => doador.CEP)" />
                                 </div>
                                 <div class="col-md-6 mb-3">
