@@ -16,8 +16,9 @@
                         <h5 class="card-title">Adicionar Novo Alimento</h5>
 
                         <EditForm Model="@NovoAlimento">
-                            <DataAnnotationsValidator />
-                            <ValidationSummary />
+                            <Microsoft.AspNetCore.Components.Forms.DataAnnotationsValidator />
+                            <Microsoft.AspNetCore.Components.Forms.ValidationSummary />
+
 
                             <div class="mb-3">
                                 <InputText id="nome" @bind-Value="NovoAlimento.Nome" class="form-control" placeholder="Ex: Arroz Integral" />

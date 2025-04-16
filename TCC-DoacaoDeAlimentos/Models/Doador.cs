@@ -3,22 +3,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TCCDoacaoDeAlimentos.Models
 {
-    public class Ong
+    public class Doador
     {
         [Key]
-        public int IdOng { get; set; }
+        public int IdDoador { get; set; }
 
         [Required]
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
 
-        [Required(ErrorMessage = "A razão social é obrigatória.")]
+        [Required(ErrorMessage = "Nome é obrigatório.")]
         [StringLength(100)]
-        public string RazaoSocial { get; set; }
+        public string Nome { get; set; }
 
-        [Required(ErrorMessage = "O CNPJ é obrigatório.")]
-        [StringLength(18, ErrorMessage = "O CNPJ deve ter no máximo 18 caracteres.")]
-        public string CNPJ { get; set; }
+        [Required(ErrorMessage = "O CPF é obrigatório.")]
+        [StringLength(4, ErrorMessage = "O CPF deve ter no máximo * caracteres.")]
+        public string CPF_CNPJ { get; set; }
 
         [Required(ErrorMessage = "O telefone é obrigatório.")]
         [Phone(ErrorMessage = "Telefone inválido.")]
@@ -35,8 +35,6 @@ namespace TCCDoacaoDeAlimentos.Models
         [Required(ErrorMessage = "O CEP é obrigatório.")]
         [StringLength(9, ErrorMessage = "O CEP deve estar no formato 00000-000")]
         public string CEP { get; set; }
-
-        [Required(ErrorMessage = "Cidade é obrigatório.")]
         public string Cidade { get; set; }
 
 
@@ -44,8 +42,9 @@ namespace TCCDoacaoDeAlimentos.Models
         [EmailAddress(ErrorMessage = "E-mail inválido.")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "O nome do responsável é obrigatório.")]
-        [StringLength(100)]
-        public string Responsavel { get; set; }
+        public bool Sexo { get; set; }
+        public bool TipoPessoa { get; set; }
+
+
     }
 }
