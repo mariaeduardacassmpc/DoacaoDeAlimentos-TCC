@@ -1,0 +1,109 @@
+﻿@page "/CadastroDeOng"
+@using System.ComponentModel.DataAnnotations
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h1 class="card-title text-center text-primary mb-4">Cadastro de ONG</h1>
+                    <p class="text-center text-muted mb-4">Cadastre sua organização para receber doações de alimentos</p>
+                    
+                    <EditForm Model="@ong" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        
+                        <h2 class="text-primary border-bottom pb-2 mb-4">Informações da Organização</h2>
+                        
+                        <div class="mb-3">
+                            <label for="ong-name" class="form-label fw-bold">Nome da ONG</label>
+                            <InputText @bind-Value="ong.Nome" class="form-control" id="ong-name" placeholder="Nome da sua organização" />
+                            <ValidationMessage For="@(() => ong.Nome)" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="cnpj" class="form-label fw-bold">CNPJ</label>
+                            @* <InputMask @bind-Value="ong.CNPJ" class="form-control" id="cnpj" placeholder="00.000.000/0000-00"  *@
+                                      mask="00.000.000/0000-00" />
+                            <ValidationMessage For="@(() => ong.CNPJ)" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="responsible-name" class="form-label fw-bold">Nome do Responsável</label>
+                            <InputText @bind-Value="ong.Responsavel" class="form-control" id="responsible-name" 
+                                      placeholder="Nome completo do responsável" />
+                            <ValidationMessage For="@(() => ong.Responsavel)" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-bold">Email</label>
+                            <InputText @bind-Value="ong.Email" class="form-control" id="email" placeholder="contato@ong.org" />
+                            <ValidationMessage For="@(() => ong.Email)" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label fw-bold">Telefone</label>
+                            @* <InputMask @bind-Value="ong.Telefone" class="form-control" id="phone" placeholder="(00) 00000-0000"  *@
+                                      mask="(00) 00000-0000" />
+                            <ValidationMessage For="@(() => ong.Telefone)" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label fw-bold">Endereço</label>
+                            <InputTextArea @bind-Value="ong.Endereco" class="form-control" id="address" rows="3" />
+                            <ValidationMessage For="@(() => ong.Endereco)" />
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Enviar Cadastro</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private OngModel ong = new OngModel();
+    
+    private void HandleValidSubmit()
+    {
+        // Lógica para processar o formulário
+        Console.WriteLine("Formulário válido. Dados:");
+        Console.WriteLine($"Nome: {ong.Nome}");
+        Console.WriteLine($"CNPJ: {ong.CNPJ}");
+        // Adicione aqui a lógica para salvar no banco de dados ou API
+        
+        // Exemplo de navegação após cadastro
+        // navigationManager.NavigateTo("/cadastro-sucesso");
+    }
+    
+    public class OngModel
+    {
+        [Required(ErrorMessage = "O nome da ONG é obrigatório")]
+        [StringLength(100, ErrorMessage = "O nome deve ter no máximo 100 caracteres")]
+        public string Nome { get; set; }
+        
+        [Required(ErrorMessage = "O CNPJ é obrigatório")]
+        [RegularExpression(@"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$", ErrorMessage = "CNPJ no formato inválido")]
+        public string CNPJ { get; set; }
+        
+        [Required(ErrorMessage = "O nome do responsável é obrigatório")]
+        public string Responsavel { get; set; }
+        
+        [Required(ErrorMessage = "O email é obrigatório")]
+        [EmailAddress(ErrorMessage = "Email em formato inválido")]
+        public string Email { get; set; }
+        
+        [Required(ErrorMessage = "O telefone é obrigatório")]
+        public string Telefone { get; set; }
+        
+        [Required(ErrorMessage = "O endereço é obrigatório")]
+        public string Endereco { get; set; }
+    }
+}
+
+@code {
+
+}

@@ -1,21 +1,21 @@
 ﻿@page "/"
+
 <div class="fundo-metade">
-    <div class="container text-center mt-3">
-        <div class="row align-items-center mt-5">
-            <div class="col-md-6 text-start">
+    <div class="container text-center">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-start mt-5">
                 <h1 style="font-weight: bold; color: #2e2b27; font-size: 4rem; margin-bottom: -0.5rem;">Alimente</h1>
                 <h1 style="font-weight: bold; color: #2e2b27; font-size: 4rem; margin-bottom: -0.5rem;">Esperança</h1>
                 <h1 style="font-weight: bold; color: green; font-size: 4rem; margin-bottom: 0.8rem;">Doe Alimentos</h1>
-                <p class="fs-5" style="color: #4a4a4a;">
+                <p class="fs-5" style="color: black;">
                     O AlimentAcao faz a ponte entre doadores de alimentos e organizações que lutam contra a fome.
                     Juntos podemos combater a fome e transformar vidas.
                 </p>
             </div>
             <div class="col-md-6" style="margin-top: 2rem;">
-                <img src="/img children.jpg" alt="Crianças sorrindo" class="img-fluid rounded shadow" />
+                <img src="/img-home.jpg" class="img-fluid rounded shadow" />
             </div>
         </div>
-
         <h1 class="mb-3" style="margin-top: 12rem;">Cadastre-se na Plataforma</h1>
         <h5>
             Faça parte da nossa rede de combate à fome. Registre-se como doador,<br />
@@ -30,11 +30,10 @@
                         <p class="card-text">
                             Cadastre-se como doador e ajude a combater a fome em sua comunidade.
                         </p>
-                        <a href="#" class="btn btn-success">Cadastrar como Doador</a>
+                        <a href="/CadastroDeDoador" class="btn btn-success">Cadastrar como Doador</a>
                     </div>
                 </div>
-            </div>
-
+			</div>
             <div class="col-md-4 mb-3">
                 <div class="card h-100 rounded-4 shadow">
                     <div class="card-body">
@@ -42,11 +41,10 @@
                         <p class="card-text">
                             Registre os alimentos que você quer doar e nós encontraremos quem precisa.
                         </p>
-                        <a href="#" class="btn btn-success">Cadastrar Doação</a>
+                        <a href="/CadastroDeDoacao" class="btn btn-success">Cadastrar Doação</a>
                     </div>
                 </div>
             </div>
-
             <div class="col-md-4 mb-3">
                 <div class="card h-100 rounded-4 shadow">
                     <div class="card-body">
@@ -54,105 +52,153 @@
                         <p class="card-text">
                             Cadastre sua organização para receber doações de alimentos.
                         </p>
-                        <a href="#" class="btn btn-success">Cadastrar ONG</a>
+                        <a href="/CadastroDeOng" class="btn btn-success">Cadastrar ONG</a>
                     </div>
                 </div>
             </div>
         </div>
+        <section id="historias">
+            <div class="container text-center">
+                <h1 class="mb-3" style="margin-top: 10rem;">Histórias de Esperança</h1>
+                <h5 style="margin-bottom: 3rem;">
+                    Veja como sua doação faz a diferença na vida de muitas pessoas.
+                </h5>
+                <div id="carouselHistorias" class="carousel slide" data-bs-ride="carousel" style="padding-top: 2rem;">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <h5>Carlos Santos</h5>
+                            <p class="lead">
+                                "Depois de perder meu emprego, não sabia como conseguiria alimentar minha família. A doação do AlimentAção <br /> nos deu um fôlego, e agora podemos ter refeições dignas todos os dias."
+                            </p>
+                        </div>
+                        <div class="carousel-item">
+                            <h5>Ana Souza</h5>
+                            <p class="lead">
+                                "Eu trabalho com crianças em situação de risco, e graças às doações de alimentos, conseguimos alimentar <br /> as crianças da comunidade todos os dias. A ajuda chegou na hora certa!"
+                            </p>
+                        </div>
+                        <div class="carousel-item">
+                            <h5>José Ferreira</h5>
+                            <p class="lead">
+                                "Com a pandemia, a situação ficou muito difícil, mas o apoio de organizações como o AlimentAção nos ajudou <br /> a sobreviver. Hoje, minha esposa e meus filhos têm o que comer graças a essa rede de solidariedade."
+                            </p>
+                        </div>
+                        <div class="carousel-item">
+                            <h5>Patrícia Lima</h5>
+                            <p class="lead">
+                                "Eu sou voluntária em uma ONG que ajuda pessoas em situação de rua, e a doação de alimentos foi <br /> fundamental para a nossa missão. Agradecemos por cada contribuição, ela realmente faz a diferença!"
+                            </p>
+                        </div>
+                        <div class="carousel-item">
+                            <h5>Ricardo Silva</h5>
+                            <p class="lead">
+                                "Aos poucos, consegui reunir alimentos para ajudar famílias que estão passando por dificuldades na <br /> minha comunidade. O AlimentAção é uma plataforma incrível que facilita essa solidariedade."
+                            </p>
+                        </div>
+                        <div class="carousel-item">
+                            <h5>Juliana Almeida</h5>
+                            <p class="lead">
+                                "Com a ajuda do AlimentAção, conseguimos distribuir alimentos para os idosos da nossa cidade, que estão <br /> enfrentando sérias dificuldades devido à pandemia. A gratidão deles foi imensa!"
+                            </p>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselHistorias" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true" style="font-size: 2rem; background-color: rgba(0, 0, 0, 0.5); padding: 10px;"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselHistorias" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true" style="font-size: 2rem; background-color: rgba(0, 0, 0, 0.5); padding: 10px;"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section id="impacto" class="mt-5">
+            <div class="container text-center">
+                <h1 class="mb-3" style="margin-top: 10rem;">Dashboard de Impacto</h1>
+                <h5 class="mb-5">Veja o impacto do AlimentAção na luta contra a fome.</h5>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow h-100" style="height: 350px;">
+                            <div class="card-body d-flex flex-column justify-content-center">
+                                <h2 class="card-text" id="ongs-count">320</h2>
+                                <h5 class="card-title mt-2">ONGs Ajudadas</h5>
+                                <p class="card-text mt-2">Número total de ONGs que receberam alimentos através do nosso programa.</p>
+                            </div>
+                        </div>
+                    </div>
 
-        <div class="container text-center my-5">
-            <h1 class="mb-3" style="margin-top: 12rem;">Como Funciona</h1>
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow h-100" style="height: 350px;">
+                            <div class="card-body d-flex flex-column justify-content-center">
+                                <h2 class="card-text" id="alimentos-doado">12,500</h2>
+                                <h5 class="card-title mt-2">Alimentos Doado</h5>
+                                <p class="card-text mt-2">Quantidade total de alimentos doados (em kg) até o momento.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container text-center">
+            <h1 class="mb-3" style="margin-top: 10rem;">Como Funciona</h1>
             <h5 class="mb-5">
                 Doar alimentos é um processo simples que pode ter um impacto imenso. Siga <br>
                 estes passos para ajudar quem mais precisa.
             </h5>
-
             <div class="row justify-content-center">
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 rounded-4 shadow">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <strong>Escolha os Alimentos</strong>
+                                <strong>Cadastre-se e Acesse a Plataforma</strong>
                             </h5>
                             <p class="card-text">
-                                Selecione alimentos não perecíveis como arroz, feijão, macarrão, óleo, enlatados e itens de higiene.
+                                Crie sua conta no AlimentAção para começar a doar. Depois, 
+                                clique em "Doar" e procure o alimento que deseja doar.
                             </p>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 rounded-4 shadow">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <strong>Prepare para Doação</strong>
+                                <strong>Escolha ou Cadastre o Alimento</strong>
                             </h5>
                             <p class="card-text">
-                                Embale os itens com segurança e garanta que estejam em boas condições de uso e consumo.
+                                Se o alimento estiver disponível, selecione e prossiga. Se não estiver, 
+                                é só cadastrá-lo de forma rápida e simples.
                             </p>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 rounded-4 shadow">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <strong>Entregue ou Solicite Retirada</strong>
+                                <strong>Confirmação e Contato</strong>
                             </h5>
                             <p class="card-text">
-                                Você pode entregar os alimentos ou solicitar retirada através da plataforma de forma fácil e rápida.
+                                Após a doação, você receberá um SMS confirmando a doação e a ONG 
+                                beneficiada entrará em contato para combinar a entrega.
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        @* <!-- Fundo verde em toda a largura --> *@
-        @* <div class="w-100 py-5" style="background-color: #e6f4ea;"> *@
-        @*     <!-- Conteúdo centralizado --> *@
-        @*     <div class="container text-center"> *@
-        @*         <h2 class="mb-4">Entre em Contato</h2> *@
-        @*         <h5 class="mb-5"> *@
-        @*             Doar alimentos é um processo simples que pode ter um impacto imenso. Siga <br> *@
-        @*             estes passos para ajudar quem mais precisa. *@
-        @*         </h5> *@
-        @*         <div class="mx-auto p-4 bg-white rounded shadow" style="max-width: 700px;"> *@
-        @*             <form> *@
-        @*                 <div class="mb-3 text-start"> *@
-        @*                     <label for="nome" class="form-label">Nome Completo</label> *@
-        @*                     <input type="text" class="form-control border-0 rounded-3 p-3" style="background-color: #fffaf0;" id="nomeCompleto" placeholder="Seu nome completo"> *@
-        @*                 </div> *@
-        @*                 <div class="mb-3 text-start"> *@
-        @*                     <label for="email" class="form-label">Email</label> *@
-        @*                     <input type="email" class="form-control border-0 rounded-3 p-3" style="background-color: #fffaf0;" id="email" placeholder="seu.email@exemplo.com"> *@
-        @*                 </div> *@
-        @*                 <div class="mb-4 text-start"> *@
-        @*                     <label for="mensagem" class="form-label">Mensagem</label> *@
-        @*                     <textarea class="form-control border-0 rounded-3 p-3" style="background-color: #fffaf0;" id="mensagem" rows="5" placeholder="Como podemos ajudar?"></textarea> *@
-        @*                 </div> *@
-        @*                 <button type="submit" class="btn btn-success w-100 py-2 rounded-3"> *@
-        @*                     Enviar Mensagem *@
-        @*                 </button> *@
-        @*             </form> *@
-        @*         </div> *@
-        @*     </div> *@
-        @* </div> *@
 
-
-        <footer style="background-color: #4e342e; color: white; padding: 3rem 0; width: 100vw; margin-left: -50vw; left: 50%; position: relative;">
-            <div style="max-width: 1200px; margin: 0 auto; position: relative; width: 100vw; left: -50vw; margin-left: 50%;">
-                <div class="row">
-                    <div class="col-md-4 mb-4">
+    
+        <footer style="background-color: #4e342e; color: white; padding: 3rem 0; width: 100%;">
+            <div class="container-fluid px-5">
+                <div class="row justify-content-between">
+                    <div class="col-md-4 mb-4 text-center text-md-start">
                         <h4>AlimentAção</h4>
                         <p>Transformando vidas através da solidariedade e combate à fome.</p>
                     </div>
-
-                    <div class="col-md-4 mb-4">
+                    <div class="col-md-4 mb-4 text-center text-md-start">
                         <h5>Contato</h5>
                         <p>📍 Av. Brasil, 1500, São Paulo - SP</p>
                         <p>📞 (11) 98765-4321</p>
