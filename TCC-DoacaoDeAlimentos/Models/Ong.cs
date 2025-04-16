@@ -35,6 +35,8 @@ namespace TCCDoacaoDeAlimentos.Models
         [Required(ErrorMessage = "O CEP é obrigatório.")]
         [StringLength(9, ErrorMessage = "O CEP deve estar no formato 00000-000")]
         public string CEP { get; set; }
+        public string Cidade { get; set; }
+
 
         [Required(ErrorMessage = "O e-mail é obrigatório.")]
         [EmailAddress(ErrorMessage = "E-mail inválido.")]

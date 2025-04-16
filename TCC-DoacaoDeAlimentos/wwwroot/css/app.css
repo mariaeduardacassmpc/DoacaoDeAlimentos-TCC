@@ -7,8 +7,8 @@ html, body {
 
 
 .fundo-metade {
-    background: linear-gradient(to bottom, rgba(0, 128, 0, 0.5), white);
-    height: 120vh;
+    background: lightyellow;
+    height: 150vh;
     width: 100%;
     margin-top: 0;
     padding: 0;
