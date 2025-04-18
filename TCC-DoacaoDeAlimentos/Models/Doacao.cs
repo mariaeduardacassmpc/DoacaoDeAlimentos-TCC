@@ -25,9 +25,14 @@ namespace TCCDoacaoDeAlimentos.Models
         public DateTime DataDoacao { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "O status é obrigatório")]
-        public string StatusDoacao { get; set; } = "Pendente";
+        public StatusDoacao Status { get; set; } 
         public List<AlimentoDoacao> Alimentos { get; set; } = new();
-        public string Observacao { get; set; }  
-
+        public string Observacao { get; set; } 
+    }
+    public enum StatusDoacao
+    {
+        Pendente = 0,
+        Cancelada = 1,
+        Finalizada = 2
     }
 }
