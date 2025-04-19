@@ -1,6 +1,7 @@
 ﻿@page "/CadastroDeDoador"
-@using TCCDoacaoDeAlimentos.Models;
+@using TCCDoacaoDeAlimentos.Models
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
     <div class="container py-4">
@@ -12,21 +13,26 @@
                         <h6 class="text-center mb-4">
                             Faça o Cadastro para poder doar
                         </h6>
-                        <EditForm Model="@doador">
-                            <Microsoft.AspNetCore.Components.Forms.DataAnnotationsValidator />
-                            <Microsoft.AspNetCore.Components.Forms.ValidationSummary />
-                          <hr />
+                        <EditForm Model="@doador" OnValidSubmit="HandleValidSubmit">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                            <hr />
 
                             <div class="mb-3">
-                                <label for="nome" class="form-label">Nome Completo</label>
-                                <InputText @bind-Value="doador.Nome" class="form-control" id="nome" placeholder="Nome" />
+                                <label for="nome" class="form-label">Nome Completo *</label>
+                                <InputText @bind-Value="doador.Nome"
+                                           class="form-control"
+                                           id="nome"
+                                           placeholder="Nome" />
                                 <ValidationMessage For="@(() => doador.Nome)" />
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <label class="form-label">Tipo de Pessoa:</label>
-                                    <InputRadioGroup @bind-Value="doador.TipoPessoa" class="form-check">
+                                    <label class="form-label">Tipo de Pessoa: *</label>
+                                    <InputRadioGroup @bind-Value="doador.TipoPessoa"
+                                                     Name="TipoPessoa"
+                                                     class="form-check">
                                         <div class="form-check form-check-inline">
                                             <InputRadio Value="true" class="form-check-input" />
                                             <label class="form-check-label">Física</label>
@@ -40,58 +46,71 @@
                                 </div>
                             </div>
 
-                            @if (doador.TipoPessoa)
-                            {
-                                <div class="mb-3">
-                                    <label for="cpf" class="form-label">CPF</label>
-                                    @* <TextEdit @bind-Value="doador.CPF_CNPJ" class="form-control" id="cpf" Mask="000.000.000-00" Placeholder="000.000.000-00" /> *@
-                                    <ValidationMessage For="@(() => doador.CPF_CNPJ)" />
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="mb-3">
-                                    <label for="cnpj" class="form-label">CNPJ</label>
-                                    @* <TextEdit @bind-Value="doador.CPF_CNPJ" class="form-control" id="cnpj" Mask="00.000.000/0000-00" Placeholder="00.000.000/0000-00" /> *@
-                                    <ValidationMessage For="@(() => doador.CPF_CNPJ)" />
-                                </div>
-                            }
+                            <div class="mb-3">
+                                <label for="cpf-cnpj" class="form-label">
+                                    @(doador.TipoPessoa ? "CPF *" : "CNPJ *")
+                                </label>
+                                <input type="text"
+                                       @bind="doador.CPF_CNPJ"
+                                       @bind:event="oninput"
+                                       class="form-control"
+                                       id="cpf-cnpj"
+                                       placeholder="@(doador.TipoPessoa ? "000.000.000-00" : "00.000.000/0000-00")" />
+                                <ValidationMessage For="@(() => doador.CPF_CNPJ)" />
+                            </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Telefone:</label>
-                                    @* <TextEdit @bind-Value="doador.Telefone" class="form-control" Mask="(00) 00000-0000" Placeholder="(00) 00000-0000" /> *@
+                                    <label class="form-label">Telefone: *</label>
+                                    <input type="text"
+                                           @bind="doador.Telefone"
+                                           @bind:event="oninput"
+                                           class="form-control"
+                                           id="phone"
+                                           placeholder="(00) 00000-0000" />
                                     <ValidationMessage For="@(() => doador.Telefone)" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">E-mail:</label>
-                                    <InputText @bind-Value="doador.Email" class="form-control" type="email" />
+                                    <label class="form-label">E-mail: *</label>
+                                    <InputText @bind-Value="doador.Email"
+                                               class="form-control"
+                                               type="email" />
                                     <ValidationMessage For="@(() => doador.Email)" />
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="cep" class="form-label">CEP</label>
-                                    @* <TextEdit @bind-Value="doador.CEP" class="form-control" id="cep" Mask="00000-000" Placeholder="00000-000" /> *@
+                                    <label for="cep" class="form-label">CEP *</label>
+                                    <input type="text"
+                                           @bind="doador.CEP"
+                                           @bind:event="oninput"
+                                           class="form-control"
+                                           id="cep"
+                                           placeholder="00000-000" />
                                     <ValidationMessage For="@(() => doador.CEP)" />
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="cidade" class="form-label">Cidade</label>
-                                    <InputText @bind-Value="doador.Cidade" class="form-control" id="cidade" placeholder="Sua cidade" />
+                                    <label for="cidade" class="form-label">Cidade *</label>
+                                    <InputText @bind-Value="doador.Cidade"
+                                               class="form-control"
+                                               id="cidade"
+                                               placeholder="Sua cidade" />
                                     <ValidationMessage For="@(() => doador.Cidade)" />
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-8">
-                                    <label class="form-label">Endereço:</label>
-                                    <InputText @bind-Value="doador.Endereco" class="form-control" />
+                                    <label class="form-label">Endereço: *</label>
+                                    <InputText @bind-Value="doador.Endereco"
+                                               class="form-control" />
                                     <ValidationMessage For="@(() => doador.Endereco)" />
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Bairro:</label>
-                                    <InputText @bind-Value="doador.Bairro" class="form-control" />
+                                    <label class="form-label">Bairro: *</label>
+                                    <InputText @bind-Value="doador.Bairro"
+                                               class="form-control" />
                                     <ValidationMessage For="@(() => doador.Bairro)" />
                                 </div>
                             </div>
@@ -99,7 +118,8 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Sexo:</label>
-                                    <InputRadioGroup @bind-Value="doador.Sexo" class="form-check">
+                                    <InputRadioGroup @bind-Value="doador.Sexo"
+                                                     class="form-check">
                                         <div class="form-check form-check-inline">
                                             <InputRadio Value="true" class="form-check-input" />
                                             <label class="form-check-label">Masculino</label>
@@ -126,4 +146,43 @@
 
 @code {
     private Doador doador { get; set; } = new Doador();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("applyDoadorMasks");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            // Remover máscaras antes de enviar
+            doador.CPF_CNPJ = RemoveMask(doador.CPF_CNPJ);
+            doador.Telefone = RemoveMask(doador.Telefone);
+            doador.CEP = RemoveMask(doador.CEP);
+
+            // Aqui você colocaria a lógica para enviar os dados para a API
+            // await Http.PostAsJsonAsync("api/doadores", doador);
+
+            // Exemplo de navegação após cadastro
+            Navigation.NavigateTo("/cadastro-sucesso");
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar: {ex.Message}");
+        }
+    }
+
+    private string RemoveMask(string value)
+    {
+        return value?.Replace(".", "")
+                   .Replace("/", "")
+                   .Replace("-", "")
+                   .Replace("(", "")
+                   .Replace(")", "")
+                   .Replace(" ", "");
+    }
 }
