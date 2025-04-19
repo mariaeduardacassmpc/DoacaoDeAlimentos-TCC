@@ -52,18 +52,32 @@ namespace TCCDoacaoDeAlimentos.Models
         {
             var doador = (Doador)context.ObjectInstance;
 
-            if (doador.TipoPessoa) //pessoa Física
+            if (doador.TipoPessoa) // Pessoa Física (CPF)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(documento, @"^\d{3}\.\d{3}\.\d{3}\-\d{2}$"))
+                if (string.IsNullOrEmpty(documento) || !System.Text.RegularExpressions.Regex.IsMatch(documento, @"^\d{3}\.\d{3}\.\d{3}\-\d{2}$"))
                 {
-                    return new ValidationResult("CPF no formato inválido (000.000.000-00).");
+                    return new ValidationResult("CPF deve estar no formato 000.000.000-00");
+                }
+
+                // Remove a máscara para contar os dígitos
+                var digits = documento.Replace(".", "").Replace("-", "");
+                if (digits.Length != 11)
+                {
+                    return new ValidationResult("CPF deve ter 11 dígitos");
                 }
             }
-            else //pessoa Jurídica
+            else // Pessoa Jurídica (CNPJ)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(documento, @"^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$"))
+                if (string.IsNullOrEmpty(documento) || !System.Text.RegularExpressions.Regex.IsMatch(documento, @"^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$"))
                 {
-                    return new ValidationResult("CNPJ no formato inválido (00.000.000/0000-00).");
+                    return new ValidationResult("CNPJ deve estar no formato 00.000.000/0000-00");
+                }
+
+                // Remove a máscara para contar os dígitos
+                var digits = documento.Replace(".", "").Replace("/", "").Replace("-", "");
+                if (digits.Length != 14)
+                {
+                    return new ValidationResult("CNPJ deve ter 14 dígitos");
                 }
             }
 

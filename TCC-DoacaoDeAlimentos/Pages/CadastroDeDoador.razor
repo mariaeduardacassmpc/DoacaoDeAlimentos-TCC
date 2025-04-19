@@ -152,6 +152,9 @@
         if (firstRender)
         {
             await JSRuntime.InvokeVoidAsync("applyDoadorMasks");
+
+            // Força a atualização inicial do placeholder
+            StateHasChanged();
         }
     }
 
