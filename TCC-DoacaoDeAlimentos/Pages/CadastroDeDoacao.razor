@@ -1,5 +1,5 @@
 ﻿@page "/CadastroDeDoacao"
-@using TCCDoacaoDeAlimentos.Models;
+@using TCCDoacaoDeAlimentos.Models
 @inject NavigationManager Navigation
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
@@ -13,25 +13,29 @@
                             Cadastre uma nova doação para beneficiar uma ONG
                         </h6>
 
-                        <EditForm Model="@NovaDoacao" OnValidSubmit="SalvarDoacao">
-                            <Microsoft.AspNetCore.Components.Forms.DataAnnotationsValidator />
-                            <Microsoft.AspNetCore.Components.Forms.ValidationSummary />
+                        @if (erroSalvar)
+
+                        {
+                            <div class="alert alert-danger">
+                                @mensagemErro
+                                <button type="button" class="btn-close float-end" @onclick="() => erroSalvar = false"></button>
+                            </div>
+                        }
+
+                        <EditForm Model="@NovaDoacao" OnValidSubmit="@SalvarDoacao">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
 
                             <hr />
 
                             <h2 class="border-bottom pb-2 mb-4 mt-5">Informações da Doação</h2>
-
-                            @* <div class="mb-3"> *@
-                            @*     <label for="doador" class="form-label">Doador</label> *@
-                            @*     <InputText @bind-Value="NovaDoacao.IdDoador" class="form-control" id="doador" placeholder="ID do Doador" /> *@
-                            @*     <ValidationMessage For="@(() => NovaDoacao.IdDoador)" /> *@
-                            @* </div> *@
 
                             <div class="mb-3">
                                 <label for="ong" class="form-label">ONG Beneficiada</label>
                                 <InputSelect @bind-Value="NovaDoacao.IdOng" class="form-control" id="ong">
                                     <option value="">Selecione a ONG...</option>
                                     @foreach (var ong in Ongs)
+
                                     {
                                         <option value="@ong.IdOng">@ong.RazaoSocial</option>
                                     }
@@ -45,18 +49,7 @@
                                     <InputDate @bind-Value="NovaDoacao.DataDoacao" class="form-control" id="dataDoacao" />
                                     <ValidationMessage For="@(() => NovaDoacao.DataDoacao)" />
                                 </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="status" class="form-label">Status da Doação</label>
-                                    <InputSelect @bind-Value="NovaDoacao.Status" class="form-control" id="status">
-                                        <option value="Pendente">Pendente</option>
-                                        <option value="Cancelada">Cancelada</option>
-                                        <option value="Finalizada">Finalizada</option>
-                                    </InputSelect>
-                                    <ValidationMessage For="@(() => NovaDoacao.Status)" />
-                                </div>
                             </div>
-
 
                             <div class="mb-3">
                                 <label for="observacao" class="form-label">Observações</label>
@@ -66,6 +59,7 @@
                             <h3 class="border-bottom pb-2 mb-4 mt-5">Itens da Doação</h3>
 
                             @foreach (var item in Itens)
+
                             {
                                 <div class="border p-3 mb-4 rounded bg-light position-relative">
                                     <button type="button" class="btn-close position-absolute top-0 end-0 m-2" @onclick="() => RemoverItem(item)" title="Remover Item"></button>
@@ -75,6 +69,7 @@
                                             <InputSelect @bind-Value="item.AlimentoId" class="form-control">
                                                 <option value="">Selecione o alimento...</option>
                                                 @foreach (var alimento in Alimentos)
+
                                                 {
                                                     <option value="@alimento.Id">@alimento.Nome (@alimento.Categoria)</option>
                                                 }
@@ -84,7 +79,7 @@
 
                                         <div class="col-md-3">
                                             <label for="quantidade" class="form-label">Quantidade</label>
-                                            <InputNumber @bind-Value="item.Quantidade" class="form-control" />
+                                            <InputNumber @bind-Value="item.Quantidade" class="form-control" min="1" />
                                             <ValidationMessage For="@(() => item.Quantidade)" />
                                         </div>
 
@@ -110,7 +105,9 @@
                             </div>
 
                             <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-outline-success n-lg">Salvar Doação</button>
+                                <button type="submit" class="btn btn-outline-success btn-lg">
+                                    Salvar Doação
+                                </button>
                             </div>
                         </EditForm>
                     </div>
@@ -122,47 +119,107 @@
 
 @code {
     private Doacao NovaDoacao { get; set; } = new Doacao();
+
     private List<AlimentoDoacao> Itens { get; set; } = new();
+
     private List<Ong> Ongs { get; set; } = new();
+
     private List<Alimento> Alimentos { get; set; } = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        Ongs = await ObterOngsAsync();
-        Alimentos = await ObterAlimentosAsync();
-    }
+    private bool erroSalvar = false;
 
-    private Task<List<Ong>> ObterOngsAsync()
+    private string mensagemErro = string.Empty;
+
+    // Lista estática para armazenar as doações (substitua por um serviço quando for usar API)
+    private static List<Doacao> DoacoesSalvas { get; set; } = new();
+
+    protected override void OnInitialized()
     {
-        return Task.FromResult(new List<Ong>
+        // Dados mockados
+        Ongs = new List<Ong>
         {
-            new Ong { IdOng = 1, RazaoSocial = "ONG Exemplo 1" },
-            new Ong { IdOng = 2, RazaoSocial = "ONG Exemplo 2" }
-        });
-    }
+            new Ong { IdOng = 1, RazaoSocial = "ONG Ajuda Comunitária" },
+            new Ong { IdOng = 2, RazaoSocial = "ONG Alimento para Todos" }
+        };
 
-    private Task<List<Alimento>> ObterAlimentosAsync()
-    {
-        return Task.FromResult(new List<Alimento>
+        Alimentos = new List<Alimento>
         {
             new Alimento { Id = 1, Nome = "Arroz", Categoria = "Grãos" },
-            new Alimento { Id = 2, Nome = "Feijão", Categoria = "Grãos" }
-        });
+            new Alimento { Id = 2, Nome = "Feijão", Categoria = "Grãos" },
+            new Alimento { Id = 3, Nome = "Óleo", Categoria = "Condimentos" },
+            new Alimento { Id = 4, Nome = "Leite", Categoria = "Laticínios" }
+        };
+
+        NovaDoacao.Status = StatusDoacao.Pendente;
+        NovaDoacao.DataDoacao = DateTime.Today;
     }
+
 
     private void AdicionarItem()
     {
-        Itens.Add(new AlimentoDoacao());
+        Itens.Add(new AlimentoDoacao { Quantidade = 1 }); // Quantidade padrão = 1
     }
+
 
     private void RemoverItem(AlimentoDoacao item)
     {
         Itens.Remove(item);
     }
 
-    private async Task SalvarDoacao()
+
+    private void SalvarDoacao()
     {
-        // Lógica para salvar a doação
-        Console.WriteLine("Doação salva com sucesso!");
+        try
+        {
+            // Validação de quantidade mínima
+            foreach (var item in Itens)
+            {
+                if (item.Quantidade < 1)
+                {
+                    throw new Exception($"A quantidade para '{ObterNomeAlimento(item.AlimentoId)}' deve ser no mínimo 1");
+                }
+            }
+
+            // Verifica se há itens
+            if (Itens.Count == 0)
+            {
+                throw new Exception("Adicione pelo menos um item à doação");
+            }
+
+            // Simula um ID único
+            NovaDoacao.IdDoacao = DoacoesSalvas.Count + 1;
+
+            // Associa os itens à doação (cria nova lista para evitar referência)
+            NovaDoacao.Alimentos = Itens.ToList();
+
+            // Salva na lista estática
+            DoacoesSalvas.Add(NovaDoacao);
+
+            // Redireciona para Minhas Doações
+            Navigation.NavigateTo("/MinhasDoacoes");
+        }
+
+        catch (Exception ex)
+        {
+            erroSalvar = true;
+            mensagemErro = ex.Message;
+
+            StateHasChanged();
+        }
+    }
+
+
+
+    private string ObterNomeAlimento(int id)
+    {
+        var alimento = Alimentos.FirstOrDefault(a => a.Id == id);
+        return alimento?.Nome ?? "Item selecionado";
+    }
+
+
+    // Método para acessar as doações salvas (usado pela página MinhasDoacoes)
+    public static List<Doacao> ObterDoacoesSalvas()
+    {
+        return DoacoesSalvas;
     }
 }

@@ -2,24 +2,15 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     margin: -10;
     padding: -100;
-
-}
-
-
-.fundo-metade {
-    background: lightyellow;
-    height: 150vh;
-    width: 100%;
-    margin-top: 0;
-    padding: 0;
+    background-color: #d4edda;
 }
 
 .carousel-controls button {
     position: absolute;
-    top: 60%; 
+    top: 60%;
     transform: translateY(-50%);
     z-index: 10;
-    background-color: rgba(0, 0, 0, 0.3); 
+    background-color: rgba(0, 0, 0, 0.3);
     padding: 10px;
 }
 
@@ -47,7 +38,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
@@ -130,4 +121,19 @@ a, .btn-link {
 
 code {
     color: #c02d76;
+}
+
+footer {
+    overflow: hidden;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    color: #198754 !important; /* Cor verde do Bootstrap */
+    border-bottom: 2px solid #198754;
 }

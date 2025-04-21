@@ -1,0 +1,168 @@
+﻿@page "/MinhasDoacoes"
+@using TCCDoacaoDeAlimentos.Models
+@inject NavigationManager Navigation
+
+<div class="min-vh-100" style="background-color: #d4edda;">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h1 class="card-title mb-0">Minhas Doações</h1>
+                            <button class="btn btn-primary" @onclick="NavigateToCadastro">
+                                <i class="bi bi-plus-circle me-2"></i>Nova Doação
+                            </button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>ONG Beneficiada</th>
+                                        <th>Data</th>
+                                        <th>Itens</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var doacao in DoacoesSalvas.OrderByDescending(d => d.DataDoacao))
+                                    {
+                                        <tr>
+                                            <td>@doacao.IdDoacao</td>
+                                            <td>@ObterNomeOng(doacao.IdOng)</td>
+                                            <td>@doacao.DataDoacao.ToString("dd/MM/yyyy")</td>
+                                            <td>
+                                                <ul class="list-unstyled">
+                                                    @foreach (var item in doacao.Alimentos)
+                                                    {
+                                                        <li>
+                                                            @ObterNomeAlimento(item.AlimentoId) -
+                                                            @item.Quantidade @item.UnidadeMedida
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <span class="badge @GetStatusBadgeClass(doacao.Status)">
+                                                    @doacao.Status
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-info"
+                                                        @onclick="() => VerDetalhes(doacao.IdDoacao)">
+                                                    Detalhes
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if (!DoacoesSalvas.Any())
+                        {
+                            <div class="alert alert-info text-center">
+                                Nenhuma doação encontrada. Clique em "Nova Doação" para começar.
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Doacao> DoacoesSalvas { get; set; } = new();
+    private List<Ong> Ongs { get; set; } = new();
+    private List<Alimento> Alimentos { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        // Simula dados salvos (na prática, você pode querer injetar um serviço)
+        CarregarDadosMockados();
+    }
+
+    private void CarregarDadosMockados()
+    {
+        // ONGs mockadas
+        Ongs = new List<Ong>
+        {
+            new Ong { IdOng = 1, RazaoSocial = "ONG Ajuda Comunitária" },
+            new Ong { IdOng = 2, RazaoSocial = "ONG Alimento para Todos" }
+        };
+
+        // Alimentos mockados
+        Alimentos = new List<Alimento>
+        {
+            new Alimento { Id = 1, Nome = "Arroz", Categoria = "Grãos" },
+            new Alimento { Id = 2, Nome = "Feijão", Categoria = "Grãos" },
+            new Alimento { Id = 3, Nome = "Óleo", Categoria = "Condimentos" },
+            new Alimento { Id = 4, Nome = "Leite", Categoria = "Laticínios" }
+        };
+
+        // Exemplo de doações salvas (normalmente viria de um serviço)
+        DoacoesSalvas = new List<Doacao>
+        {
+            new Doacao
+            {
+                IdDoacao = 1,
+                IdOng = 1,
+                DataDoacao = DateTime.Now.AddDays(-2),
+                Status = StatusDoacao.Finalizada,
+                Alimentos = new List<AlimentoDoacao>
+                {
+                    new AlimentoDoacao { AlimentoId = 1, Quantidade = 5, UnidadeMedida = "Kg" },
+                    new AlimentoDoacao { AlimentoId = 2, Quantidade = 3, UnidadeMedida = "Kg" }
+                }
+            },
+            new Doacao
+            {
+                IdDoacao = 2,
+                IdOng = 2,
+                DataDoacao = DateTime.Now.AddDays(-1),
+                Status = StatusDoacao.Pendente,
+                Alimentos = new List<AlimentoDoacao>
+                {
+                    new AlimentoDoacao { AlimentoId = 3, Quantidade = 2, UnidadeMedida = "L" },
+                    new AlimentoDoacao { AlimentoId = 4, Quantidade = 10, UnidadeMedida = "Unidades" }
+                }
+            }
+        };
+    }
+
+    private string ObterNomeOng(int idOng)
+    {
+        return Ongs.FirstOrDefault(o => o.IdOng == idOng)?.RazaoSocial ?? "ONG não encontrada";
+    }
+
+    private string ObterNomeAlimento(int idAlimento)
+    {
+        return Alimentos.FirstOrDefault(a => a.Id == idAlimento)?.Nome ?? "Alimento não encontrado";
+    }
+
+    private string GetStatusBadgeClass(StatusDoacao status)
+    {
+        return status switch
+        {
+            StatusDoacao.Pendente => "bg-warning text-dark",
+            StatusDoacao.Cancelada => "bg-danger",
+            StatusDoacao.Finalizada => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+
+    private void VerDetalhes(int idDoacao)
+    {
+        // Implemente a navegação para detalhes se necessário
+        Console.WriteLine($"Visualizar doação ID: {idDoacao}");
+    }
+
+    private void NavigateToCadastro()
+    {
+        Navigation.NavigateTo("/CadastroDeDoacao");
+    }
+}

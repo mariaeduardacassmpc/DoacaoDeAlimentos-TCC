@@ -1,6 +1,7 @@
 ﻿@page "/CadastroDeAlimentos"
 @using TCCDoacaoDeAlimentos.Models;
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 
 <div class="min-vh-100 py-5" style="background-color: #d4edda;">
     <div class="container text-center my-5">
@@ -15,12 +16,12 @@
                     <div class="card-body">
                         <h5 class="card-title">Adicionar Novo Alimento</h5>
 
-                        <EditForm Model="@NovoAlimento">
-                            <Microsoft.AspNetCore.Components.Forms.DataAnnotationsValidator />
-                            <Microsoft.AspNetCore.Components.Forms.ValidationSummary />
-
+                        <EditForm Model="@NovoAlimento" OnValidSubmit="@CadastrarAlimento">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
 
                             <div class="mb-3">
+                                <label for="nome" class="form-label">Nome</label>
                                 <InputText id="nome" @bind-Value="NovoAlimento.Nome" class="form-control" placeholder="Ex: Arroz Integral" />
                                 <ValidationMessage For="@(() => NovoAlimento.Nome)" />
                             </div>
@@ -58,35 +59,58 @@
                         <h5 class="card-title">Alimentos Cadastrados</h5>
 
                         @if (alimentos == null)
+
+
+
                         {
                             <p>Carregando...</p>
                         }
+
+
+
                         else if (!alimentos.Any())
+
+
+
                         {
                             <p class="text-muted">Nenhum alimento cadastrado ainda. Adicione alimentos usando o formulário ao lado.</p>
                         }
-                        else
-                        {
-                            <table class="table table-bordered table-striped">
-                                <thead class="table-success">
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>Categoria</th>
-                                        <th>Descrição</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var alimento in alimentos)
-                                    {
-                                        <tr>
-                                            <td>@alimento.Nome</td>
-                                            <td>@alimento.Categoria</td>
-                                            <td>@alimento.Descricao</td>
 
+
+
+                        else
+
+
+
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead class="table-success">
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Categoria</th>
+                                            <th>Descrição</th>
+                                            <th>Ações</th>
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var alimento in alimentos)
+
+
+
+                                        {
+                                            <tr>
+                                                <td>@alimento.Nome</td>
+                                                <td>@alimento.Categoria</td>
+                                                <td>@(string.IsNullOrEmpty(alimento.Descricao) ? "-" : alimento.Descricao)</td>
+                                                <td>
+                                                    <button @onclick="@(() => RemoverAlimento(alimento))" class="btn btn-sm btn-success">Remover</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         }
                     </div>
                 </div>
@@ -97,5 +121,56 @@
 
 @code {
     private Alimento NovoAlimento { get; set; } = new Alimento();
-    private List<Alimento> alimentos;
+    private List<Alimento> alimentos = new List<Alimento>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simular carregamento de dados
+        await Task.Delay(500);
+        // carrega os dados da API
+        // alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimentos");
+    }
+
+
+    private async Task CadastrarAlimento()
+    {
+        try
+        {
+            // envia para a API
+            // await Http.PostAsJsonAsync("api/alimentos", NovoAlimento);
+
+
+            // Adiciona à lista local
+            alimentos.Add(new Alimento
+                {
+                    Nome = NovoAlimento.Nome,
+                    Categoria = NovoAlimento.Categoria,
+                    Descricao = NovoAlimento.Descricao
+                });
+
+            // Limpa o formulário
+            NovoAlimento = new Alimento();
+        }
+
+        catch (Exception ex)
+
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar alimento: {ex.Message}");
+        }
+    }
+
+
+    private async Task RemoverAlimento(Alimento alimento)
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", $"Tem certeza que deseja remover {alimento.Nome}?"))
+        {
+            // remove da API
+            // await Http.DeleteAsync($"api/alimentos/{alimento.Id}");
+
+            alimentos.Remove(alimento);
+
+            StateHasChanged();
+        }
+    }
 }

@@ -124,6 +124,7 @@
     </div>
 </div>
 
+
 @code {
     private Ong ong = new Ong();
 
@@ -131,9 +132,10 @@
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("applyMasks");
+            await JSRuntime.InvokeVoidAsync("applyOngMasks");
         }
     }
+
 
     private async Task HandleValidSubmit()
     {
@@ -144,25 +146,38 @@
             ong.Telefone = RemoveMask(ong.Telefone);
             ong.CEP = RemoveMask(ong.CEP);
 
-            // Aqui você colocaria a lógica para enviar os dados para a API
+
+            // Lógica para enviar os dados para a API
             // await Http.PostAsJsonAsync("api/ongs", ong);
 
-            // Exemplo de navegação após cadastro
-            Navigation.NavigateTo("/cadastro-sucesso");
+
+            // Mostra mensagem de sucesso
+            await JSRuntime.InvokeVoidAsync("alert", "Cadastro realizado com sucesso!");
+
+
+            // Redireciona para a home
+            Navigation.NavigateTo("/");
         }
+
         catch (Exception ex)
         {
             await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar: {ex.Message}");
         }
     }
 
+
     private string RemoveMask(string value)
     {
         return value?.Replace(".", "")
+
                    .Replace("/", "")
+
                    .Replace("-", "")
+
                    .Replace("(", "")
+
                    .Replace(")", "")
+
                    .Replace(" ", "");
     }
 }
