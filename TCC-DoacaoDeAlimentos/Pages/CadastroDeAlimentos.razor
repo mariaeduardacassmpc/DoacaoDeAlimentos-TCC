@@ -1,4 +1,6 @@
 ﻿@page "/CadastroDeAlimentos"
+@inject HttpClient Http
+
 @using TCCDoacaoDeAlimentos.Models;
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
@@ -119,58 +121,26 @@
     </div>
 </div>
 
+
 @code {
     private Alimento NovoAlimento { get; set; } = new Alimento();
-    private List<Alimento> alimentos = new List<Alimento>();
-
+    private List<Alimento> alimentos;
 
     protected override async Task OnInitializedAsync()
     {
-        // Simular carregamento de dados
-        await Task.Delay(500);
-        // carrega os dados da API
-        // alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimentos");
+        alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimentos");
     }
-
 
     private async Task CadastrarAlimento()
     {
-        try
-        {
-            // envia para a API
-            // await Http.PostAsJsonAsync("api/alimentos", NovoAlimento);
-
-
-            // Adiciona à lista local
-            alimentos.Add(new Alimento
-                {
-                    Nome = NovoAlimento.Nome,
-                    Categoria = NovoAlimento.Categoria,
-                    Descricao = NovoAlimento.Descricao
-                });
-
-            // Limpa o formulário
-            NovoAlimento = new Alimento();
-        }
-
-        catch (Exception ex)
-
-        {
-            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar alimento: {ex.Message}");
-        }
+        await Http.PostAsJsonAsync("api/alimentos", NovoAlimento);
+        alimentos.Add(NovoAlimento);
+        NovoAlimento = new Alimento();
     }
-
 
     private async Task RemoverAlimento(Alimento alimento)
     {
-        if (await JSRuntime.InvokeAsync<bool>("confirm", $"Tem certeza que deseja remover {alimento.Nome}?"))
-        {
-            // remove da API
-            // await Http.DeleteAsync($"api/alimentos/{alimento.Id}");
-
-            alimentos.Remove(alimento);
-
-            StateHasChanged();
-        }
+        await Http.DeleteAsync($"api/alimentos/{alimento.Id}");
+        alimentos.Remove(alimento);
     }
 }
