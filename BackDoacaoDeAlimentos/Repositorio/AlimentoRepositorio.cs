@@ -6,49 +6,42 @@ using TCCDoacaoDeAlimentos.Shared.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
+using System.Data.Common;
 
 namespace BackDoacaoDeAlimentos.Repositorio
 {
     public class AlimentoRepositorio : IAlimentoRepositorio
     {
-        private readonly IConfiguration _configuration;
-        private readonly string _connectionString;
+        private readonly IDbConnection _db;
 
-        public AlimentoRepositorio(IConfiguration configuration)
+        public AlimentoRepositorio(IDbConnection db)
         {
-            _configuration = configuration;
-            _connectionString = _configuration.GetConnectionString("DefaultConnection");
+            _db = db;
         }
-
-        private IDbConnection Connection => new SqlConnection(_connectionString);
-
-        public async Task<IEnumerable<Alimento>> ObterTodosAlimentos()
+        public IEnumerable<Alimento> ObterTodosAlimentos()
         {
-            using var conn = Connection;
             var sql = "SELECT * FROM Alimentos";
-            return await conn.QueryAsync<Alimento>(sql);
+            return _db.Query<Alimento>(sql);
         }
 
-        public async Task<Alimento?> ObterAlimentoPorId(int id)
+        public Alimento ObterAlimentoPorId(int id)
         {
-            using var conn = Connection;
             var sql = "SELECT * FROM Alimentos WHERE Id = @Id";
-            return await conn.QueryFirstOrDefaultAsync<Alimento>(sql, new { Id = id });
+            return _db.QueryFirstOrDefault<Alimento>(sql, new { Id = id });
         }
 
-        public async Task AdicionarAlimento(Alimento alimento)
+        public Alimento GravarAlimento(Alimento alimento)
         {
-            using var conn = Connection;
             var sql = @"INSERT INTO Alimentos (Nome, Categoria, Descricao) 
-                            VALUES (@Nome, @Categoria, @Descricao)";
-            await conn.ExecuteAsync(sql, alimento);
+                    OUTPUT INSERTED.* VALUES (@Nome, @Categoria, @Descricao); 
+            ";
+            return _db.QuerySingle<Alimento>(sql, alimento);
         }
 
-        public async Task RemoverAlimento(int id)
+        public void RemoverAlimento(int id)
         {
-            using var conn = Connection;
             var sql = "DELETE FROM Alimentos WHERE Id = @Id";
-            await conn.ExecuteAsync(sql, new { Id = id });
+            _db.ExecuteAsync(sql, new { Id = id });
         }
     }
 }

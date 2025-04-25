@@ -36,7 +36,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 //builder.Services.AddScoped<IAlimentoRepositorio, AlimentoRepositorio>();
 
 var app = builder.Build();

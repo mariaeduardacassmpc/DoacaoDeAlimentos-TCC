@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using Microsoft.AspNetCore.Http.HttpResults;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Services
@@ -16,7 +17,7 @@ namespace BackDoacaoDeAlimentos.Services
             _alimentoRepositorio = alimentoRepositorio;
         }
 
-        public Task<IEnumerable<Alimento>> ObterTodosAlimentos()
+        public IEnumerable<Alimento> ObterTodosAlimentos()
         {
             try
             {
@@ -28,7 +29,7 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public Task<Alimento> ObterAlimentoPorId(int id)
+        public Alimento ObterAlimentoPorId(int id)
         {
             try
             {
@@ -44,7 +45,7 @@ namespace BackDoacaoDeAlimentos.Services
         {
             try
             {
-                _alimentoRepositorio.AdicionarAlimento(alimento);
+                _alimentoRepositorio.GravarAlimento(alimento);
                 return alimento;
             }
             catch (Exception ex)
@@ -57,7 +58,7 @@ namespace BackDoacaoDeAlimentos.Services
         {
             try
             {
-                _alimentoRepositorio.RemoverAlimento(id);
+                //_alimentoRepositorio.RemoverAlimento(id);
             }
             catch (Exception ex)
             {
