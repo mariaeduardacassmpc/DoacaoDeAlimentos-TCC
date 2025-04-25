@@ -1,16 +1,16 @@
 ﻿@page "/CadastroDeAlimentos"
 @inject HttpClient Http
-
-@using TCCDoacaoDeAlimentos.Models;
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
+@inject Blazored.Toast.Services.IToastService ToastService
+@using TCCDoacaoDeAlimentos.Shared.Models;
+
 
 <div class="min-vh-100 py-5" style="background-color: #d4edda;">
     <div class="container text-center my-5">
         <h1>Cadastro de Alimentos</h1>
         <h5>Cadastre e gerencie os tipos de alimentos aceitos para doação</h5>
     </div>
-
     <div class="container">
         <div class="row g-4">
             <div class="col-md-5">
@@ -27,7 +27,6 @@
                                 <InputText id="nome" @bind-Value="NovoAlimento.Nome" class="form-control" placeholder="Ex: Arroz Integral" />
                                 <ValidationMessage For="@(() => NovoAlimento.Nome)" />
                             </div>
-
                             <div class="mb-3">
                                 <label for="categoria" class="form-label">Categoria</label>
                                 <InputSelect id="categoria" @bind-Value="NovoAlimento.Categoria" class="form-control">
@@ -43,47 +42,29 @@
                                 </InputSelect>
                                 <ValidationMessage For="@(() => NovoAlimento.Categoria)" />
                             </div>
-
                             <div class="mb-3">
                                 <label for="descricao" class="form-label">Descrição <small class="text-muted">(opcional)</small></label>
                                 <InputTextArea id="descricao" @bind-Value="NovoAlimento.Descricao" class="form-control" placeholder="Ex: Alimento Perecível." />
                             </div>
-
-                            <button type="submit" class="btn btn-success w-100">Cadastrar Alimento</button>
+                            <button class="btn btn-success w-100" @onclick="CadastrarAlimento">Cadastrar Alimento</button>
                         </EditForm>
                     </div>
                 </div>
             </div>
-
             <div class="col-md-7">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Alimentos Cadastrados</h5>
 
                         @if (alimentos == null)
-
-
-
                         {
                             <p>Carregando...</p>
                         }
-
-
-
                         else if (!alimentos.Any())
-
-
-
                         {
                             <p class="text-muted">Nenhum alimento cadastrado ainda. Adicione alimentos usando o formulário ao lado.</p>
                         }
-
-
-
                         else
-
-
-
                         {
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped">
@@ -128,19 +109,59 @@
 
     protected override async Task OnInitializedAsync()
     {
-        alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimentos");
+        try
+        {
+            alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimento");
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError("Erro ao carregar alimentos: " + ex.Message);
+        }
     }
 
     private async Task CadastrarAlimento()
     {
-        await Http.PostAsJsonAsync("api/alimentos", NovoAlimento);
-        alimentos.Add(NovoAlimento);
-        NovoAlimento = new Alimento();
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/alimento", NovoAlimento);
+            if (response.IsSuccessStatusCode)
+            {
+                var alimentoRetornado = await response.Content.ReadFromJsonAsync<Alimento>();
+                alimentos.Add(alimentoRetornado ?? NovoAlimento);
+                NovoAlimento = new Alimento();
+                ToastService.ShowSuccess("Alimento cadastrado com sucesso!");
+            }
+            else
+            {
+                var erro = await response.Content.ReadAsStringAsync();
+                ToastService.ShowError("Erro ao cadastrar: " + erro);
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError("Erro inesperado: " + ex.Message);
+        }
     }
 
     private async Task RemoverAlimento(Alimento alimento)
     {
-        await Http.DeleteAsync($"api/alimentos/{alimento.Id}");
-        alimentos.Remove(alimento);
+        try
+        {
+            var response = await Http.DeleteAsync($"api/alimento/{alimento.Id}");
+            if (response.IsSuccessStatusCode)
+            {
+                alimentos.Remove(alimento);
+                ToastService.ShowSuccess("Alimento removido com sucesso!");
+            }
+            else
+            {
+                var erro = await response.Content.ReadAsStringAsync();
+                ToastService.ShowError("Erro ao remover: " + erro);
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError("Erro inesperado: " + ex.Message);
+        }
     }
 }

@@ -32,7 +32,7 @@
                                     {
                                         <tr>
                                             <td>@doacao.IdDoacao</td>
-                                            <td>@ObterNomeOng(doacao.IdOng)</td>
+                                            @* <td>@ObterNomeOng(doacao.IdOng)</td> *@
                                             <td>@doacao.DataDoacao.ToString("dd/MM/yyyy")</td>
                                             <td>
                                                 <ul class="list-unstyled">
@@ -82,62 +82,15 @@
 
     protected override void OnInitialized()
     {
-        // Simula dados salvos (na prática, você pode querer injetar um serviço)
-        CarregarDadosMockados();
     }
 
-    private void CarregarDadosMockados()
-    {
-        // ONGs mockadas
-        Ongs = new List<Ong>
-        {
-            new Ong { IdOng = 1, RazaoSocial = "ONG Ajuda Comunitária" },
-            new Ong { IdOng = 2, RazaoSocial = "ONG Alimento para Todos" }
-        };
+    
+    
 
-        // Alimentos mockados
-        Alimentos = new List<Alimento>
-        {
-            new Alimento { Id = 1, Nome = "Arroz", Categoria = "Grãos" },
-            new Alimento { Id = 2, Nome = "Feijão", Categoria = "Grãos" },
-            new Alimento { Id = 3, Nome = "Óleo", Categoria = "Condimentos" },
-            new Alimento { Id = 4, Nome = "Leite", Categoria = "Laticínios" }
-        };
-
-        // Exemplo de doações salvas (normalmente viria de um serviço)
-        DoacoesSalvas = new List<Doacao>
-        {
-            new Doacao
-            {
-                IdDoacao = 1,
-                IdOng = 1,
-                DataDoacao = DateTime.Now.AddDays(-2),
-                Status = StatusDoacao.Finalizada,
-                Alimentos = new List<AlimentoDoacao>
-                {
-                    new AlimentoDoacao { AlimentoId = 1, Quantidade = 5, UnidadeMedida = "Kg" },
-                    new AlimentoDoacao { AlimentoId = 2, Quantidade = 3, UnidadeMedida = "Kg" }
-                }
-            },
-            new Doacao
-            {
-                IdDoacao = 2,
-                IdOng = 2,
-                DataDoacao = DateTime.Now.AddDays(-1),
-                Status = StatusDoacao.Pendente,
-                Alimentos = new List<AlimentoDoacao>
-                {
-                    new AlimentoDoacao { AlimentoId = 3, Quantidade = 2, UnidadeMedida = "L" },
-                    new AlimentoDoacao { AlimentoId = 4, Quantidade = 10, UnidadeMedida = "Unidades" }
-                }
-            }
-        };
-    }
-
-    private string ObterNomeOng(int idOng)
-    {
-        return Ongs.FirstOrDefault(o => o.IdOng == idOng)?.RazaoSocial ?? "ONG não encontrada";
-    }
+    // private string ObterNomeOng(int idOng)
+    // {
+    //     return Ongs.FirstOrDefault(o => o.IdOng == idOng)?.RazaoSocial ?? "ONG não encontrada";
+    // }
 
     private string ObterNomeAlimento(int idAlimento)
     {

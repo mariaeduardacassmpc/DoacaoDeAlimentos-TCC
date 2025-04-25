@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TCCDoacaoDeAlimentos.
+using TCCDoacaoDeAlimentos.Shared.Models;
 
-namespace TCCDoacaoDeAlimentos.API.Repositories
+namespace BackDoacaoDeAlimentos.Interfaces.Repositorios;
+
+public interface IAlimentoRepositorio
 {
-    public interface IAlimentoRepositorio
-    {
-        Task<IEnumerable<Alimento>> ObterTodosAlimentos();
-        Task<Alimento?> ObterAlimentoPorId(int id);
-        Task AdicionarAlimento(Alimento alimento);
-        Task RemoverAlimento(int id);
-    }
+    Task<IEnumerable<Alimento>> ObterTodosAlimentos();
+    Task<Alimento> ObterAlimentoPorId(int id);
+    Task AdicionarAlimento(Alimento alimento);
+    Task RemoverAlimento(int id);
 }

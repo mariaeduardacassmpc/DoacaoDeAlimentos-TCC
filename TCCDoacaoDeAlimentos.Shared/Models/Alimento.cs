@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TCCDoacaoDeAlimentos.Shared
+namespace TCCDoacaoDeAlimentos.Shared.Models
 {
     public class Alimento
     {

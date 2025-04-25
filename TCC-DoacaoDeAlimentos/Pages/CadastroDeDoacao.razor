@@ -22,26 +22,26 @@
                             </div>
                         }
 
-                        <EditForm Model="@NovaDoacao" OnValidSubmit="@SalvarDoacao">
-                            <DataAnnotationsValidator />
-                            <ValidationSummary />
+                        @* <EditForm Model="@NovaDoacao" OnValidSubmit="@SalvarDoacao"> *@
+                        @*     <DataAnnotationsValidator /> *@
+                        @*     <ValidationSummary /> *@
 
-                            <hr />
+                        @*     <hr /> *@
 
-                            <h2 class="border-bottom pb-2 mb-4 mt-5">Informações da Doação</h2>
+                        @*     <h2 class="border-bottom pb-2 mb-4 mt-5">Informações da Doação</h2> *@
 
-                            <div class="mb-3">
-                                <label for="ong" class="form-label">ONG Beneficiada</label>
-                                <InputSelect @bind-Value="NovaDoacao.IdOng" class="form-control" id="ong">
-                                    <option value="">Selecione a ONG...</option>
-                                    @foreach (var ong in Ongs)
+                        @*     <div class="mb-3"> *@
+                        @*         <label for="ong" class="form-label">ONG Beneficiada</label> *@
+                        @*         <InputSelect @bind-Value="NovaDoacao.IdOng" class="form-control" id="ong"> *@
+                        @*             <option value="">Selecione a ONG...</option> *@
+                        @*             @foreach (var ong in Ongs) *@
 
-                                    {
-                                        <option value="@ong.IdOng">@ong.RazaoSocial</option>
-                                    }
-                                </InputSelect>
-                                <ValidationMessage For="@(() => NovaDoacao.IdOng)" />
-                            </div>
+                        @*             { *@
+                        @*                 <option value="@ong.IdOng">@ong.RazaoSocial</option> *@
+                        @*             } *@
+                        @*         </InputSelect> *@
+                        @*         <ValidationMessage For="@(() => NovaDoacao.IdOng)" /> *@
+                        @*     </div> *@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -109,7 +109,7 @@
                                     Salvar Doação
                                 </button>
                             </div>
-                        </EditForm>
+                        @* </EditForm> *@
                     </div>
                 </div>
             </div>
@@ -130,17 +130,16 @@
 
     private string mensagemErro = string.Empty;
 
-    // Lista estática para armazenar as doações (substitua por um serviço quando for usar API)
     private static List<Doacao> DoacoesSalvas { get; set; } = new();
 
     protected override void OnInitialized()
     {
         // Dados mockados
-        Ongs = new List<Ong>
-        {
-            new Ong { IdOng = 1, RazaoSocial = "ONG Ajuda Comunitária" },
-            new Ong { IdOng = 2, RazaoSocial = "ONG Alimento para Todos" }
-        };
+        // Ongs = new List<Ong>
+        // {
+        //     new Ong { IdOng = 1, RazaoSocial = "ONG Ajuda Comunitária" },
+        //     new Ong { IdOng = 2, RazaoSocial = "ONG Alimento para Todos" }
+        // };
 
         Alimentos = new List<Alimento>
         {

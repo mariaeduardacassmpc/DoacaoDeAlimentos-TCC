@@ -1,33 +1,68 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using TCCDoacaoDeAlimentos.API.Repositories;
-using TCCDoacaoDeAlimentos.Shared;
+using BackDoacaoDeAlimentos.Interfaces.Repositorios;
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using TCCDoacaoDeAlimentos.Shared.Models;
 
-namespace TCCDoacaoDeAlimentos.API.Services
+namespace BackDoacaoDeAlimentos.Services
 {
     public class AlimentoService : IAlimentoService
     {
-        private readonly IAlimentoRepository _repository;
+        private readonly IAlimentoRepositorio _alimentoRepositorio;
 
-        public AlimentoService(IAlimentoRepository repository)
+        public AlimentoService(IAlimentoRepositorio alimentoRepositorio)
         {
-            _repository = repository;
+            _alimentoRepositorio = alimentoRepositorio;
         }
 
-        public async Task<IEnumerable<Alimento>> GetAllAsync()
+        public Task<IEnumerable<Alimento>> ObterTodosAlimentos()
         {
-            return await _repository.GetAllAsync();
+            try
+            {
+                return _alimentoRepositorio.ObterTodosAlimentos();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao obter todos os alimentos.", ex);
+            }
         }
 
-        public async Task AddAsync(Alimento alimento)
+        public Task<Alimento> ObterAlimentoPorId(int id)
         {
-            // Aqui pode incluir regras de negócio antes de adicionar
-            await _repository.AddAsync(alimento);
+            try
+            {
+                return _alimentoRepositorio.ObterAlimentoPorId(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter o alimento com ID {id}.", ex);
+            }
         }
 
-        public async Task RemoveAsync(int id)
+        public Alimento AdicionarAlimento(Alimento alimento)
         {
-            await _repository.RemoveAsync(id);
+            try
+            {
+                _alimentoRepositorio.AdicionarAlimento(alimento);
+                return alimento;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao adicionar o alimento.", ex);
+            }
+        }
+
+        public void RemoverAlimento(int id)
+        {
+            try
+            {
+                _alimentoRepositorio.RemoverAlimento(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao remover o alimento com ID {id}.", ex);
+            }
         }
     }
 }

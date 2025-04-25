@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TCCDoacaoDeAlimentos.Shared;
+using TCCDoacaoDeAlimentos.Shared.Models;
 
-namespace TCCDoacaoDeAlimentos.API.Services
+namespace BackDoacaoDeAlimentos.Interfaces.Servicos
 {
     public interface IAlimentoService
     {
-        Task<IEnumerable<Alimento>> GetAllAsync();
-        Task AddAsync(Alimento alimento);
-        Task RemoveAsync(int id);
+        Task<IEnumerable<Alimento>> ObterTodosAlimentos();
+        Task<Alimento> ObterAlimentoPorId(int id);
+        Alimento AdicionarAlimento(Alimento alimento);
+        void RemoverAlimento(int id);
     }
 }

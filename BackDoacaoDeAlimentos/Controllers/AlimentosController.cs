@@ -1,38 +1,57 @@
-﻿using BackDoacaoDeAlimentos.Models;
+﻿using TCCDoacaoDeAlimentos.Shared.Models;   
 using Microsoft.AspNetCore.Mvc;
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
 
 namespace BackDoacaoDeAlimentos.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/alimento")]
     public class AlimentosController : ControllerBase
     {
-        private static List<Alimento> _alimentos = new();
+        // Campo privado e readonly para garantir que a dependência seja atribuída no construtor e não possa ser alterada depois
+        private readonly IAlimentoService _alimentoService;
 
-        [HttpGet]
-        public ActionResult<List<Alimento>> Get()
+        public AlimentosController(IAlimentoService alimentoService)
         {
-            return Ok(_alimentos);
+            _alimentoService = alimentoService;
         }
 
-        [HttpPost]
-        public ActionResult Post(Alimento alimento)
+        [HttpGet("obterAlimentos")]
+        public IActionResult ObterAlimentos()
         {
-            alimento.Id = _alimentos.Count > 0 ? _alimentos.Max(a => a.Id) + 1 : 1;
-            _alimentos.Add(alimento);
+            var alimento = _alimentoService.ObterTodosAlimentos();
+            if (alimento == null)
+                return NotFound();
+
+            return Ok(alimento);
+        }
+
+        [HttpGet("obterAlimento/{id}")]
+        public IActionResult ObterAlimento(int id)
+        {
+            var alimento = _alimentoService.ObterAlimentoPorId(id);
+            if (alimento == null)
+                return NotFound();
+
+            return Ok(alimento);
+        }
+
+        [HttpPost("gravar")]
+        public IActionResult GravarAlimento(Alimento alimento)
+        {
+            _alimentoService.AdicionarAlimento(alimento);
             return Ok();
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public ActionResult RemoverAlimento(int id)
         {
-            var alimento = _alimentos.FirstOrDefault(a => a.Id == id);
+            var alimento = _alimentoService.ObterAlimentoPorId(id);
             if (alimento == null)
                 return NotFound();
 
-            _alimentos.Remove(alimento);
+            _alimentoService.RemoverAlimento(id);
             return NoContent();
         }
-    }
-
+    } 
 }
