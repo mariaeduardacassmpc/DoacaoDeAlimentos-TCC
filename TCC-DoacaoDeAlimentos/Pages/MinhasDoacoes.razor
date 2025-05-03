@@ -1,5 +1,5 @@
 ﻿@page "/MinhasDoacoes"
-@using TCCDoacaoDeAlimentos.Models
+@using TCCDoacaoDeAlimentos.Shared.Models
 @inject NavigationManager Navigation
 
 <div class="min-vh-100" style="background-color: #d4edda;">
@@ -77,7 +77,7 @@
 
 @code {
     private List<Doacao> DoacoesSalvas { get; set; } = new();
-    private List<Ong> Ongs { get; set; } = new();
+    private List<CadastroDeOng> Ongs { get; set; } = new();
     private List<Alimento> Alimentos { get; set; } = new();
 
     protected override void OnInitialized()

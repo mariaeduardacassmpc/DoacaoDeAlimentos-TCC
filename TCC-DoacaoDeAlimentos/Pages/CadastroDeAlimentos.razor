@@ -18,7 +18,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Adicionar Novo Alimento</h5>
 
-                        <EditForm Model="@NovoAlimento" OnValidSubmit="@CadastrarAlimento">
+                        <EditForm Model="@NovoAlimento" OnValidSubmit="@CadastrarAlimento" >
                             <DataAnnotationsValidator />
                             <ValidationSummary />
 
@@ -78,9 +78,6 @@
                                     </thead>
                                     <tbody>
                                         @foreach (var alimento in alimentos)
-
-
-
                                         {
                                             <tr>
                                                 <td>@alimento.Nome</td>
@@ -106,6 +103,7 @@
 @code {
     private Alimento NovoAlimento { get; set; } = new Alimento();
     private List<Alimento> alimentos;
+    private string Mensagem = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -130,6 +128,9 @@
                 alimentos.Add(alimentoRetornado ?? NovoAlimento);
                 NovoAlimento = new Alimento();
                 ToastService.ShowSuccess("Alimento cadastrado com sucesso!");
+
+                Mensagem = "Dados do formulario salvos.";
+
             }
             else
             {
@@ -164,4 +165,5 @@
             ToastService.ShowError("Erro inesperado: " + ex.Message);
         }
     }
+
 }

@@ -1,5 +1,5 @@
 ﻿@page "/CadastroDeDoacao"
-@using TCCDoacaoDeAlimentos.Models
+@using TCCDoacaoDeAlimentos.Shared.Models
 @inject NavigationManager Navigation
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
@@ -122,7 +122,7 @@
 
     private List<AlimentoDoacao> Itens { get; set; } = new();
 
-    private List<Ong> Ongs { get; set; } = new();
+    private List<CadastroDeDoador> Ongs { get; set; } = new();
 
     private List<Alimento> Alimentos { get; set; } = new();
 
@@ -132,8 +132,8 @@
 
     private static List<Doacao> DoacoesSalvas { get; set; } = new();
 
-    protected override void OnInitialized()
-    {
+    // protected override void OnInitialized()
+    // {
         // Dados mockados
         // Ongs = new List<Ong>
         // {
@@ -141,22 +141,22 @@
         //     new Ong { IdOng = 2, RazaoSocial = "ONG Alimento para Todos" }
         // };
 
-        Alimentos = new List<Alimento>
-        {
-            new Alimento { Id = 1, Nome = "Arroz", Categoria = "Grãos" },
-            new Alimento { Id = 2, Nome = "Feijão", Categoria = "Grãos" },
-            new Alimento { Id = 3, Nome = "Óleo", Categoria = "Condimentos" },
-            new Alimento { Id = 4, Nome = "Leite", Categoria = "Laticínios" }
-        };
+    //     Alimentos = new List<Alimento>
+    //     {
+    //         new Alimento { Id = 1, Nome = "Arroz", Categoria = "Grãos" },
+    //         new Alimento { Id = 2, Nome = "Feijão", Categoria = "Grãos" },
+    //         new Alimento { Id = 3, Nome = "Óleo", Categoria = "Condimentos" },
+    //         new Alimento { Id = 4, Nome = "Leite", Categoria = "Laticínios" }
+    //     };
 
-        NovaDoacao.Status = StatusDoacao.Pendente;
-        NovaDoacao.DataDoacao = DateTime.Today;
-    }
+    //     NovaDoacao.Status = StatusDoacao.Pendente;
+    //     NovaDoacao.DataDoacao = DateTime.Today;
+    // }
 
 
     private void AdicionarItem()
     {
-        Itens.Add(new AlimentoDoacao { Quantidade = 1 }); // Quantidade padrão = 1
+        Itens.Add(new AlimentoDoacao { Quantidade = 1 }); 
     }
 
 
@@ -189,7 +189,7 @@
             NovaDoacao.IdDoacao = DoacoesSalvas.Count + 1;
 
             // Associa os itens à doação (cria nova lista para evitar referência)
-            NovaDoacao.Alimentos = Itens.ToList();
+            // NovaDoacao.Alimentos = Itens.ToList();
 
             // Salva na lista estática
             DoacoesSalvas.Add(NovaDoacao);
@@ -217,8 +217,8 @@
 
 
     // Método para acessar as doações salvas (usado pela página MinhasDoacoes)
-    public static List<Doacao> ObterDoacoesSalvas()
-    {
-        return DoacoesSalvas;
-    }
+    // public static List<Doacao> ObterDoacoesSalvas()
+    // {
+    //     return DoacoesSalvas;
+    // }
 }

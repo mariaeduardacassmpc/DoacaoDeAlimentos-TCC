@@ -58,7 +58,7 @@ namespace BackDoacaoDeAlimentos.Services
         {
             try
             {
-                //_alimentoRepositorio.RemoverAlimento(id);
+                _alimentoRepositorio.RemoverAlimento(id);
             }
             catch (Exception ex)
             {

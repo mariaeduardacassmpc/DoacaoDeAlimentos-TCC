@@ -1,9 +1,12 @@
-using System.Data;
+﻿using System.Data;
 using BackDoacaoDeAlimentos.Services;
 using Microsoft.Data.SqlClient;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using BackDoacaoDeAlimentos.Repositorio;
+using Blazored.Toast;
+using BackDoacaoDeAlimentos.Servicos;
+using BackDoacaoDeAlimentos.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,10 @@ var configuration = builder.Configuration;
 // Add services to the container.
 builder.Services.AddScoped<IAlimentoRepositorio, AlimentoRepositorio>();
 builder.Services.AddScoped<IAlimentoService, AlimentoService>();
+builder.Services.AddScoped<IEntidadeService, EntidadeService>(); 
+builder.Services.AddScoped<IEntidadeRepositorio, EntidadeRepositorio>(); // ⬅️ Adicione esta linha
+
+builder.Services.AddBlazoredToast();
 
 builder.Services.AddControllers();
 
@@ -26,11 +33,24 @@ builder.Services.AddScoped<IDbConnection>(sp =>
     return new SqlConnection(connectionString);
 });
 
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirFrontend", policy =>
     {
-        policy.WithOrigins("https://localhost:7080") 
+        policy.WithOrigins("https://localhost:7080")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+//builder.Services.AddScoped<IAlimentoRepositorio, AlimentoRepositorio>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirFrontend", policy =>
+    {
+        policy.WithOrigins("https://localhost:7080")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

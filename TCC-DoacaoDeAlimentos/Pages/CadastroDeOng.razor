@@ -34,12 +34,12 @@
                             <div class="mb-3">
                                 <label for="cnpj" class="form-label">CNPJ *</label>
                                 <input type="text"
-                                       @bind="ong.CNPJ"
+                                       @bind="ong.CNPJ_CPF"
                                        @bind:event="oninput"
                                        class="form-control"
                                        id="cnpj"
                                        placeholder="00.000.000/0000-00" />
-                                <ValidationMessage For="@(() => ong.CNPJ)" />
+                                <ValidationMessage For="@(() => ong.CNPJ_CPF)" />
                             </div>
 
                             <div class="row">
@@ -126,7 +126,7 @@
 
 
 @code {
-    private Ong ong = new Ong();
+    private Entidade ong = new Entidade();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -142,7 +142,7 @@
         try
         {
             //remove máscaras antes de enviar
-            ong.CNPJ = RemoveMask(ong.CNPJ);
+            ong.CNPJ_CPF = RemoveMask(ong.CNPJ_CPF);
             ong.Telefone = RemoveMask(ong.Telefone);
             ong.CEP = RemoveMask(ong.CEP);
 

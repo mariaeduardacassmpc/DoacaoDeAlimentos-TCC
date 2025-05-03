@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Interfaces.Repositorios;
-
 public interface IAlimentoRepositorio
 {
     IEnumerable<Alimento> ObterTodosAlimentos();
