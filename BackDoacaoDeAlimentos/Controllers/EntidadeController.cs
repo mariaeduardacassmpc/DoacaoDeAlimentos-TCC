@@ -6,7 +6,7 @@ using TCCDoacaoDeAlimentos.Shared.Models;
 namespace BackDoacaoDeAlimentos.Controllers
 {
     [ApiController]
-    [Route("api/Ong")]  
+    [Route("api/Entidade")]  
     public class EntidadeController : ControllerBase
     {
         private readonly IEntidadeService _entidadeService;
@@ -16,14 +16,14 @@ namespace BackDoacaoDeAlimentos.Controllers
             _entidadeService = entidadeService;
         }
 
-        [HttpGet]
+        [HttpGet("obterTodas")]
         public async Task<IActionResult> ObterTodas()
         {
             var ongs = await _entidadeService.ObterTodasOngs();
             return Ok(ongs);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("obterTodasPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
             var ong = await _entidadeService.ObterOngPorId(id);
@@ -33,7 +33,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             return Ok(ong);
         }
 
-        [HttpPost]
+        [HttpPost("adicionar")]
         public async Task<IActionResult> Adicionar([FromBody] Entidade ong)
         {
             await _entidadeService.AdicionarOng(ong);
@@ -41,29 +41,29 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> Atualizar(int id, [FromBody] Ong ong)
-        //{
-        //    if (id != ong.Id)
-        //        return BadRequest("O ID da URL não bate com o ID do corpo.");
+        [HttpPut("atualizar/{id}")]
+        public async Task<IActionResult> Atualizar(int id, [FromBody] Entidade ong)
+        {
+            if (id != ong.Id)
+                return BadRequest("O ID da URL não bate com o ID do corpo.");
 
-        //    var ongExistente = await _ongService.ObterOngPorId(id);
-        //    if (ongExistente == null)
-        //        return NotFound();
+            var ongExistente = await _entidadeService.ObterOngPorId(id);
+            if (ongExistente == null)
+                return NotFound();
 
-        //    await _ongService.AtualizarOng(ong);
-        //    return NoContent();
-        //}
+            await _entidadeService.AtualizarOng(ong);
+            return NoContent();
+        }
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Deletar(int id)
-        //{
-        //    var ong = await _ongService.ObterOngPorId(id);
-        //    if (ong == null)
-        //        return NotFound();
+        [HttpDelete("deletar{id}")]
+        public async Task<IActionResult> Deletar(int id)
+        {
+            var ong = await _entidadeService.ObterOngPorId(id);
+            if (ong == null)
+                return NotFound();
 
-        //    await _ongService.DeletarOng(id);
-        //    return NoContent();
-        //}
+            await _entidadeService.DeletarOng(id);
+            return NoContent();
+        }
     }
 }

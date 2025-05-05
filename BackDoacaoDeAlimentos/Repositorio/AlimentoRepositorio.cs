@@ -7,6 +7,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using System.Data.Common;
+using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Repositorio
 {
@@ -18,30 +19,37 @@ namespace BackDoacaoDeAlimentos.Repositorio
         {
             _db = db;
         }
-        public IEnumerable<Alimento> ObterTodosAlimentos()
+
+        public async Task<IEnumerable<Alimento>> ObterTodosAlimentos()
         {
-            var sql = "SELECT * FROM Alimentos";
-            return _db.Query<Alimento>(sql);
+            var sql = "SELECT * FROM Alimento";
+            return await _db.QueryAsync<Alimento>(sql);
         }
 
-        public Alimento ObterAlimentoPorId(int id)
+        public async Task<Alimento> ObterAlimentoPorId(int id)
         {
-            var sql = "SELECT * FROM Alimentos WHERE Id = @Id";
-            return _db.QueryFirstOrDefault<Alimento>(sql, new { Id = id });
+            var sql = "SELECT * FROM Alimento WHERE Id = @Id";
+            return await _db.QueryFirstOrDefaultAsync<Alimento>(sql, new { Id = id });
         }
 
-        public Alimento GravarAlimento(Alimento alimento)
+        public async Task AdicionarAlimento(Alimento alimento)
         {
-            var sql = @"INSERT INTO Alimentos (Nome, Categoria, Descricao) 
+            var sql = @"INSERT INTO Alimento (Nome, Categoria, Descricao) 
                     OUTPUT INSERTED.* VALUES (@Nome, @Categoria, @Descricao); 
             ";
-            return _db.QuerySingle<Alimento>(sql, alimento);
+            await _db.QuerySingleAsync<Alimento>(sql, alimento);
         }
 
-        public void RemoverAlimento(int id)
+        public async Task RemoverAlimento(int id)
         {
-            var sql = "DELETE FROM Alimentos WHERE Id = @Id";
+            var sql = "DELETE FROM Alimento WHERE Id = @Id";
             _db.ExecuteAsync(sql, new { Id = id });
+        }
+
+        public async Task AtualizarAlimento(Alimento alimento)
+        {
+            var sql = "UPDATE CadastroEntidade SET Nome = @Nome, Cnpj = @Cnpj, Telefone = @Telefone, Email = @Email, Endereco = @Endereco WHERE Id = @Id";
+            await _db.QuerySingleAsync<Alimento>(sql, alimento);
         }
     }
 }
