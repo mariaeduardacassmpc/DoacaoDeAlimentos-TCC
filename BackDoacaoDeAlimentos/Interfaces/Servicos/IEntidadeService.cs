@@ -5,10 +5,10 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
 {
     public interface IEntidadeService
     {
-        Task AdicionarOng(Entidade ong);
-        Task<Entidade> ObterOngPorId(int id);
-        Task<IEnumerable<Entidade>> ObterTodasOngs();
-        Task AtualizarOng(Entidade ong);
-        Task DeletarOng(int id);
+        Task AdicionarEntidade(Entidade entidade);
+        Task<Entidade> ObterEntidadePorId(int id);
+        Task<IEnumerable<Entidade>> ObterTodasEntidades();
+        Task AtualizarEntidade(Entidade entidade);
+        Task DeletarEntidade(int id);
     }
 }

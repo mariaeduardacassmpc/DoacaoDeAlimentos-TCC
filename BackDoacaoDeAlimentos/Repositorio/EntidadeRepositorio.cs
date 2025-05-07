@@ -15,35 +15,36 @@ namespace BackDoacaoDeAlimentos.Repositorios
             _connection = connection;
         }
 
-        public async Task AdicionarOng(Entidade ong)
+        public async Task AdicionarEntidade(Entidade entidade)
         {
             var sql = @"
                 INSERT INTO CadastroEntidade
                 (TipoEntidade, NomeFantasia, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel)
                 VALUES (@Tipo, @NomeFantasia, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel);
             "; 
-            await _connection.ExecuteAsync(sql, ong);
+            await _connection.ExecuteAsync(sql, entidade);
         }
 
-        public async Task<Entidade> ObterOngPorId(int id)
+        public async Task<Entidade> ObterEntidadePorId(int id)
         {
             var sql = "SELECT * FROM CadastroEntidade WHERE Id = @Id";
-            return await _connection.QueryFirstOrDefaultAsync<Entidade>(sql, new { Id = id });
+            return await _connection.QueryFirstOrDefaultAsync<Entidade>(sql, new { Id = id })
+                   ?? throw new InvalidOperationException("Entidade não encontrada.");
         }
 
-        public async Task<IEnumerable<Entidade>> ObterTodasOngs()
+        public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
         {
             var sql = "SELECT * FROM CadastroEntidade";
             return await _connection.QueryAsync<Entidade>(sql);
         }
 
-        public async Task AtualizarOng(Entidade ong)
+        public async Task AtualizarEntidade(Entidade entidade)
         {
             var sql = "UPDATE CadastroEntidade SET Nome = @Nome, Cnpj = @Cnpj, Telefone = @Telefone, Email = @Email, Endereco = @Endereco WHERE Id = @Id";
-            await _connection.ExecuteAsync(sql, ong);
+            await _connection.ExecuteAsync(sql, entidade);
         }
 
-        public async Task DeletarOng(int id)
+        public async Task DeletarEntidade(int id)
         {
             var sql = "DELETE FROM CadastroEntidade WHERE Id = @Id";
             await _connection.ExecuteAsync(sql, new { Id = id });

@@ -9,34 +9,34 @@ namespace BackDoacaoDeAlimentos.Servicos
     {
         private readonly IEntidadeRepositorio _entidadeRepositorio;
 
-        public EntidadeService(IEntidadeRepositorio ongRepositorio)
+        public EntidadeService(IEntidadeRepositorio entidadeRepositorio)
         {
-            _entidadeRepositorio = ongRepositorio;
+            _entidadeRepositorio = entidadeRepositorio;
         }
 
-        public async Task AdicionarOng(Entidade ong)
+        public async Task AdicionarEntidade(Entidade entidade)
         {
-            await _entidadeRepositorio.AdicionarOng(ong);
+            await _entidadeRepositorio.AdicionarEntidade(entidade);
         }
 
-        public async Task<Entidade> ObterOngPorId(int id)
+        public async Task<Entidade> ObterEntidadePorId(int id)
         {
-           return await _entidadeRepositorio.ObterOngPorId(id);
+           return await _entidadeRepositorio.ObterEntidadePorId(id);
         }
 
-        public async Task<IEnumerable<Entidade>> ObterTodasOngs()
+        public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
         {
-            return await _entidadeRepositorio.ObterTodasOngs();
+            return await _entidadeRepositorio.ObterTodasEntidades();
         }
 
-        public async Task AtualizarOng(Entidade ong)
+        public async Task AtualizarEntidade(Entidade entidade)
         {
-            await _entidadeRepositorio.AtualizarOng(ong);
+            await _entidadeRepositorio.AtualizarEntidade(entidade);
         }
 
-        public async Task DeletarOng(int id)
+        public async Task DeletarEntidade(int id)
         {
-            await _entidadeRepositorio.DeletarOng(id);
+            await _entidadeRepositorio.DeletarEntidade(id);
         }
     }
 }
