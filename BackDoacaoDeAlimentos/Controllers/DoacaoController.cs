@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Controllers
@@ -16,48 +17,56 @@ namespace BackDoacaoDeAlimentos.Controllers
             _doacaoService = doacaoService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Doacao>>> ObterTodas()
+        [HttpGet("obterTodas")]
+        public async Task<IActionResult> ObterTodas()
         {
-            var doacoes = await _doacaoService.ObteerTodasDoacoes();
+            var doacoes = await _doacaoService.ObterTodasDoacoes();
+            if (doacoes == null)
+                return NotFound();
+
             return Ok(doacoes);
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Doacao>> ObterPorId(int id)
-        //{
-        //    var doacao = await _doacaoService.(id);
-        //    if (doacao == null)
-        //        return NotFound();
+        [HttpGet("obterTodasPorId/{id}")]
+        public async Task<IActionResult> ObterPorId(int id)
+        {
+            var doacao = await _doacaoService.ObterDoacaoPorId(id);
+            if (doacao == null)
+                return NotFound();
 
-        //    return Ok(doacao);
-        //}
+            return Ok(doacao);
+        }
 
-        //[HttpPost]
-        //public async Task<ActionResult> Criar([FromBody] CriarDoacaoDto dto)
-        //{
-        //    var id = await _doacaoService.CriarAsync(dto);
-        //    return CreatedAtAction(nameof(ObterPorId), new { id }, null);
-        //}
+        [HttpPost("adicionar")]
+        public async Task<IActionResult> Adicionar([FromBody] Doacao doacao)
+        {
+            await _doacaoService.AdicionarDoacao(doacao);
+            return CreatedAtAction(nameof(Adicionar), new { id = doacao.Id }, doacao);
+        }
 
-        //[HttpPut("{id}")]
-        //public async Task<ActionResult> Atualizar(int id, [FromBody] AtualizarDoacao dto)
-        //{
-        //    var sucesso = await _doacaoService.Atualizar(id, dto);
-        //    if (!sucesso)
-        //        return NotFound();
+        [HttpPut("atualizar/{id}")]
+        public async Task<IActionResult> Atualizar(int id, [FromBody] Doacao doacao)
+        {
+            if (id != doacao.Id)
+                return BadRequest("O ID da URL não bate com o ID do corpo.");
 
-        //    return NoContent();
-        //}
+            var doacaoExistente = await _doacaoService.ObterDoacaoPorId(id);
+            if (doacaoExistente == null)
+                return NotFound();
 
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult> Deletar(int id)
-        //{
-        //    var sucesso = await _doacaoService.DeletarAsync(id);
-        //    if (!sucesso)
-        //        return NotFound();
+            await _doacaoService.AtualizarDoacao(doacao);
+            return NoContent();
+        }
 
-        //    return NoContent();
-        //}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Deletar(int id)
+        {
+            var doacao = await _doacaoService.ObterDoacaoPorId(id);
+            if (doacao == null)
+                return NotFound();
+
+            await _doacaoService.DeletarDoacao(id);
+            return NoContent();
+        }
     }
 }

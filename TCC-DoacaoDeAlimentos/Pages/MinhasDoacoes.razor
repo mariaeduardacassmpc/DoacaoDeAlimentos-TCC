@@ -31,7 +31,7 @@
                                     @foreach (var doacao in DoacoesSalvas.OrderByDescending(d => d.DataDoacao))
                                     {
                                         <tr>
-                                            <td>@doacao.IdDoacao</td>
+                                            <td>@doacao.Id</td>
                                             @* <td>@ObterNomeOng(doacao.IdOng)</td> *@
                                             <td>@doacao.DataDoacao.ToString("dd/MM/yyyy")</td>
                                             <td>
@@ -52,7 +52,7 @@
                                             </td>
                                             <td>
                                                 <button class="btn btn-sm btn-outline-info"
-                                                        @onclick="() => VerDetalhes(doacao.IdDoacao)">
+                                                        @onclick="() => VerDetalhes(doacao.Id)">
                                                     Detalhes
                                                 </button>
                                             </td>

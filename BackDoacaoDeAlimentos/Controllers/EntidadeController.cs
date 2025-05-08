@@ -19,50 +19,52 @@ namespace BackDoacaoDeAlimentos.Controllers
         [HttpGet("obterTodas")]
         public async Task<IActionResult> ObterTodas()
         {
-            var ongs = await _entidadeService.ObterTodasEntidades();
-            return Ok(ongs);
+            var entidades = await _entidadeService.ObterTodasEntidades();
+            if (entidades == null)
+                return NotFound();
+
+            return Ok(entidades);
         }
 
         [HttpGet("obterTodasPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
-            var ong = await _entidadeService.ObterEntidadePorId(id);
-            if (ong == null)
+            var entidade = await _entidadeService.ObterEntidadePorId(id);
+            if (entidade == null)
                 return NotFound();
 
-            return Ok(ong);
+            return Ok(entidade);
         }
 
         [HttpPost("adicionar")]
-        public async Task<IActionResult> Adicionar([FromBody] Entidade ong)
+        public async Task<IActionResult> Adicionar([FromBody] Entidade entidade)
         {
-            await _entidadeService.AdicionarEntidade(ong);
-            return CreatedAtAction(nameof(Adicionar), new { id = ong.Id }, ong);
+            await _entidadeService.AdicionarEntidade(entidade);
+            return CreatedAtAction(nameof(Adicionar), new { id = entidade.Id }, entidade);
         }
 
-
         [HttpPut("atualizar/{id}")]
-        public async Task<IActionResult> Atualizar(int id, [FromBody] Entidade ong)
+        public async Task<IActionResult> Atualizar(int id, [FromBody] Entidade entidade)
         {
-            if (id != ong.Id)
+            if (id != entidade.Id)
                 return BadRequest("O ID da URL não bate com o ID do corpo.");
 
-            var ongExistente = await _entidadeService.ObterOngPorId(id);
-            if (ongExistente == null)
+            var entidadeExistente = await _entidadeService.ObterEntidadePorId(id);
+            if (entidadeExistente == null)
                 return NotFound();
 
-            await _entidadeService.AtualizarOng(ong);
+            await _entidadeService.AtualizarEntidade(entidade);
             return NoContent();
         }
 
         [HttpDelete("deletar{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
-            var ong = await _entidadeService.ObterOngPorId(id);
-            if (ong == null)
+            var entidade = await _entidadeService.ObterEntidadePorId(id);
+            if (entidade == null)
                 return NotFound();
 
-            await _entidadeService.DeletarOng(id);
+            await _entidadeService.DeletarEntidade(id);
             return NoContent();
         }
     }

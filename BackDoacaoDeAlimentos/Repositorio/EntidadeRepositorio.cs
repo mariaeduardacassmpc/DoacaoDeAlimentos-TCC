@@ -21,7 +21,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
                 (TipoEntidade, NomeFantasia, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel)
                 VALUES (@Tipo, @NomeFantasia, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel);
             ";
-            await _db.ExecuteAsync(sql, ong);
+            await _db.ExecuteAsync(sql, entidade);
         }
 
         public async Task<Entidade> ObterEntidadePorId(int id)
@@ -40,7 +40,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
         {
             var sql = @"UPDATE CadastroEntidade SET Nome = @NomeFantasia, Cnpj = @Cnpj, 
                Telefone = @Telefone, Email = @Email, Endereco = @Endereco WHERE Id = @Id";
-            await _db.ExecuteAsync(sql, ong);
+            await _db.ExecuteAsync(sql, entidade);
         }
 
         public async Task DeletarEntidade(int id)

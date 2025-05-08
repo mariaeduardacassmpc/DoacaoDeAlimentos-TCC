@@ -22,34 +22,46 @@ namespace BackDoacaoDeAlimentos.Repositorio
 
         public async Task<IEnumerable<Alimento>> ObterTodosAlimentos()
         {
-            var sql = "SELECT * FROM Alimento";
+            var sql = @"SELECT * FROM Alimento";
             return await _db.QueryAsync<Alimento>(sql);
         }
 
         public async Task<Alimento> ObterAlimentoPorId(int id)
         {
-            var sql = "SELECT * FROM Alimento WHERE Id = @Id";
+            var sql = @"SELECT * FROM Alimento WHERE Id = @Id";
             return await _db.QueryFirstOrDefaultAsync<Alimento>(sql, new { Id = id });
         }
 
         public async Task AdicionarAlimento(Alimento alimento)
         {
-            var sql = @"INSERT INTO Alimento (Nome, Categoria, Descricao) 
-                    OUTPUT INSERTED.* VALUES (@Nome, @Categoria, @Descricao); 
+            var sql = @"INSERT INTO Alimento 
+                            (Nome, Categoria, Descricao) 
+                               OUTPUT INSERTED.* VALUES 
+                            (@Nome, @Categoria, @Descricao); 
             ";
+
             await _db.QuerySingleAsync<Alimento>(sql, alimento);
         }
 
         public async Task RemoverAlimento(int id)
         {
-            var sql = "DELETE FROM Alimento WHERE Id = @Id";
-            _db.ExecuteAsync(sql, new { Id = id });
+            var sql = @"DELETE FROM Alimento 
+                             WHERE Id = @Id    
+            ";
+
+            await _db.ExecuteAsync(sql, new { Id = id });
         }
 
         public async Task AtualizarAlimento(Alimento alimento)
         {
-            var sql = "UPDATE CadastroEntidade SET Nome = @Nome, Cnpj = @Cnpj, Telefone = @Telefone, Email = @Email, Endereco = @Endereco WHERE Id = @Id";
-            await _db.QuerySingleAsync<Alimento>(sql, alimento);
+            var sql = @"UPDATE Alimento 
+                        SET Nome = @Nome, 
+                           Categoria = @Categoria, 
+                           Descricao = @Descricao
+                        WHERE Id = @Id;
+            ";
+
+            await _db.ExecuteAsync(sql, alimento);
         }
     }
 }
