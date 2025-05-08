@@ -1,6 +1,8 @@
 ﻿using TCCDoacaoDeAlimentos.Shared.Models;   
 using Microsoft.AspNetCore.Mvc;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using BackDoacaoDeAlimentos.Servicos;
+using TCCDoacaoDeAlimentos.Models;
 
 namespace BackDoacaoDeAlimentos.Controllers
 {
@@ -43,7 +45,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deletar/{id}")]
         public ActionResult RemoverAlimento(int id)
         {
             var alimento = _alimentoService.ObterAlimentoPorId(id);
@@ -51,6 +53,20 @@ namespace BackDoacaoDeAlimentos.Controllers
                 return NotFound();
 
             _alimentoService.RemoverAlimento(id);
+            return NoContent();
+        }
+
+        [HttpPut("Atualizar/{id}")]
+        public async Task<IActionResult> Atualizar(int id, [FromBody] Alimento alimento)
+        {
+            if (id != alimento.Id)
+                return BadRequest("O ID da URL não bate com o ID do corpo.");
+
+            var ongExistente = await _alimentoService.ObterAlimentoPorId(id);
+            if (ongExistente == null)
+                return NotFound();
+
+            await _alimentoService.AtualizarAlimento(alimento);
             return NoContent();
         }
     } 

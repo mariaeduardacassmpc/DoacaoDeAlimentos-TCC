@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using BackDoacaoDeAlimentos.Repositorios;
 using Microsoft.AspNetCore.Http.HttpResults;
+using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Services
@@ -17,11 +19,11 @@ namespace BackDoacaoDeAlimentos.Services
             _alimentoRepositorio = alimentoRepositorio;
         }
 
-        public IEnumerable<Alimento> ObterTodosAlimentos()
+        public async Task<IEnumerable<Alimento>> ObterTodosAlimentos()
         {
             try
             {
-                return _alimentoRepositorio.ObterTodosAlimentos();
+                return await _alimentoRepositorio.ObterTodosAlimentos();
             }
             catch (Exception ex)
             {
@@ -29,11 +31,11 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public Alimento ObterAlimentoPorId(int id)
+        public async Task<Alimento> ObterAlimentoPorId(int id)
         {
             try
             {
-                return _alimentoRepositorio.ObterAlimentoPorId(id);
+                return await _alimentoRepositorio.ObterAlimentoPorId(id);
             }
             catch (Exception ex)
             {
@@ -41,11 +43,11 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public Alimento AdicionarAlimento(Alimento alimento)
+        public async Task<Alimento> AdicionarAlimento(Alimento alimento)
         {
             try
             {
-                _alimentoRepositorio.GravarAlimento(alimento);
+                await _alimentoRepositorio.AdicionarAlimento(alimento);
                 return alimento;
             }
             catch (Exception ex)
@@ -65,5 +67,11 @@ namespace BackDoacaoDeAlimentos.Services
                 throw new Exception($"Erro ao remover o alimento com ID {id}.", ex);
             }
         }
+
+        public async Task AtualizarAlimento(Alimento alimento)
+        {
+            await _alimentoRepositorio.AtualizarAlimento(alimento);
+        }
     }
+
 }

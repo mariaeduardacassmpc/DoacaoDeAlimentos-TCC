@@ -1,6 +1,9 @@
-﻿namespace BackDoacaoDeAlimentos.Interfaces.Servicos
+﻿using TCCDoacaoDeAlimentos.Shared.Models;   
+
+namespace BackDoacaoDeAlimentos.Interfaces.Servicos
 {
-    public class INotificacaoService
+    public class INotificacaoService 
     {
+
     }
 }
