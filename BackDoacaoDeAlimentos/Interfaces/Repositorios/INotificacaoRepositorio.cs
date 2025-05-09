@@ -6,6 +6,6 @@ namespace BackDoacaoDeAlimentos.Interfaces.Repositorios
     {
         Task<IEnumerable<Notificacao>> ObterTodasNotificacoes();
         Task<Notificacao> ObterNotificacaoPorId(int id);
-        Task<Notificacao> AdicionarNotificacao(Notificacao notificacao);
+        //Task<Notificacao> AdicionarNotificacao(Notificacao notificacao);
     }
 }

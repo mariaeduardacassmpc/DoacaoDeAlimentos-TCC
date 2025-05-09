@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
-using BackDoacaoDeAlimentos.Repositorios;
 using Microsoft.AspNetCore.Http.HttpResults;
-using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Services
@@ -47,7 +45,7 @@ namespace BackDoacaoDeAlimentos.Services
         {
             try
             {
-                await _alimentoRepositorio.AdicionarAlimento(alimento);
+                _alimentoRepositorio.AdicionarAlimento(alimento);
                 return alimento;
             }
             catch (Exception ex)
@@ -68,10 +66,10 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public async Task AtualizarAlimento(Alimento alimento)
+
+        public Task AtualizarAlimento(Alimento alimento)
         {
-            await _alimentoRepositorio.AtualizarAlimento(alimento);
+            throw new NotImplementedException();
         }
     }
-
 }

@@ -47,22 +47,22 @@ namespace BackDoacaoDeAlimentos.Controllers
             if (id != ong.Id)
                 return BadRequest("O ID da URL não bate com o ID do corpo.");
 
-            var ongExistente = await _entidadeService.ObterOngPorId(id);
+            var ongExistente = await _entidadeService.ObterEntidadePorId(id);
             if (ongExistente == null)
                 return NotFound();
 
-            await _entidadeService.AtualizarOng(ong);
+            await _entidadeService.AtualizarEntidade(ong);
             return NoContent();
         }
 
         [HttpDelete("deletar{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
-            var ong = await _entidadeService.ObterOngPorId(id);
+            var ong = await _entidadeService.ObterEntidadePorId(id);
             if (ong == null)
                 return NotFound();
 
-            await _entidadeService.DeletarOng(id);
+            await _entidadeService.DeletarEntidade(id);
             return NoContent();
         }
     }
