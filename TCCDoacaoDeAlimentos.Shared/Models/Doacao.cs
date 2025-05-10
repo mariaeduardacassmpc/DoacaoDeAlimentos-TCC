@@ -6,7 +6,7 @@ namespace TCCDoacaoDeAlimentos.Shared.Models
     public class Doacao
     {
         [Key]
-        public int IdDoacao { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "O doador é obrigatório")]
         [ForeignKey("Doador")]

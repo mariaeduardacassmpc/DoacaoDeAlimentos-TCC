@@ -4,9 +4,9 @@ using TCCDoacaoDeAlimentos.Shared.Models;
 
 public interface IDoacaoService
 {
-    Task<IEnumerable<Doacao>> ObteerTodasDoacoes();
-    //Task Doacao ObterDoacaoPorId(int id);
-    //Task CriarAsync(CriarDoacaoDto dto);
-    //Task AtualizarAsync(int id, AtualizarDoacaoDto dto);
-    //Task DeletarAsync(int id);
+    Task<IEnumerable<Doacao>> ObterTodasDoacoes();
+    Task<Doacao> ObterDoacaoPorId(int id);
+    Task AdicionarDoacao(Doacao doacao);
+    Task AtualizarDoacao(Doacao doacao);
+    Task DeletarDoacao(int id);
 }

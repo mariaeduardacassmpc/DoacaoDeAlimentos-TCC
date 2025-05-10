@@ -16,17 +16,17 @@ namespace BackDoacaoDeAlimentos.Repositorio
            _db = db;
         }
 
-        //public async Task<Notificacao> AdicionarNotificacao(Notificacao notificacao)
-        //{
-        //    var sql = @"
-        //        INSERT INTO Notificacao
-        //        (TipoEntidade, NomeFantasia, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel)
-        //        VALUES (@Tipo, @NomeFantasia, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel);
-        //    ";
-        //    await _db.QueryFirstOrDefaultAsync<Notificacao>(sql, notificacao);
-        //}
+        public async Task<Notificacao> AdicionarNotificacao(Notificacao notificacao)
+        {
+            var sql = @"
+                INSERT INTO Notificacao
+                (TipoEntidade, NomeFantasia, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel)
+                VALUES (@Tipo, @NomeFantasia, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel);
+            ";
+            return await _db.QueryFirstOrDefaultAsync<Notificacao>(sql);
+        }
 
-        public async Task <Notificacao> ObterNotificacaoPorId(int id)
+        public async Task ObterNotificacaoPorId(int id)
         {
             var sql = "SELECT * FROM CadastroEntidade WHERE Id = @Id";
             return await _db.QueryFirstOrDefaultAsync<Notificacao>(sql, new { Id = id });
