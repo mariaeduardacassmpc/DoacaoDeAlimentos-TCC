@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using System.Data.Common;
 using TCCDoacaoDeAlimentos.Shared.Models;
+using TCCDoacaoDeAlimentos.Models;
 
 namespace BackDoacaoDeAlimentos.Repositorio
 {
@@ -28,13 +29,13 @@ namespace BackDoacaoDeAlimentos.Repositorio
 
         public async Task<Alimento> ObterAlimentoPorId(int id)
         {
-            var sql = @"SELECT * FROM Alimento WHERE Id = @Id";
+            var sql = "SELECT * FROM Alimento WHERE Id = @Id";
             return await _db.QueryFirstOrDefaultAsync<Alimento>(sql, new { Id = id });
         }
 
         public async Task AdicionarAlimento(Alimento alimento)
         {
-            var sql = @"INSERT INTO Alimento 
+            var sql = @"INSERT INTO Alimento
                             (Nome, Categoria, Descricao) 
                                OUTPUT INSERTED.* VALUES 
                             (@Nome, @Categoria, @Descricao); 
@@ -43,18 +44,18 @@ namespace BackDoacaoDeAlimentos.Repositorio
             await _db.QuerySingleAsync<Alimento>(sql, alimento);
         }
 
-        public async Task RemoverAlimento(int id)
+        public async Task DeletarAlimento(int id)
         {
-            var sql = @"DELETE FROM Alimento 
+            var sql = @"DELETE FROM Alimento
                              WHERE Id = @Id    
             ";
 
             await _db.ExecuteAsync(sql, new { Id = id });
         }
 
-        public async Task AtualizarAlimento(Alimento alimento)
+        public async Task AtualizarAlimentos(Alimento alimento)
         {
-            var sql = @"UPDATE Alimento 
+            var sql = @"UPDATE Alimento
                         SET Nome = @Nome, 
                            Categoria = @Categoria, 
                            Descricao = @Descricao

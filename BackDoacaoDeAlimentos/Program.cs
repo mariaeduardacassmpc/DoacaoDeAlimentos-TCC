@@ -16,7 +16,12 @@ var configuration = builder.Configuration;
 builder.Services.AddScoped<IAlimentoRepositorio, AlimentoRepositorio>();
 builder.Services.AddScoped<IAlimentoService, AlimentoService>();
 builder.Services.AddScoped<IEntidadeService, EntidadeService>(); 
-builder.Services.AddScoped<IEntidadeRepositorio, EntidadeRepositorio>(); // ⬅️ Adicione esta linha
+builder.Services.AddScoped<IEntidadeRepositorio, EntidadeRepositorio>();
+builder.Services.AddScoped<IDoacaoService, DoacaoService>();
+builder.Services.AddScoped<IDoacaoRepositorio, DoacaoRepositorio>();
+//builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
+//builder.Services.AddScoped<INotificacaoRepositorio, NotificacaoRepositorio>();
+
 
 builder.Services.AddBlazoredToast();
 

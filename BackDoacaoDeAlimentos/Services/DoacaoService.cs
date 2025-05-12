@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
@@ -15,26 +15,73 @@ public class DoacaoService : IDoacaoService
 
     public async Task AdicionarDoacao(Doacao doacao)
     {
-        await _doacaoRepositorio.AdicionarDoacao(doacao);
+        try
+        {
+            if (doacao == null)
+                throw new ArgumentNullException(nameof(doacao), "A doação não pode ser nula.");
+
+            await _doacaoRepositorio.AdicionarDoacao(doacao);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Ocorreu um erro ao tentar adicionar a doação. Por favor, verifique os dados e tente novamente.", ex);
+        }
     }
 
     public async Task<Doacao> ObterDoacaoPorId(int id)
     {
-        return await _doacaoRepositorio.ObterDoacaoPorId(id);
+        try
+        {
+            if (id <= 0)
+                throw new ArgumentException("O ID da doação deve ser maior que zero.", nameof(id));
+
+            return await _doacaoRepositorio.ObterDoacaoPorId(id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Não foi possível obter a doação com ID {id}. Por favor, verifique o ID e tente novamente.", ex);
+        }
     }
 
     public async Task<IEnumerable<Doacao>> ObterTodasDoacoes()
     {
-        return await _doacaoRepositorio.ObterTodasDoacoes();
+        try
+        {
+            return await _doacaoRepositorio.ObterTodasDoacao();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Ocorreu um erro ao tentar obter a lista de doações. Por favor, tente novamente mais tarde.", ex);
+        }
     }
 
     public async Task AtualizarDoacao(Doacao doacao)
     {
-        await _doacaoRepositorio.AtualizarDoacao(doacao);
+        try
+        {
+            if (doacao == null)
+                throw new ArgumentNullException(nameof(doacao), "A doação não pode ser nula.");
+
+            await _doacaoRepositorio.AtualizarDoacao(doacao);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Ocorreu um erro ao tentar atualizar a doação. Por favor, verifique os dados e tente novamente.", ex);
+        }
     }
 
     public async Task DeletarDoacao(int id)
     {
-        await _doacaoRepositorio.DeletarDoacao(id);
+        try
+        {
+            if (id <= 0)
+                throw new ArgumentException("O ID da doação deve ser maior que zero.", nameof(id));
+
+            await _doacaoRepositorio.DeletarDoacao(id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Não foi possível deletar a doação com ID {id}. Por favor, verifique o ID e tente novamente.", ex);
+        }
     }
 }

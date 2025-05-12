@@ -44,12 +44,9 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
         [HttpPut("atualizar/{id}")]
-        public async Task<IActionResult> Atualizar(int id, [FromBody] Entidade entidade)
+        public async Task<IActionResult> Atualizar([FromBody] Entidade entidade)
         {
-            if (id != entidade.Id)
-                return BadRequest("O ID da URL não bate com o ID do corpo.");
-
-            var entidadeExistente = await _entidadeService.ObterEntidadePorId(id);
+            var entidadeExistente = await _entidadeService.ObterEntidadePorId(entidade.Id);
             if (entidadeExistente == null)
                 return NotFound();
 

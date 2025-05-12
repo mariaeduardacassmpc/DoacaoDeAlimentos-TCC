@@ -19,9 +19,9 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
         [HttpGet("obterAlimentos")]
-        public IActionResult ObterAlimentos()
+        public async Task<IActionResult> ObterTodos()
         {
-            var alimento = _alimentoService.ObterTodosAlimentos();
+            var alimento = await _alimentoService.ObterTodosAlimentos();
             if (alimento == null)
                 return NotFound();
 
@@ -29,41 +29,38 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
         [HttpGet("obterAlimento/{id}")]
-        public IActionResult ObterAlimento(int id)
+        public async Task<IActionResult> ObterPorId(int id)
         {
-            var alimento = _alimentoService.ObterAlimentoPorId(id);
+            var alimento = await _alimentoService.ObterAlimentoPorId(id);
             if (alimento == null)
                 return NotFound();
 
             return Ok(alimento);
         }
 
-        [HttpPost("gravar")]
-        public IActionResult GravarAlimento(Alimento alimento)
+        [HttpPost("adicionar")]
+        public async Task<IActionResult> Adicionar([FromBody] Alimento alimento)
         {
-            _alimentoService.AdicionarAlimento(alimento);
+            await _alimentoService.AdicionarAlimento(alimento);
             return Ok();
         }
 
         [HttpDelete("deletar/{id}")]
-        public ActionResult RemoverAlimento(int id)
+        public async Task<IActionResult> Deletar(int id)
         {
-            var alimento = _alimentoService.ObterAlimentoPorId(id);
+            var alimento = await _alimentoService.ObterAlimentoPorId(id);
             if (alimento == null)
                 return NotFound();
 
-            _alimentoService.RemoverAlimento(id);
+            await _alimentoService.DeletarAlimento(id);
             return NoContent();
         }
 
-        [HttpPut("Atualizar/{id}")]
-        public async Task<IActionResult> Atualizar(int id, [FromBody] Alimento alimento)
+        [HttpPut("atualizar/{id}")]
+        public async Task<IActionResult> Atualizar([FromBody] Alimento alimento)
         {
-            if (id != alimento.Id)
-                return BadRequest("O ID da URL não bate com o ID do corpo.");
-
-            var ongExistente = await _alimentoService.ObterAlimentoPorId(id);
-            if (ongExistente == null)
+            var alimentoExistente = await _alimentoService.ObterAlimentoPorId(alimento.Id);
+            if (alimentoExistente == null)
                 return NotFound();
 
             await _alimentoService.AtualizarAlimento(alimento);

@@ -1,40 +1,58 @@
-﻿using TCCDoacaoDeAlimentos.Shared.Models;
-using BackDoacaoDeAlimentos.Interfaces.Repositorios;
-using FrontDoacaoDeAlimentos.Models;
+﻿using Dapper;
+using System.Collections.Generic;
 using System.Data;
-using Dapper;
-using TCCDoacaoDeAlimentos.Models;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using FrontDoacaoDeAlimentos.Models;
+using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 
-namespace BackDoacaoDeAlimentos.Repositorio
+public class NotificacaoRepositorio : INotificacaoRepositorio
 {
-    public class NotificacaoRepositorio : INotificacaoRepositorio
+    private readonly string _connectionString;
+
+    public NotificacaoRepositorio(string connectionString)
     {
-        private readonly IDbConnection _db;
+        _connectionString = connectionString;
+    }
 
-        public NotificacaoRepositorio(IDbConnection db)
+    public async Task<Notificacao> AdicionarNotificacao(Notificacao notificacao)
+    {
+        using (var connection = new SqlConnection(_connectionString))
         {
-           _db = db;
+            var query = @"INSERT INTO Notificacao (IdEntidade, IdDoacao, Mensagem, Observacao, TipoNotificacao)
+                          OUTPUT INSERTED.Id
+                          VALUES (@IdEntidade, @IdDoacao, @Mensagem, @Observacao, @TipoNotificacao)";
+
+            var id = await connection.ExecuteScalarAsync<int>(query, notificacao);
+            notificacao.Id = id;
+
+            return notificacao;
         }
-
-        public async Task<Notificacao> AdicionarNotificacao(Notificacao notificacao)
+    }
+    public async Task<Notificacao> ObterNotificacaoPorId(int id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
         {
-            var sql = @"
-                INSERT INTO Notificacao
-                (TipoEntidade, NomeFantasia, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel)
-                VALUES (@Tipo, @NomeFantasia, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel);
-            ";
-            return await _db.QueryFirstOrDefaultAsync<Notificacao>(sql);
+            var query = "SELECT * FROM Notificacao WHERE Id = @Id";
+            return await connection.QuerySingleOrDefaultAsync<Notificacao>(query, new { Id = id });
         }
+    }
 
-        public async Task ObterNotificacaoPorId(int id)
+    public async Task<IEnumerable<Notificacao>> ObterTodasNotificacoes()
+    {
+        using (var connection = new SqlConnection(_connectionString))
         {
-            var sql = "SELECT * FROM CadastroEntidade WHERE Id = @Id";
-            return await _db.QueryFirstOrDefaultAsync<Notificacao>(sql, new { Id = id });
+            var query = "SELECT * FROM Notificacao";
+            return await connection.QueryAsync<Notificacao>(query);
         }
-
-        public Task<IEnumerable<Notificacao>> ObterTodasNotificacoes()
+    }
+    public async Task DeletarNotificacao(int id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
         {
-            throw new NotImplementedException();
+            var query = "DELETE FROM Notificacao WHERE Id = @Id";
+            await connection.ExecuteAsync(query, new { Id = id });
         }
     }
 }

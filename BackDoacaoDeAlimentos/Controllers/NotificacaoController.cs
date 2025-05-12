@@ -1,27 +1,61 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
+﻿using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using FrontDoacaoDeAlimentos.Models;
+using Microsoft.AspNetCore.Mvc;
+using TCCDoacaoDeAlimentos.Models;
+using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Controllers
 {
-    [Route("api/Notificacao")]
     [ApiController]
+    [Route("api/Notificacao")]
     public class NotificacaoController : ControllerBase
     {
-        [HttpGet("obterTodas")]
-        public IEnumerable<string> Get()
+        private readonly INotificacaoService _notificacaoService;
+
+        public NotificacaoController(INotificacaoService notificacaoService)
         {
-            return new string[] { "value1", "value2" };
+            _notificacaoService = notificacaoService;
         }
 
-        [HttpGet("obter/{id}")]
-        public string Get(int id)
+        [HttpGet("obterTodas")]
+        public async Task<IActionResult> ObterTodas()
         {
-            return "value";
+            var notificacoes = await _notificacaoService.ObterTodasNotificacoes();
+            if (notificacoes == null || !notificacoes.Any())
+                return NotFound();
+
+            return Ok(notificacoes);
+        }
+
+        [HttpGet("obterPorId/{id}")]
+        public async Task<IActionResult> ObterPorId(int id)
+        {
+            var notificacao = await _notificacaoService.ObterNotificacaoPorId(id);
+            if (notificacao == null)
+                return NotFound();
+
+            return Ok(notificacao);
         }
 
         [HttpPost("adicionar")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Adicionar([FromBody] Notificacao notificacao)
         {
+            if (notificacao == null)
+                return BadRequest("A notificação não pode ser nula.");
+
+            var novaNotificacao = await _notificacaoService.AdicionarNotificacao(notificacao);
+            return CreatedAtAction(nameof(ObterPorId), new { id = novaNotificacao.Id }, novaNotificacao);
+        }
+       
+        [HttpDelete("deletar/{id}")]
+        public async Task<IActionResult> Deletar(int id)
+        {
+            var notificacao = await _notificacaoService.ObterNotificacaoPorId(id);
+            if (notificacao == null)
+                return NotFound();
+
+            await _notificacaoService.RemoverNotificacao (id);
+            return NoContent();
         }
     }
 }

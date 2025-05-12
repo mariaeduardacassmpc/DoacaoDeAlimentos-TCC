@@ -5,11 +5,13 @@ using BlazorInputMask;
 using Microsoft.JSInterop;
 using TCCDoacaoDeAlimentos;
 using Blazored.Toast;
+using Blazored.Modal;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddBlazoredToast();
+builder.Services.AddBlazoredModal();
 
 builder.Services.AddScoped<HttpClient>(sp =>
     new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

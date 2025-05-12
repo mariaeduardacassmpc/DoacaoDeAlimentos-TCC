@@ -41,16 +41,14 @@ namespace BackDoacaoDeAlimentos.Controllers
         public async Task<IActionResult> Adicionar([FromBody] Doacao doacao)
         {
             await _doacaoService.AdicionarDoacao(doacao);
-            return CreatedAtAction(nameof(Adicionar), new { id = doacao.Id }, doacao);
+            return CreatedAtAction(nameof(Adicionar), new { id = doacao.IdDoacao }, doacao);
         }
 
         [HttpPut("atualizar/{id}")]
-        public async Task<IActionResult> Atualizar(int id, [FromBody] Doacao doacao)
+        public async Task<IActionResult> Atualizar([FromBody] Doacao doacao)
         {
-            if (id != doacao.Id)
-                return BadRequest("O ID da URL não bate com o ID do corpo.");
 
-            var doacaoExistente = await _doacaoService.ObterDoacaoPorId(id);
+            var doacaoExistente = await _doacaoService.ObterDoacaoPorId(doacao.IdDoacao);
             if (doacaoExistente == null)
                 return NotFound();
 

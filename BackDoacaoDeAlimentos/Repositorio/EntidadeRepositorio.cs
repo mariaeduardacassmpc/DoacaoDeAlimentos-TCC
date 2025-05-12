@@ -41,6 +41,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
             var sql = @"UPDATE CadastroEntidade SET NomeFantasia = @NomeFantasia, CNPJ_CPF = @CNPJ_CPF, 
                Telefone = @Telefone, Email = @Email, Endereco = @Endereco, Bairro = @Bairro, CEP = @Cep, Cidade = @Cidade
                Sexo = @Sexo, Responsavel = @Responsavel WHERE Id = @Id";
+            
             await _db.ExecuteAsync(sql, entidade);
         }
 

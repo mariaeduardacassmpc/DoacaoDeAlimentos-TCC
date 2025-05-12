@@ -16,27 +16,62 @@ namespace BackDoacaoDeAlimentos.Servicos
 
         public async Task AdicionarEntidade(Entidade entidade)
         {
-            await _entidadeRepositorio.AdicionarEntidade(entidade);
+            try
+            {
+                await _entidadeRepositorio.AdicionarEntidade(entidade);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter Entidade por Id. ", ex);
+            }
         }
 
         public async Task<Entidade> ObterEntidadePorId(int id)
         {
-           return await _entidadeRepositorio.ObterEntidadePorId(id);
+            try
+            {
+                return await _entidadeRepositorio.ObterEntidadePorId(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter Entidade por Id. ", ex);
+            }
         }
 
         public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
         {
-            return await _entidadeRepositorio.ObterTodasEntidades();
+            try
+            {
+                return await _entidadeRepositorio.ObterTodasEntidades();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter todas Entidades. ", ex);
+            }
         }
 
         public async Task AtualizarEntidade(Entidade entidade)
         {
-            await _entidadeRepositorio.AtualizarEntidade(entidade);
+            try
+            {
+                await _entidadeRepositorio.AtualizarEntidade(entidade);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao atualizar Entidade. ", ex);
+            }
         }
 
         public async Task DeletarEntidade(int id)
         {
-            await _entidadeRepositorio.DeletarEntidade(id);
+            try
+            {
+                await _entidadeRepositorio.DeletarEntidade(id);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Erro ao remover Entidade. ", ex);
+            }
         }
     }
 }

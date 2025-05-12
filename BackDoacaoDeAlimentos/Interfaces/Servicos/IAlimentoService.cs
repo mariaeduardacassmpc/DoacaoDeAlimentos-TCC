@@ -7,10 +7,10 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
 {
     public interface IAlimentoService
     {
-        Task<IEnumerable<Alimento>> ObterTodosAlimentos();
+        Task AdicionarAlimento(Alimento alimento);
         Task<Alimento> ObterAlimentoPorId(int id);
-        Task<Alimento> AdicionarAlimento(Alimento alimento);
-        void RemoverAlimento(int id);
+        Task<IEnumerable<Alimento>> ObterTodosAlimentos();
         Task AtualizarAlimento(Alimento alimento);
+        Task DeletarAlimento(int id);
     }
 }

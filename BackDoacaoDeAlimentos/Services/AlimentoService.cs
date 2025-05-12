@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using BackDoacaoDeAlimentos.Repositorios;
 using Microsoft.AspNetCore.Http.HttpResults;
+using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Services
@@ -25,7 +27,7 @@ namespace BackDoacaoDeAlimentos.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro ao obter todos os alimentos.", ex);
+                throw new Exception("Erro ao obter todos os Alimento.", ex);
             }
         }
 
@@ -37,39 +39,45 @@ namespace BackDoacaoDeAlimentos.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter o alimento com ID {id}.", ex);
+                throw new Exception($"Erro ao obter o Alimento.", ex);
             }
         }
 
-        public async Task<Alimento> AdicionarAlimento(Alimento alimento)
+        public async Task AdicionarAlimento(Alimento alimento)
         {
             try
             {
-                _alimentoRepositorio.AdicionarAlimento(alimento);
-                return alimento;
+                await _alimentoRepositorio.AdicionarAlimento(alimento);
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro ao adicionar o alimento.", ex);
+                throw new Exception("Erro ao adicionar o Alimento.", ex);
             }
         }
 
-        public void RemoverAlimento(int id)
+        public async Task DeletarAlimento(int id)
         {
             try
             {
-                _alimentoRepositorio.RemoverAlimento(id);
+                await _alimentoRepositorio.DeletarAlimento(id);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao remover o alimento com ID {id}.", ex);
+                throw new Exception($"Erro ao remover o Alimento.", ex);
             }
         }
 
 
-        public Task AtualizarAlimento(Alimento alimento)
+        public async Task AtualizarAlimento(Alimento alimento)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _alimentoRepositorio.AtualizarAlimentos(alimento);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao atualizar Alimento. ", ex);
+            }
         }
     }
 }

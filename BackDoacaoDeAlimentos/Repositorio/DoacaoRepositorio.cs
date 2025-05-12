@@ -13,21 +13,21 @@ public class DoacaoRepositorio : IDoacaoRepositorio
         _connection = connection;
     }
 
-    public async Task<IEnumerable<Doacao>> ObterTodasDoacoes()
+    public async Task<IEnumerable<Doacao>> ObterTodasDoacao()
     {
-        var sql = "SELECT * FROM Doacoes";
+        var sql = "SELECT * FROM Doacao";
         return await _connection.QueryAsync<Doacao>(sql);
     }
 
     public async Task<Doacao> ObterDoacaoPorId(int id)
     {
-        var sql = "SELECT * FROM Doacoes WHERE Id = @Id";
+        var sql = "SELECT * FROM Doacao WHERE Id = @Id";
         return await _connection.QueryFirstOrDefaultAsync<Doacao>(sql, new { Id = id });
     }
 
     public async Task AdicionarDoacao(Doacao doacao)
     {
-        var sql = @"INSERT INTO Doacoes 
+        var sql = @"INSERT INTO Doacao 
                         (NomeAlimento, Quantidade, Data)
                     VALUES (@NomeAlimento, @Quantidade, @Data);
                         SELECT CAST(SCOPE_IDENTITY() as int);
@@ -38,7 +38,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
 
     public async Task AtualizarDoacao(Doacao doacao)
     {
-        var sql = @"UPDATE Doacoes
+        var sql = @"UPDATE Doacao
             SET NomeAlimento = @NomeAlimento,
                 Quantidade = @Quantidade,
                 Data = @Data
@@ -49,7 +49,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
 
     public async Task DeletarDoacao(int id)
     {
-        var sql = "DELETE FROM Doacoes WHERE Id = @Id";
+        var sql = "DELETE FROM Doacao WHERE Id = @Id";
         await _connection.ExecuteAsync(sql, new { Id = id });
     }
 }

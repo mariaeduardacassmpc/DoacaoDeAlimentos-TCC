@@ -5,10 +5,10 @@ namespace BackDoacaoDeAlimentos.Interfaces.Repositorios
 {
     public interface IEntidadeRepositorio
     {
-        Task AdicionarEntidade(Entidade ong);
+        Task AdicionarEntidade(Entidade entidade);
         Task<Entidade> ObterEntidadePorId(int id);
         Task<IEnumerable<Entidade>> ObterTodasEntidades();
-        Task AtualizarEntidade(Entidade ong);
+        Task AtualizarEntidade(Entidade entidade);
         Task DeletarEntidade(int id);
     }
 }

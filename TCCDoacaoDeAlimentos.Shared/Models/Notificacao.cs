@@ -6,7 +6,7 @@ namespace FrontDoacaoDeAlimentos.Models
     public class Notificacao
     {
         [Key]
-        public int IdNotificacao { get; set; }
+        public int Id { get; set; }
         [ForeignKey("Doador")]
         public int IdDoador { get; set; }
         [ForeignKey("Doacao")]
