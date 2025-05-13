@@ -1,4 +1,4 @@
-﻿@page "/MinhasDoacoes"
+﻿@page "/DoacoesRecebidas"
 @using TCCDoacaoDeAlimentos.Shared.Models
 @inject NavigationManager Navigation
 
@@ -9,17 +9,15 @@
                 <div class="card shadow">
                     <div class="card-body p-5">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h1 class="card-title mb-0">Minhas Doações</h1>
-                            <button class="btn btn-success" @onclick="NavigateToCadastro">
-                                <i class="bi bi-plus-circle me-2"></i>Nova Doação
-                            </button>
+                            <h1 class="card-title mb-0">Doações Recebidas</h1>
                         </div>
+
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
-                                        <th>ONG Beneficiada</th>
+                                        <th>ONG</th>
                                         <th>Data</th>
                                         <th>Itens</th>
                                         <th>Status</th>
@@ -64,7 +62,7 @@
                         @if (!DoacoesSalvas.Any())
                         {
                             <div class="alert alert-success text-center">
-                                Nenhuma doação encontrada. Clique em "Nova Doação" para começar.
+                                Nenhuma doação encontrada.
                             </div>
                         }
                     </div>
@@ -82,6 +80,14 @@
     protected override void OnInitialized()
     {
     }
+
+
+
+
+    // private string ObterNomeOng(int idOng)
+    // {
+    //     return Ongs.FirstOrDefault(o => o.IdOng == idOng)?.RazaoSocial ?? "ONG não encontrada";
+    // }
 
     private string ObterNomeAlimento(int idAlimento)
     {
@@ -101,6 +107,7 @@
 
     private void VerDetalhes(int idDoacao)
     {
+        // Implemente a navegação para detalhes se necessário
         Console.WriteLine($"Visualizar doação ID: {idDoacao}");
     }
 
