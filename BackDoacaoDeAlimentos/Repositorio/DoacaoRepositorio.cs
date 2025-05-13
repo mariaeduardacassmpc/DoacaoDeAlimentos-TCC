@@ -21,7 +21,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
 
     public async Task<Doacao> ObterDoacaoPorId(int id)
     {
-        var sql = "SELECT * FROM Doacao WHERE Id = @Id";
+        var sql = "SELECT * FROM Doacao WHERE IdDoacao = @Id";
         return await _connection.QueryFirstOrDefaultAsync<Doacao>(sql, new { Id = id });
     }
 
@@ -49,7 +49,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
 
     public async Task DeletarDoacao(int id)
     {
-        var sql = "DELETE FROM Doacao WHERE Id = @Id";
+        var sql = "DELETE FROM Doacao WHERE IdDoacao = @Id";
         await _connection.ExecuteAsync(sql, new { Id = id });
     }
 }

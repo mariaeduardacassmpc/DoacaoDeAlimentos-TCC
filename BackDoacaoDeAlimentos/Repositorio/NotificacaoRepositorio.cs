@@ -1,58 +1,53 @@
-﻿using Dapper;
-using System.Collections.Generic;
+﻿using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using System.Data;
+using TCCDoacaoDeAlimentos.Models;
+using TCCDoacaoDeAlimentos.Shared.Models;
+using Dapper;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
-using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using FrontDoacaoDeAlimentos.Models;
-using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 
-public class NotificacaoRepositorio : INotificacaoRepositorio
+namespace BackDoacaoDeAlimentos.Repositorios
 {
-    private readonly string _connectionString;
-
-    public NotificacaoRepositorio(string connectionString)
+    public class NotificacaoRepositorio : INotificacaoRepositorio
     {
-        _connectionString = connectionString;
-    }
+        private readonly IDbConnection _db;
 
-    public async Task<Notificacao> AdicionarNotificacao(Notificacao notificacao)
-    {
-        using (var connection = new SqlConnection(_connectionString))
+        public NotificacaoRepositorio(IDbConnection db)
         {
-            var query = @"INSERT INTO Notificacao (IdEntidade, IdDoacao, Mensagem, Observacao, TipoNotificacao)
-                          OUTPUT INSERTED.Id
-                          VALUES (@IdEntidade, @IdDoacao, @Mensagem, @Observacao, @TipoNotificacao)";
-
-            var id = await connection.ExecuteScalarAsync<int>(query, notificacao);
-            notificacao.Id = id;
-
-            return notificacao;
+            _db = db;
         }
-    }
-    public async Task<Notificacao> ObterNotificacaoPorId(int id)
-    {
-        using (var connection = new SqlConnection(_connectionString))
-        {
-            var query = "SELECT * FROM Notificacao WHERE Id = @Id";
-            return await connection.QuerySingleOrDefaultAsync<Notificacao>(query, new { Id = id });
-        }
-    }
 
-    public async Task<IEnumerable<Notificacao>> ObterTodasNotificacoes()
-    {
-        using (var connection = new SqlConnection(_connectionString))
+        public async Task<Notificacao> ObterNotificacaoPorId(int id)
         {
-            var query = "SELECT * FROM Notificacao";
-            return await connection.QueryAsync<Notificacao>(query);
+            var sql = "SELECT * FROM Notificacao WHERE Id = @Id";
+            return await _db.QueryFirstOrDefaultAsync<Notificacao>(sql, new { Id = id });
         }
-    }
-    public async Task DeletarNotificacao(int id)
-    {
-        using (var connection = new SqlConnection(_connectionString))
+
+        public async Task<IEnumerable<Notificacao>> ObterTodasNotificacoes()
         {
-            var query = "DELETE FROM Notificacao WHERE Id = @Id";
-            await connection.ExecuteAsync(query, new { Id = id });
+            var sql = "SELECT * FROM Notificacao";
+            return await _db.QueryAsync<Notificacao>(sql);
+        }
+
+        public async Task DeletarNotificacao(int id)
+        {
+            var sql = "DELETE FROM Notificacao WHERE Id = @Id";
+            await _db.ExecuteAsync(sql, new { Id = id });
+        }
+
+        public async Task<Notificacao> AdicionarNotificacao(Notificacao notificacao)
+        {
+            var sql = @"
+                INSERT INTO Notificacao (IdEntidade, IdDoacao, Mensagem, Observacao, TipoNotificacao)
+                OUTPUT INSERTED.Id
+                VALUES (@IdEntidade, @IdDoacao, @Mensagem, @Observacao, @TipoNotificacao);
+            ";
+
+            var id = await _db.ExecuteScalarAsync<int>(sql, notificacao);
+            notificacao.Id = id;  
+
+            return notificacao;  
         }
     }
 }

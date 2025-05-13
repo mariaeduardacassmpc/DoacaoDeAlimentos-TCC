@@ -7,8 +7,8 @@ namespace FrontDoacaoDeAlimentos.Models
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey("Doador")]
-        public int IdDoador { get; set; }
+        [ForeignKey("Entidade")]
+        public int IdEntidade { get; set; }
         [ForeignKey("Doacao")]
         public int IdDoacao { get; set; }
         public string Mensagem { get; set; }
