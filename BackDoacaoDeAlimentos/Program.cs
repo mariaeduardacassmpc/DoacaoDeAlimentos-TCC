@@ -21,6 +21,11 @@ builder.Services.AddScoped<IDoacaoService, DoacaoService>();
 builder.Services.AddScoped<IDoacaoRepositorio, DoacaoRepositorio>();
 builder.Services.AddScoped<INotificacaoRepositorio, NotificacaoRepositorio>();
 builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
+builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
+builder.Services.AddScoped<IAlimentoDoacaoRepositorio, AlimentoDoacaoRepositorio>();
+builder.Services.AddScoped<IAlimentoDoacaoService, AlimentoDoacaoService>();
 
 builder.Services.AddBlazoredToast();
 
