@@ -14,9 +14,12 @@
                             <h1 class="card-title mb-0">
                                 @(TipoUsuario == "O" ? "Doações Recebidas" : "Minhas Doações")
                             </h1>
-                            <button class="btn btn-success" @onclick="NavigateToCadastro">
-                                <i class="bi bi-plus-circle me-2"></i>Nova Doação
-                            </button>
+                            @if (TipoUsuario == "F")
+                            {
+                                <button class="btn btn-success" @onclick="NavigateToCadastro">
+                                    <i class="bi bi-plus-circle me-2"></i>Nova Doação
+                                </button>
+                            }
                         </div>
 
                         <div class="row">
@@ -55,7 +58,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
-                                        <th>ONG Beneficiada</th>
+                                        <th>ONG</th>
                                         <th>Data</th>
                                         <th>Itens</th>
                                         <th>Status</th>
@@ -100,7 +103,7 @@
                         @if (!DoacoesFiltradas.Any())
                         {
                             <div class="alert alert-success text-center">
-                                Nenhuma doação encontrada. Clique em "Nova Doação" para começar.
+                                Nenhuma doação encontrada.
                             </div>
                         }
                     </div>
