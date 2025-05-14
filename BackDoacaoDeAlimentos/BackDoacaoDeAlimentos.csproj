@@ -16,6 +16,7 @@
     <Compile Remove="Repositorio\DoadorRepositorio.cs" />
     <Compile Remove="Repositorio\OngRepositorio.cs" />
     <Compile Remove="Services\OngService.cs" />
+    <Compile Remove="Services\SessaoUsuarioService.cs" />
   </ItemGroup>
 
   <ItemGroup>

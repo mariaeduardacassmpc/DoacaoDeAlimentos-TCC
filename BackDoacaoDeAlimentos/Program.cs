@@ -23,6 +23,8 @@ builder.Services.AddScoped<INotificacaoRepositorio, NotificacaoRepositorio>();
 builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddSingleton<AuthService>();
+
 
 builder.Services.AddScoped<IAlimentoDoacaoRepositorio, AlimentoDoacaoRepositorio>();
 builder.Services.AddScoped<IAlimentoDoacaoService, AlimentoDoacaoService>();

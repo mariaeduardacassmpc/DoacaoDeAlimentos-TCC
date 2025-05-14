@@ -1,9 +1,10 @@
 ﻿@page "/login"
-@using TCCDoacaoDeAlimentos.Shared.Models
-@inject NavigationManager Navigation
 @using Blazored.Modal
 @using Blazored.Modal.Services
+@using TCCDoacaoDeAlimentos.Shared.Models
 @inject Blazored.Modal.Services.IModalService Modal
+@inject NavigationManager Navigation
+
 
 <div class="login-container" style="background-color: #d4edda; min-height: 100vh;">
     <div class="container py-5">
@@ -75,30 +76,14 @@
     </div>
 </div>
 
+
 @code {
     private Usuario usuario = new Usuario();
     [Inject]
     private NavigationManager NavigationManager { get; set; }
-    private async Task HandleLogin()
-    {
-        try
-        {
-            // Simulação de autenticação - substitua pelo seu serviço real
-            Console.WriteLine($"Tentativa de login: {usuario.Email}");
-
-            // Exemplo de redirecionamento após login:
-            // navigationManager.NavigateTo("/");
-
-            // Mostrar mensagem de sucesso
-            // toastService.ShowSuccess("Login realizado com sucesso!");
-        }
-        catch (Exception ex)
-        {
-            // Mostrar mensagem de erro
-            Console.WriteLine($"Erro no login: {ex.Message}");
-            // toastService.ShowError("E-mail ou senha incorretos");
-        }
-    }
+    // [Inject] private IUsuarioService UsuarioService { get; set; }
+    [Inject] private AuthService authService { get; set; }
+   
     private bool exibirModalCadastro = false;
 
     private void MostrarModalCadastro()
@@ -117,14 +102,31 @@
 
         if (tipo == "doador")
         {
-            // Redireciona para o cadastro de doador
             NavigationManager.NavigateTo("/cadastro-doador");
         }
         else if (tipo == "ong")
         {
-            // Redireciona para o cadastro de ONG
             NavigationManager.NavigateTo("/cadastro-ong");
         }
+    }
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var usuarioAutenticado = await UsuarioService.AutenticarUsuarioAsync(usuario.Email, usuario.Senha);
 
+            if (usuarioAutenticado != null)
+            {
+                AuthService.Logar(usuarioAutenticado);
+                NavigationManager.NavigateTo("/"); 
+            }
+            else
+            {
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro no login: {ex.Message}");
+        }
     }
 }

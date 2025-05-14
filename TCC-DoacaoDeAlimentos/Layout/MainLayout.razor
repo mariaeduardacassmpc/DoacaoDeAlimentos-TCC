@@ -31,13 +31,19 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item mx-2">
-                            <NavLink class="nav-link" href="/MinhasDoacoes">Minhas Doações</NavLink>
-                        </li>
-
-                         <li class="nav-item mx-2">
-                            <NavLink class="nav-link" href="/DoacoesRecebidas">Doações Recebidas</NavLink>
-                        </li>
+                        @if (TipoUsuario == "F" || TipoUsuario == "J")
+                        {
+                            <li class="nav-item mx-2">
+                                <NavLink class="nav-link" href="/MinhasDoacoes">Minhas Doações</NavLink>
+                            </li>
+                        }
+                        
+                        @if (TipoUsuario == "O")
+                        {
+                            <li class="nav-item mx-2">
+                                <NavLink class="nav-link" href="/DoacoesRecebidas">Doações Recebidas</NavLink>
+                            </li>
+                        }
 
                         <li class="nav-item mx-2">
                             <NavLink class="nav-link" href="/Geolocalizacao">Geolocalização</NavLink>
@@ -61,3 +67,15 @@
         @Body
     </div>
 </div>
+
+
+@code {
+    string TipoUsuario;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // var usuario = await AuthService.ObterUsuarioLogadoAsync();
+        // TipoUsuario = usuario.Tipo; 
+    }
+}
+
