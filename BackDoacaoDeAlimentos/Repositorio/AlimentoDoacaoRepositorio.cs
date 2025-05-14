@@ -64,8 +64,8 @@ namespace BackDoacaoDeAlimentos.Repositorios
 
         public async Task<IEnumerable<AlimentoDoacao>> ObterPorDoacaoAsync(int doacaoId)
         {
-            var sql = "SELECT * FROM AlimentoDoacao WHERE IdDoacao = @DoacaoId;";
-            return await _conexao.QueryAsync<AlimentoDoacao>(sql, new { DoacaoId = doacaoId });
+            var sql = "SELECT * FROM AlimentoDoacao WHERE IdDoacao = @IdDoacao;";
+            return await _conexao.QueryAsync<AlimentoDoacao>(sql, new { IdDoacao = doacaoId });
         }
     }
 }

@@ -35,6 +35,13 @@ namespace BackDoacaoDeAlimentos.Controllers
             return Ok(alimento);
         }
 
+        [HttpGet("proximosVencimentos")]
+        public async Task<IActionResult> ObterProximosVencimentos([FromQuery] int diasAntecedencia = 7)
+        {
+            var alimentos = await _alimentoDoacaoService.ListarAlimentosProximosVencimentoAsync(diasAntecedencia);
+            return Ok(alimentos);
+        }
+
         [HttpPost("adicionar")]
         public async Task<IActionResult> Adicionar([FromBody] AlimentoDoacao alimentoDoacao)
         {
@@ -68,13 +75,6 @@ namespace BackDoacaoDeAlimentos.Controllers
 
             await _alimentoDoacaoService.RemoverAlimentoDeDoacaoAsync(id);
             return NoContent();
-        }
-
-        [HttpGet("proximosVencimentos")]
-        public async Task<IActionResult> ObterProximosVencimentos([FromQuery] int diasAntecedencia = 7)
-        {
-            var alimentos = await _alimentoDoacaoService.ListarAlimentosProximosVencimentoAsync(diasAntecedencia);
-            return Ok(alimentos);
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿@page "/MinhasDoacoes"
-@using TCCDoacaoDeAlimentos.Shared.Models
+@* @using Microsoft.AspNetCore.Components.Authorization *@
 @inject NavigationManager Navigation
+@inject HttpClient Http
+@* @inject AuthenticationStateProvider AuthenticationStateProvider *@
 
 <div class="min-vh-100" style="background-color: #d4edda;">
     <div class="container py-5">
@@ -9,11 +11,45 @@
                 <div class="card shadow">
                     <div class="card-body p-5">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h1 class="card-title mb-0">Minhas Doações</h1>
+                            <h1 class="card-title mb-0">
+                                @(TipoUsuario == "O" ? "Doações Recebidas" : "Minhas Doações")
+                            </h1>
                             <button class="btn btn-success" @onclick="NavigateToCadastro">
                                 <i class="bi bi-plus-circle me-2"></i>Nova Doação
                             </button>
                         </div>
+
+                        <div class="row">
+                            @if (TipoUsuario == "F" || TipoUsuario == "J")
+                            {
+                                <div class="col-md-4">
+                                    <label class="form-label">Filtrar por ONG</label>
+                                    <select class="form-select" @bind="Filtro.IdOng">
+                                        <option value="">Todas</option>
+                                        @foreach (var ong in ListaDeOngs)
+                                        {
+                                            <option value="@ong.Id.ToString()">@ong.Nome</option>
+                                        }
+                                    </select>
+                                </div>
+                            }
+                            <div class="col-md-4">
+                                <label class="form-label">Filtrar por Status</label>
+                                <select class="form-select" @bind="Filtro.Status">
+                                    <option value="">Todos</option>
+                                    @foreach (var status in ListaDeStatus)
+                                    {
+                                        <option value="@status">@status</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Data da Doação</label>
+                                <input type="date" class="form-control" @bind="Filtro.DataDoacao" />
+                            </div>
+                        </div>
+
+                        <div class="my-5"></div>
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-light">
@@ -23,15 +59,15 @@
                                         <th>Data</th>
                                         <th>Itens</th>
                                         <th>Status</th>
-                                        <th>Ações</th>
+                                        <th>Detalhes</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var doacao in DoacoesSalvas.OrderByDescending(d => d.DataDoacao))
+                                    @foreach (var doacao in DoacoesFiltradas)
                                     {
                                         <tr>
                                             <td>@doacao.IdDoacao</td>
-                                            @* <td>@ObterNomeOng(doacao.IdOng)</td> *@
+                                            <td>@ObterNomeOng(doacao.IdOng)</td>
                                             <td>@doacao.DataDoacao.ToString("dd/MM/yyyy")</td>
                                             <td>
                                                 <ul class="list-unstyled">
@@ -61,7 +97,7 @@
                             </table>
                         </div>
 
-                        @if (!DoacoesSalvas.Any())
+                        @if (!DoacoesFiltradas.Any())
                         {
                             <div class="alert alert-success text-center">
                                 Nenhuma doação encontrada. Clique em "Nova Doação" para começar.
@@ -75,37 +111,109 @@
 </div>
 
 @code {
-    private List<Doacao> DoacoesSalvas { get; set; } = new();
-    private List<CadastroDeOng> Ongs { get; set; } = new();
-    private List<Alimento> Alimentos { get; set; } = new();
-
-    protected override void OnInitialized()
-    {
-    }
-
-    private string ObterNomeAlimento(int idAlimento)
-    {
-        return Alimentos.FirstOrDefault(a => a.Id == idAlimento)?.Nome ?? "Alimento não encontrado";
-    }
-
-    private string GetStatusBadgeClass(StatusDoacao status)
-    {
-        return status switch
-        {
-            StatusDoacao.Pendente => "bg-warning text-dark",
-            StatusDoacao.Cancelada => "bg-danger",
-            StatusDoacao.Finalizada => "bg-success",
-            _ => "bg-secondary"
-        };
-    }
-
-    private void VerDetalhes(int idDoacao)
-    {
-        Console.WriteLine($"Visualizar doação ID: {idDoacao}");
-    }
+    private FiltroDoacaoDto Filtro { get; set; } = new();
+    private List<Doacao> DoacoesSalvas = new();
+    private List<Ong> ListaDeOngs = new();
+    private List<string> ListaDeStatus = new() { "Pendente", "Confirmada", "Cancelada" };
+    private string TipoUsuario;
 
     private void NavigateToCadastro()
     {
         Navigation.NavigateTo("/CadastroDeDoacao");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        // var user = authState.User;
+
+        // if (user.Identity.IsAuthenticated)
+        // {
+        //     TipoUsuario = user.FindFirst("tipo")?.Value;
+        // }
+
+        await CarregarDadosIniciais();
+    }
+
+    private async Task CarregarDadosIniciais()
+    {
+        TipoUsuario = "O";
+        Filtro = new FiltroDoacaoDto
+            {
+                IdDoador = 1 
+            };
+
+        var response = await Http.GetAsync($"api/doacao/filtrarDoacao?IdDoador={Filtro.IdDoador}");
+        if (response.IsSuccessStatusCode)
+        {
+            DoacoesSalvas = await response.Content.ReadFromJsonAsync<List<Doacao>>();
+        }
+
+        ListaDeOngs = await Http.GetFromJsonAsync<List<Ong>>("api/entidade/obterTodas");
+    }
+
+    private IEnumerable<Doacao> DoacoesFiltradas =>
+        DoacoesSalvas
+            .Where(d => !Filtro.IdOng.HasValue || d.IdOng == Filtro.IdOng.Value)
+            .Where(d => string.IsNullOrEmpty(Filtro.Status) || d.Status == Filtro.Status)
+            .Where(d => !Filtro.DataDoacao.Equals(default(DateTime))
+            ? d.DataDoacao.Date == Filtro.DataDoacao.Date
+            : true)
+            .OrderByDescending(d => d.DataDoacao);
+
+    private string ObterNomeOng(Guid idOng)
+    {
+        return ListaDeOngs.FirstOrDefault(o => o.Id == idOng)?.Nome ?? "Desconhecida";
+    }
+
+    private string ObterNomeAlimento(Guid alimentoId)
+    {
+        return $"Alimento {alimentoId}";
+    }
+
+    private string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Pendente" => "bg-warning text-dark",
+            "Confirmada" => "bg-success",
+            "Cancelada" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    private void VerDetalhes(Guid idDoacao)
+    {
+        // Ação para ver detalhes
+    }
+
+    private class Doacao
+    {
+        public Guid IdDoacao { get; set; }
+        public Guid IdOng { get; set; }
+        public DateTime DataDoacao { get; set; }
+        public string Status { get; set; }
+        public List<DoacaoItem> Alimentos { get; set; } = new();
+    }
+
+    private class DoacaoItem
+    {
+        public Guid AlimentoId { get; set; }
+        public int Quantidade { get; set; }
+        public string UnidadeMedida { get; set; }
+    }
+
+    private class Ong
+    {
+        public Guid Id { get; set; }
+        public string Nome { get; set; }
+    }
+
+    private class FiltroDoacaoDto
+    {
+        public Guid? IdOng { get; set; } 
+        public int IdDoador { get; set; }
+        public string Status { get; set; } 
+        public DateTime DataDoacao { get; set; }
     }
 }
