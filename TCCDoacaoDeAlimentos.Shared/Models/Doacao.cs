@@ -31,8 +31,8 @@ namespace TCCDoacaoDeAlimentos.Shared.Models
     }
     public enum StatusDoacao
     {
-        Pendente = 0,
-        Cancelada = 1,
-        Finalizada = 2
+        Pendente = 1,
+        Cancelada = 2,
+        Finalizada = 3
     }
 }

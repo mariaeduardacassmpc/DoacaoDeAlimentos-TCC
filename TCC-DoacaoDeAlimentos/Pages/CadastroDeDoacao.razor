@@ -14,7 +14,6 @@
                         </h6>
 
                         @if (erroSalvar)
-
                         {
                             <div class="alert alert-danger">
                                 @mensagemErro
@@ -69,7 +68,6 @@
                                             <InputSelect @bind-Value="item.AlimentoId" class="form-control">
                                                 <option value="">Selecione o alimento...</option>
                                                 @foreach (var alimento in Alimentos)
-
                                                 {
                                                     <option value="@alimento.Id">@alimento.Nome (@alimento.Categoria)</option>
                                                 }

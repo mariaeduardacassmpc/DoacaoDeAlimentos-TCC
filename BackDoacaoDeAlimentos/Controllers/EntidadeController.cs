@@ -6,7 +6,7 @@ using TCCDoacaoDeAlimentos.Shared.Models;
 namespace BackDoacaoDeAlimentos.Controllers
 {
     [ApiController]
-    [Route("api/Entidade")]  
+    [Route("api/entidade")]  
     public class EntidadeController : ControllerBase
     {
         private readonly IEntidadeService _entidadeService;

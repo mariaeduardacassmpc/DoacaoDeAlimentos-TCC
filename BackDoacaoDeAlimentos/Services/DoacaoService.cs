@@ -84,4 +84,16 @@ public class DoacaoService : IDoacaoService
             throw new Exception($"Não foi possível deletar a doação com ID {id}. Por favor, verifique o ID e tente novamente.", ex);
         }
     }
+
+    public async Task<IEnumerable<Doacao>> ObterDoacoesComFiltro(FiltroDoacaoDto filtroDoacaoDto)
+    {
+        try
+        {
+            return await _doacaoRepositorio.ObterDoacoesPorDoadorOuOng(filtroDoacaoDto);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Não foi possível obter as doações do doador com ID {filtroDoacaoDto}. Por favor, verifique o ID e tente novamente.", ex);
+        }
+    }
 }
