@@ -76,6 +76,7 @@ a, .btn-link {
 .btn:focus, a:focus {
     outline: none;
 }
+
 }
 
 .shadow {
@@ -326,6 +327,15 @@ footer {
             background-color: var(--primary-color);
         }
 
+/* Espaçamento antes do footer */
+.mb-10 {
+    margin-bottom: 5rem !important;
+}
+
+.pb-10 {
+    padding-bottom: 5rem !important;
+}
+
 .social-icons a {
     color: white;
     transition: var(--transition-base);
@@ -515,9 +525,6 @@ footer {
     }
 
 /* Adicione ao seu arquivo CSS */
-.bg-light-green {
-    background-color: #f0f9f3; /* Fundo verde muito claro */
-}
 
 .py-10 {
     padding-top: 6rem;
@@ -583,4 +590,38 @@ footer {
         height: 1px;
         margin: 1rem auto;
     }
+}
+
+/* === NOVAS CLASSES ADICIONADAS === */
+.bg-light-success {
+    background-color: #d5ebd8 !important; /* Verde 12% mais escuro que #e8f5e9 */
+}
+
+/* Divisor vertical atualizado */
+.vertical-divider {
+    width: 1px;
+    height: 80px;
+    margin: 0 2rem;
+    opacity: 0.5; /* Transparência reduzida */
+}
+
+/* Textos escuros para contraste */
+.bg-light-success .text-dark {
+    color: #2e2b27 !important; /* Cor escura do seu tema */
+}
+
+.bg-light-success .text-secondary {
+    color: #4a4a4a !important; /* Cinza escuro */
+}
+
+/* Efeito hover mais suave */
+.bg-light-success .stat-item:hover .display-3 {
+    transform: scale(1.05);
+    text-shadow: none; /* Removi a sombra */
+}
+
+/* === NOVO ESPAÇAMENTO === */
+.section-como-doar {
+    padding-top: 5rem !important; /* Espaço acima do título */
+    margin-top: 1rem !important; /* Ajuste fino se necessário */
 }

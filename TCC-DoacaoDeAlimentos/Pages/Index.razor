@@ -108,28 +108,26 @@
     </div>
 </div>
 
-<section class="py-10 bg-light-green position-relative">
-    <!-- Aumentei o padding vertical -->
+<section class="py-10 bg-light-success">
+    <!-- Mudei a classe para bg-light-success -->
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10 text-center">
-                <!-- Aumentei a largura máxima -->
-                <h2 class="display-4 fw-bold mb-4">Transformando Vidas Através da Solidariedade</h2>
-                <p class="lead fs-3 mb-6" style="max-width: 800px; margin: 0 auto;">
-                    <!-- Texto maior e mais largo -->
+                <h2 class="display-4 fw-bold mb-5 text-dark">Transformando Vidas<br>Através da Solidariedade</h2>
+                <p class="lead fs-4 mb-6 text-secondary" style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
                     Cada doação faz a diferença. Veja como nosso trabalho está ajudando a combater a fome e construir um futuro melhor.
                 </p>
 
-                <!-- Container de estatísticas redesenhado -->
-                <div class="d-flex justify-content-center gap-5 mt-6">
-                    <!-- Espaçamento maior entre itens -->
+                <div class="d-flex justify-content-center align-items-center gap-5 mt-7">
                     <div class="stat-item">
-                        <div class="display-3 fw-bold text-success mb-2" id="ongs-count">320</div> <!-- Número maior -->
+                        <div class="display-3 fw-bold text-success mb-2">320</div>
                         <p class="fs-5 text-muted">ONGs Ajudadas</p>
                     </div>
-                    <div class="vertical-divider"></div> <!-- Divisor vertical -->
+
+                    <div class="vertical-divider bg-success bg-opacity-25"></div> <!-- Divisor mais suave -->
+
                     <div class="stat-item">
-                        <div class="display-3 fw-bold text-success mb-2" id="alimentos-doado">12,500</div>
+                        <div class="display-3 fw-bold text-success mb-2">12,500</div>
                         <p class="fs-5 text-muted">Kg de Alimentos</p>
                     </div>
                 </div>
@@ -137,8 +135,9 @@
         </div>
     </div>
 </section>
-<div class="my-5"></div>
-<div class="container">
+
+<div class="container py-5 section-como-doar">
+    <!-- Espaçamento aumentado aqui -->
     <div class="text-center mb-7">
         <h2 class="display-5 fw-bold mb-3">Como Doar Alimentos</h2>
         <p class="lead text-muted mx-auto" style="max-width: 700px;">
@@ -146,6 +145,7 @@
         </p>
     </div>
     <div class="row g-4 mt-2">
+        <!-- Card 1 - Cadastre-se -->
         <div class="col-lg-4">
             <div class="card border-0 shadow-sm h-100 hover-lift">
                 <div class="card-body p-5 text-center">
@@ -165,10 +165,11 @@
             </div>
         </div>
 
+        <!-- Card 2 - Registre sua Doação -->
         <div class="col-lg-4">
             <div class="card border-0 shadow-sm h-100 hover-lift">
                 <div class="card-body p-5 text-center">
-                    <div class="icon-stack icon-stack-xl bg-primary bg-opacity-10 text-primary mb-4 mx-auto">
+                    <div class="icon-stack icon-stack-xl bg-success bg-opacity-10 text-success mb-4 mx-auto">
                         <span class="fs-2 fw-bold">2</span>
                     </div>
                     <h4 class="mb-3">Registre sua Doação</h4>
@@ -177,17 +178,18 @@
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0 pt-0 text-center">
-                    <a href="/CadastroDeDoacao" class="btn btn-sm btn-outline-primary">
+                    <a href="/CadastroDeDoacao" class="btn btn-sm btn-outline-success">
                         Doar Alimentos <i class="bi bi-arrow-right ms-2"></i>
                     </a>
                 </div>
             </div>
         </div>
 
+        <!-- Card 3 - Combine a Entrega -->
         <div class="col-lg-4">
             <div class="card border-0 shadow-sm h-100 hover-lift">
                 <div class="card-body p-5 text-center">
-                    <div class="icon-stack icon-stack-xl bg-warning bg-opacity-10 text-warning mb-4 mx-auto">
+                    <div class="icon-stack icon-stack-xl bg-success bg-opacity-10 text-success mb-4 mx-auto">
                         <span class="fs-2 fw-bold">3</span>
                     </div>
                     <h4 class="mb-3">Combine a Entrega</h4>
@@ -196,7 +198,7 @@
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0 pt-0 text-center">
-                    <a href="/ComoFunciona" class="btn btn-sm btn-outline-warning">
+                    <a href="/ComoFunciona" class="btn btn-sm btn-outline-success">
                         Saiba Mais <i class="bi bi-arrow-right ms-2"></i>
                     </a>
                 </div>
@@ -204,6 +206,7 @@
         </div>
     </div>
 </div>
+
 <div class="my-5"></div>
 <footer class="bg-dark text-white pt-5 pb-4 mt-5">
     <div class="container">
