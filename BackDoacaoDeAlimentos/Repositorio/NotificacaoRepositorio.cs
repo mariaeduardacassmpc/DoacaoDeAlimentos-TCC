@@ -1,6 +1,5 @@
 ﻿using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using System.Data;
-using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
 using Dapper;
 using System.Collections.Generic;

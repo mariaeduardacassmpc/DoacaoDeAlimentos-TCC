@@ -30,21 +30,11 @@
                                 <li><NavLink class="dropdown-item" href="/CadastroDeAlimentos">Alimento</NavLink></li>
                             </ul>
                         </li>
-
-                        @if (TipoUsuario == "F" || TipoUsuario == "J")
-                        {
-                            <li class="nav-item mx-2">
-                                <NavLink class="nav-link" href="/MinhasDoacoes">Minhas Doações</NavLink>
-                            </li>
-                        }
                         
-                        @if (TipoUsuario == "O")
-                        {
-                            <li class="nav-item mx-2">
-                                <NavLink class="nav-link" href="/DoacoesRecebidas">Doações Recebidas</NavLink>
-                            </li>
-                        }
-
+                         <li class="nav-item mx-2">
+                                <NavLink class="nav-link" href="/MinhasDoacoes">Minhas Doações</NavLink>
+                         </li>
+                        
                         <li class="nav-item mx-2">
                             <NavLink class="nav-link" href="/Geolocalizacao">Geolocalização</NavLink>
                         </li>
@@ -63,7 +53,6 @@
     
     <div class="main-content">
         <BlazoredToast />
-        <BlazoredModal />
         @Body
     </div>
 </div>

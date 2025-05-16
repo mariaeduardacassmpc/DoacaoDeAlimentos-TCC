@@ -1,6 +1,5 @@
 ﻿using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using Microsoft.AspNetCore.Mvc;
-using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Controllers
@@ -14,6 +13,13 @@ namespace BackDoacaoDeAlimentos.Controllers
         public EntidadeController(IEntidadeService entidadeService)
         {
             _entidadeService = entidadeService;
+        }
+
+        [HttpGet("ongs/cidade/{cidade}")]
+        public async Task<IActionResult> GetOngsPorCidade(string cidade)
+        {
+            var ongs = await _entidadeService.BuscarOngsPorCidade(cidade);
+            return Ok(ongs);
         }
 
         [HttpGet("obterTodas")]

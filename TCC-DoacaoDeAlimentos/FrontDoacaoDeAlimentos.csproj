@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="Models\**" />
+    <Compile Remove="wwwroot\NovaPasta\**" />
     <Content Remove="Models\**" />
+    <Content Remove="wwwroot\NovaPasta\**" />
     <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="wwwroot\NovaPasta\**" />
     <None Remove="Models\**" />
+    <None Remove="wwwroot\NovaPasta\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +32,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TCCDoacaoDeAlimentos.Shared\TCCDoacaoDeAlimentos.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\NovaPasta1\" />
   </ItemGroup>
 
 </Project>

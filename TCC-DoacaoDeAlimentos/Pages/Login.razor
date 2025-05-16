@@ -18,7 +18,7 @@
                             <p class="text-muted">Entre para gerenciar suas doações</p>
                         </div>
 
-                        <EditForm Model="@usuario" OnValidSubmit="@HandleLogin">
+                        <EditForm Model="@usuario">
                             <DataAnnotationsValidator />
                             <ValidationSummary />
 
@@ -82,7 +82,7 @@
     [Inject]
     private NavigationManager NavigationManager { get; set; }
     // [Inject] private IUsuarioService UsuarioService { get; set; }
-    [Inject] private AuthService authService { get; set; }
+    // [Inject] private AuthService authService { get; set; }
    
     private bool exibirModalCadastro = false;
 
@@ -109,24 +109,24 @@
             NavigationManager.NavigateTo("/cadastro-ong");
         }
     }
-    private async Task HandleLogin()
-    {
-        try
-        {
-            var usuarioAutenticado = await UsuarioService.AutenticarUsuarioAsync(usuario.Email, usuario.Senha);
+    // private async Task HandleLogin()
+    // {
+    //     try
+    //     {
+    //         var usuarioAutenticado = await UsuarioService.AutenticarUsuarioAsync(usuario.Email, usuario.Senha);
 
-            if (usuarioAutenticado != null)
-            {
-                AuthService.Logar(usuarioAutenticado);
-                NavigationManager.NavigateTo("/"); 
-            }
-            else
-            {
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro no login: {ex.Message}");
-        }
-    }
+    //         if (usuarioAutenticado != null)
+    //         {
+    //             AuthService.Logar(usuarioAutenticado);
+    //             NavigationManager.NavigateTo("/"); 
+    //         }
+    //         else
+    //         {
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine($"Erro no login: {ex.Message}");
+    //     }
+    // }
 }

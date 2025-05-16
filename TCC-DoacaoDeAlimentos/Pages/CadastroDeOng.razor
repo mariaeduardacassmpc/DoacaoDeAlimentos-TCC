@@ -1,5 +1,5 @@
 ﻿@page "/CadastroDeOng"
-@using TCCDoacaoDeAlimentos.Models
+@using TCCDoacaoDeAlimentos.Shared.Models;
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
 
@@ -146,16 +146,7 @@
             ong.Telefone = RemoveMask(ong.Telefone);
             ong.CEP = RemoveMask(ong.CEP);
 
-
-            // Lógica para enviar os dados para a API
-            // await Http.PostAsJsonAsync("api/ongs", ong);
-
-
-            // Mostra mensagem de sucesso
             await JSRuntime.InvokeVoidAsync("alert", "Cadastro realizado com sucesso!");
-
-
-            // Redireciona para a home
             Navigation.NavigateTo("/");
         }
 

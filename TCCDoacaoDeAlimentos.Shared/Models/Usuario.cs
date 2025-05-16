@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TCCDoacaoDeAlimentos.Models;
 
 namespace TCCDoacaoDeAlimentos.Shared.Models
 {

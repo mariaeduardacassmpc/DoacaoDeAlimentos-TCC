@@ -5,7 +5,6 @@ using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using BackDoacaoDeAlimentos.Repositorios;
 using Microsoft.AspNetCore.Http.HttpResults;
-using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Services

@@ -1,8 +1,8 @@
 ﻿using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using System.Data;
-using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
 using Dapper;
+using System.Data.Common;
 namespace BackDoacaoDeAlimentos.Repositorios
 {
     public class EntidadeRepositorio : IEntidadeRepositorio
@@ -50,5 +50,13 @@ namespace BackDoacaoDeAlimentos.Repositorios
             var sql = "DELETE FROM CadastroEntidade WHERE Id = @Id";
             await _db.ExecuteAsync(sql, new { Id = id });
         }
+
+        public async Task<IEnumerable<Entidade>> BuscarOngsPorCidade(string cidade)
+        {
+            var sql = "SELECT Id, Nome, Cidade, Latitude, Longitude FROM Ongs WHERE Cidade = @Cidade";
+
+            return await _db.QueryAsync<Entidade>(sql, new { Cidade = cidade });
+        }
     }
+   
 }

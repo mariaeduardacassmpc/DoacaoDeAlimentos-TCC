@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using BackDoacaoDeAlimentos.Servicos;
-using TCCDoacaoDeAlimentos.Models;
 
 namespace BackDoacaoDeAlimentos.Controllers
 {

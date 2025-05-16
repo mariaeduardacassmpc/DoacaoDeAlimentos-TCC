@@ -1,5 +1,4 @@
-﻿using TCCDoacaoDeAlimentos.Models;
-using TCCDoacaoDeAlimentos.Shared.Models;
+﻿using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Interfaces.Servicos
 {
@@ -10,5 +9,6 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
         Task<IEnumerable<Entidade>> ObterTodasEntidades();
         Task AtualizarEntidade(Entidade entidade);
         Task DeletarEntidade(int id);
+        Task<IEnumerable<Entidade>> BuscarOngsPorCidade(string cidade);
     }
 }

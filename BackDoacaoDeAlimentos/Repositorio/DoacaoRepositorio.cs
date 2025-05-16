@@ -71,10 +71,10 @@ public class DoacaoRepositorio : IDoacaoRepositorio
         {
             sql += " AND Status = @Status";
         }
-        if (filtroDoacaoDto.DataDoacao.HasValue)
-        {
-            sql += " AND DataDoacao = @DataDoacao";
-        }
+        //if (filtroDoacaoDto.DataDoacao.HasValue)
+        //{
+        //    sql += " AND DataDoacao = @DataDoacao";
+        //}
         
         return await _db.QueryAsync<Doacao>(sql, filtroDoacaoDto);
     }

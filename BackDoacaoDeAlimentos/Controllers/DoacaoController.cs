@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Controllers
@@ -17,8 +16,8 @@ namespace BackDoacaoDeAlimentos.Controllers
             _doacaoService = doacaoService;
         }
 
-        [HttpGet("filtrarDoacao")]
-        public async Task<IActionResult> ObterTodasPorEntidade([FromQuery] FiltroDoacaoDto filtroDoacaoDto)
+        [HttpPost("filtrarDoacao")]
+        public async Task<IActionResult> ObterTodasPorEntidade([FromBody] FiltroDoacaoDto filtroDoacaoDto)
         {
             var doacoes = await _doacaoService.ObterDoacoesComFiltro(filtroDoacaoDto);
             if (doacoes == null)

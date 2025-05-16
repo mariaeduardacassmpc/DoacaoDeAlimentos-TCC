@@ -1,6 +1,5 @@
 ﻿using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
-using TCCDoacaoDeAlimentos.Models;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Servicos
@@ -72,6 +71,14 @@ namespace BackDoacaoDeAlimentos.Servicos
             {
                 throw new Exception($"Erro ao remover Entidade. ", ex);
             }
+        }
+
+        public async Task<IEnumerable<Entidade>> BuscarOngsPorCidade(string cidade)
+        {
+            if (string.IsNullOrWhiteSpace(cidade))
+                throw new ArgumentException("Cidade inválida.");
+
+            return await _entidadeRepositorio.BuscarOngsPorCidade(cidade);
         }
     }
 }

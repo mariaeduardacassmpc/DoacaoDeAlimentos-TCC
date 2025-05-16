@@ -1,5 +1,6 @@
 ﻿@page "/CadastroDeDoacao"
 @using TCCDoacaoDeAlimentos.Shared.Models
+
 @inject NavigationManager Navigation
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
@@ -21,32 +22,30 @@
                             </div>
                         }
 
-                        @* <EditForm Model="@NovaDoacao" OnValidSubmit="@SalvarDoacao"> *@
-                        @*     <DataAnnotationsValidator /> *@
-                        @*     <ValidationSummary /> *@
+                        <EditForm Model="@NovaDoacao" OnValidSubmit="@SalvarDoacao">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
 
-                        @*     <hr /> *@
-
-                        @*     <h2 class="border-bottom pb-2 mb-4 mt-5">Informações da Doação</h2> *@
-
-                        @*     <div class="mb-3"> *@
-                        @*         <label for="ong" class="form-label">ONG Beneficiada</label> *@
-                        @*         <InputSelect @bind-Value="NovaDoacao.IdOng" class="form-control" id="ong"> *@
-                        @*             <option value="">Selecione a ONG...</option> *@
-                        @*             @foreach (var ong in Ongs) *@
-
-                        @*             { *@
-                        @*                 <option value="@ong.IdOng">@ong.RazaoSocial</option> *@
-                        @*             } *@
-                        @*         </InputSelect> *@
-                        @*         <ValidationMessage For="@(() => NovaDoacao.IdOng)" /> *@
-                        @*     </div> *@
-
+                            <hr />
+                            <h2 class="border-bottom pb-2 mb-4 mt-5">Informações da Doação</h2>
                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-8 mb-3">
+                                    <label for="entidade" class="form-label">ONG Beneficiada</label>
+                                    <InputSelect @bind-Value="NovaDoacao.IdOng" class="form-control" id="entidade">
+                                        <option value="">Selecione a ONG...</option>
+                                        @foreach (var ong in Ongs)
+                                        {
+                                            <option value="@ong.Id">@ong.RazaoSocial</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => NovaDoacao.IdOng)" />
+                                </div>
+
+                                <div class="col-md-4 mb-3">
                                     <label for="dataDoacao" class="form-label">Data da Doação</label>
                                     <InputDate @bind-Value="NovaDoacao.DataDoacao" class="form-control" id="dataDoacao" />
                                     <ValidationMessage For="@(() => NovaDoacao.DataDoacao)" />
+
                                 </div>
                             </div>
 
@@ -58,13 +57,12 @@
                             <h3 class="border-bottom pb-2 mb-4 mt-5">Itens da Doação</h3>
 
                             @foreach (var item in Itens)
-
                             {
                                 <div class="border p-3 mb-4 rounded bg-light position-relative">
                                     <button type="button" class="btn-close position-absolute top-0 end-0 m-2" @onclick="() => RemoverItem(item)" title="Remover Item"></button>
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label for="alimento" class="form-label">Alimento</label>
+                                            <label class="form-label">Alimento</label>
                                             <InputSelect @bind-Value="item.AlimentoId" class="form-control">
                                                 <option value="">Selecione o alimento...</option>
                                                 @foreach (var alimento in Alimentos)
@@ -72,25 +70,35 @@
                                                     <option value="@alimento.Id">@alimento.Nome (@alimento.Categoria)</option>
                                                 }
                                             </InputSelect>
-                                            <ValidationMessage For="@(() => item.AlimentoId)" />
+                                            @if (erroSalvar && item.AlimentoId == 0)
+                                            {
+                                                <div class="text-danger">Alimento é obrigatório.</div>
+                                            }
                                         </div>
 
                                         <div class="col-md-3">
-                                            <label for="quantidade" class="form-label">Quantidade</label>
+                                            <label class="form-label">Quantidade</label>
                                             <InputNumber @bind-Value="item.Quantidade" class="form-control" min="1" />
-                                            <ValidationMessage For="@(() => item.Quantidade)" />
+                                            @if (erroSalvar && item.Quantidade <= 0)
+                                            {
+                                                <div class="text-danger">Quantidade deve ser maior que 0.</div>
+                                            }
                                         </div>
 
                                         <div class="col-md-3">
-                                            <label for="unidade" class="form-label">Unidade</label>
+                                            <label class="form-label">Unidade</label>
                                             <InputSelect @bind-Value="item.UnidadeMedida" class="form-control">
+                                                <option value="">Selecione...</option>
                                                 <option value="Kg">Kg</option>
                                                 <option value="g">g</option>
                                                 <option value="L">L</option>
                                                 <option value="ml">ml</option>
                                                 <option value="Unidades">Unidades</option>
                                             </InputSelect>
-                                            <ValidationMessage For="@(() => item.UnidadeMedida)" />
+                                            @if (erroSalvar && string.IsNullOrWhiteSpace(item.UnidadeMedida))
+                                            {
+                                                <div class="text-danger">Unidade é obrigatória.</div>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -107,7 +115,7 @@
                                     Salvar Doação
                                 </button>
                             </div>
-                        @* </EditForm> *@
+                        </EditForm>
                     </div>
                 </div>
             </div>
@@ -120,7 +128,7 @@
 
     private List<AlimentoDoacao> Itens { get; set; } = new();
 
-    private List<CadastroDeDoador> Ongs { get; set; } = new();
+    private List<Entidade> Ongs { get; set; } = new();
 
     private List<Alimento> Alimentos { get; set; } = new();
 
@@ -128,95 +136,45 @@
 
     private string mensagemErro = string.Empty;
 
-    private static List<Doacao> DoacoesSalvas { get; set; } = new();
-
-    // protected override void OnInitialized()
-    // {
-        // Dados mockados
-        // Ongs = new List<Ong>
-        // {
-        //     new Ong { IdOng = 1, RazaoSocial = "ONG Ajuda Comunitária" },
-        //     new Ong { IdOng = 2, RazaoSocial = "ONG Alimento para Todos" }
-        // };
-
-    //     Alimentos = new List<Alimento>
-    //     {
-    //         new Alimento { Id = 1, Nome = "Arroz", Categoria = "Grãos" },
-    //         new Alimento { Id = 2, Nome = "Feijão", Categoria = "Grãos" },
-    //         new Alimento { Id = 3, Nome = "Óleo", Categoria = "Condimentos" },
-    //         new Alimento { Id = 4, Nome = "Leite", Categoria = "Laticínios" }
-    //     };
-
-    //     NovaDoacao.Status = StatusDoacao.Pendente;
-    //     NovaDoacao.DataDoacao = DateTime.Today;
-    // }
-
+    protected override void OnInitialized()
+    {
+        // Exemplo de carregamento fake
+        Ongs = new List<Entidade>(); // Carregue com os dados reais
+        Alimentos = new List<Alimento>();
+    }
 
     private void AdicionarItem()
     {
-        Itens.Add(new AlimentoDoacao { Quantidade = 1 }); 
+        Itens.Add(new AlimentoDoacao());
     }
-
 
     private void RemoverItem(AlimentoDoacao item)
     {
         Itens.Remove(item);
     }
 
-
-    private void SalvarDoacao()
+    private async Task SalvarDoacao()
     {
-        try
+        erroSalvar = false;
+        if (NovaDoacao.IdOng == 0 ||
+            NovaDoacao.DataDoacao == default ||
+            Itens.Count == 0 ||
+            Itens.Any(i => i.AlimentoId == 0 || i.Quantidade <= 0 || string.IsNullOrWhiteSpace(i.UnidadeMedida)))
         {
-            // Validação de quantidade mínima
-            foreach (var item in Itens)
-            {
-                if (item.Quantidade < 1)
-                {
-                    throw new Exception($"A quantidade para '{ObterNomeAlimento(item.AlimentoId)}' deve ser no mínimo 1");
-                }
-            }
-
-            // Verifica se há itens
-            if (Itens.Count == 0)
-            {
-                throw new Exception("Adicione pelo menos um item à doação");
-            }
-
-            // Simula um ID único
-            // NovaDoacao.Id = DoacoesSalvas.Count + 1;
-
-            // Associa os itens à doação (cria nova lista para evitar referência)
-            // NovaDoacao.Alimentos = Itens.ToList();
-
-            // Salva na lista estática
-            DoacoesSalvas.Add(NovaDoacao);
-
-            // Redireciona para Minhas Doações
-            Navigation.NavigateTo("/MinhasDoacoes");
+            erroSalvar = true;
+            mensagemErro = "Preencha todos os campos obrigatórios da doação e dos itens.";
+            return;
         }
 
+        try
+        {
+            // Alimentos = await alimentoService.ObterTodosAlimentos();
+            Navigation.NavigateTo("/MinhasDoacoes");
+        }
         catch (Exception ex)
         {
             erroSalvar = true;
-            mensagemErro = ex.Message;
-
-            StateHasChanged();
+            mensagemErro = "Erro ao salvar a doação: " + ex.Message;
         }
     }
-
-
-
-    private string ObterNomeAlimento(int id)
-    {
-        var alimento = Alimentos.FirstOrDefault(a => a.Id == id);
-        return alimento?.Nome ?? "Item selecionado";
-    }
-
-
-    // Método para acessar as doações salvas (usado pela página MinhasDoacoes)
-    // public static List<Doacao> ObterDoacoesSalvas()
-    // {
-    //     return DoacoesSalvas;
-    // }
 }

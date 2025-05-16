@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using System.Data.Common;
 using TCCDoacaoDeAlimentos.Shared.Models;
-using TCCDoacaoDeAlimentos.Models;
 
 namespace BackDoacaoDeAlimentos.Repositorio
 {

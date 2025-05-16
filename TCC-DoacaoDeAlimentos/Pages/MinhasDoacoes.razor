@@ -3,6 +3,7 @@
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @* @inject AuthenticationStateProvider AuthenticationStateProvider *@
+@using TCCDoacaoDeAlimentos.Shared.Models;
 
 <div class="min-vh-100" style="background-color: #d4edda;">
     <div class="container py-5">
@@ -14,7 +15,7 @@
                             <h1 class="card-title mb-0">
                                 @(TipoUsuario == "O" ? "Doações Recebidas" : "Minhas Doações")
                             </h1>
-                            @if (TipoUsuario == "F")
+                            @if (TipoUsuario == "F" || TipoUsuario == "J")
                             {
                                 <button class="btn btn-success" @onclick="NavigateToCadastro">
                                     <i class="bi bi-plus-circle me-2"></i>Nova Doação
@@ -31,7 +32,7 @@
                                         <option value="">Todas</option>
                                         @foreach (var ong in ListaDeOngs)
                                         {
-                                            <option value="@ong.Id.ToString()">@ong.Nome</option>
+                                            <option value="@ong.Id.ToString()">@ong.NomeFantasia</option>
                                         }
                                     </select>
                                 </div>
@@ -116,7 +117,7 @@
 @code {
     private FiltroDoacaoDto Filtro { get; set; } = new();
     private List<Doacao> DoacoesSalvas = new();
-    private List<Ong> ListaDeOngs = new();
+    private List<Entidade> ListaDeOngs = new();
     private List<string> ListaDeStatus = new() { "Pendente", "Confirmada", "Cancelada" };
     private string TipoUsuario;
 
@@ -140,83 +141,81 @@
 
     private async Task CarregarDadosIniciais()
     {
-        TipoUsuario = "O";
-        Filtro = new FiltroDoacaoDto
-            {
-                IdDoador = 1 
-            };
-
-        var response = await Http.GetAsync($"api/doacao/filtrarDoacao?IdDoador={Filtro.IdDoador}");
-        if (response.IsSuccessStatusCode)
+        try
         {
-            DoacoesSalvas = await response.Content.ReadFromJsonAsync<List<Doacao>>();
-        }
+            Console.WriteLine("⏳ Iniciando carregamento de dados...");
 
-        ListaDeOngs = await Http.GetFromJsonAsync<List<Ong>>("api/entidade/obterTodas");
+            TipoUsuario = "F";
+            Filtro = new FiltroDoacaoDto
+                {
+                    IdDoador = 1
+                };
+
+            // Exibe o JSON que está sendo enviado
+            var jsonEnviado = System.Text.Json.JsonSerializer.Serialize(Filtro);
+            Console.WriteLine($"📤 Enviando filtro para API: {jsonEnviado}");
+
+            var response = await Http.PostAsJsonAsync("api/doacao/filtrarDoacao", Filtro);
+
+            Console.WriteLine($"📥 Resposta da API: {(int)response.StatusCode} {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                DoacoesSalvas = await response.Content.ReadFromJsonAsync<List<Doacao>>();
+                Console.WriteLine($"✅ Doações carregadas: {DoacoesSalvas.Count}");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"❌ Erro ao carregar doações: {response.StatusCode}");
+                Console.WriteLine($"🔎 Conteúdo do erro: {errorContent}");
+            }
+
+            Console.WriteLine("📡 Carregando lista de ONGs...");
+            ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodas");
+            Console.WriteLine($"✅ ONGs carregadas: {ListaDeOngs.Count}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"🔥 Erro inesperado: {ex.Message}");
+        }
     }
+
 
     private IEnumerable<Doacao> DoacoesFiltradas =>
-        DoacoesSalvas
-            .Where(d => !Filtro.IdOng.HasValue || d.IdOng == Filtro.IdOng.Value)
-            .Where(d => string.IsNullOrEmpty(Filtro.Status) || d.Status == Filtro.Status)
-            .Where(d => !Filtro.DataDoacao.Equals(default(DateTime))
-            ? d.DataDoacao.Date == Filtro.DataDoacao.Date
-            : true)
-            .OrderByDescending(d => d.DataDoacao);
+     DoacoesSalvas
+         .Where(d => !Filtro.IdOng.HasValue || d.IdOng == Filtro.IdOng.Value)
+         .Where(d => !Filtro.Status.HasValue || (int)d.Status == Filtro.Status.Value)
+         .Where(d => Filtro.DataDoacao.HasValue
+             ? d.DataDoacao.Date == Filtro.DataDoacao.Value.Date
+             : true)
+         .OrderByDescending(d => d.DataDoacao);
 
-    private string ObterNomeOng(Guid idOng)
+
+    private string ObterNomeOng(int idOng)
     {
-        return ListaDeOngs.FirstOrDefault(o => o.Id == idOng)?.Nome ?? "Desconhecida";
+        return ListaDeOngs.FirstOrDefault(o => o.Id == idOng)?.NomeFantasia ?? "Desconhecida";
     }
 
-    private string ObterNomeAlimento(Guid alimentoId)
+    private string ObterNomeAlimento(int alimentoId)
     {
         return $"Alimento {alimentoId}";
     }
 
-    private string GetStatusBadgeClass(string status)
+    private string GetStatusBadgeClass(StatusDoacao status)
     {
         return status switch
         {
-            "Pendente" => "bg-warning text-dark",
-            "Confirmada" => "bg-success",
-            "Cancelada" => "bg-danger",
+            StatusDoacao.Pendente => "bg-warning text-dark",
+            StatusDoacao.Finalizada => "bg-success",
+            StatusDoacao.Cancelada => "bg-danger",
             _ => "bg-secondary"
         };
     }
 
-    private void VerDetalhes(Guid idDoacao)
+
+    private void VerDetalhes(int idDoacao)
     {
         // Ação para ver detalhes
-    }
-
-    private class Doacao
-    {
-        public Guid IdDoacao { get; set; }
-        public Guid IdOng { get; set; }
-        public DateTime DataDoacao { get; set; }
-        public string Status { get; set; }
-        public List<DoacaoItem> Alimentos { get; set; } = new();
-    }
-
-    private class DoacaoItem
-    {
-        public Guid AlimentoId { get; set; }
-        public int Quantidade { get; set; }
-        public string UnidadeMedida { get; set; }
-    }
-
-    private class Ong
-    {
-        public Guid Id { get; set; }
-        public string Nome { get; set; }
-    }
-
-    private class FiltroDoacaoDto
-    {
-        public Guid? IdOng { get; set; } 
-        public int IdDoador { get; set; }
-        public string Status { get; set; } 
-        public DateTime DataDoacao { get; set; }
     }
 }

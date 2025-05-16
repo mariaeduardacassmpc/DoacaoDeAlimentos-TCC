@@ -1,14 +1,14 @@
 ﻿@page "/CadastroDeDoador"
-@using TCCDoacaoDeAlimentos.Models
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
+@using TCCDoacaoDeAlimentos.Shared.Models   
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-lg-9">
+            <div class="col-lg-8 col-md-10">
                 <div class="card shadow">
-                    <div class="card-body p-4">
+                    <div class="card-body p-5">
                         <h1 class="card-title text-center">Cadastro de Doador</h1>
                         <h6 class="text-center mb-4">
                             Faça o Cadastro para poder doar
@@ -30,7 +30,6 @@
                             <div class="row mb-3">
                                 <div class="col-md-12">
                                     <label class="form-label">Tipo de Pessoa: *</label>
-                                    <!-- Radio buttons com IDs explícitos -->
                                     <InputRadioGroup @bind-Value="doador.Tipo" Name="TipoPessoa" class="form-check">
                                         <div class="form-check form-check-inline">
                                             <InputRadio Value="true" class="form-check-input" id="pessoaFisica" />
@@ -157,7 +156,6 @@
             }
             catch
             {
-                // Ignora erros silenciosamente
             }
         }
     }
@@ -166,20 +164,11 @@
     {
         try
         {
-            // Remover máscaras antes de enviar
             doador.CNPJ_CPF = RemoveMask(doador.CNPJ_CPF);
             doador.Telefone = RemoveMask(doador.Telefone);
             doador.CEP = RemoveMask(doador.CEP);
 
-            // Aqui você colocaria a lógica para enviar os dados para a API
-            // await Http.PostAsJsonAsync("api/doadores", doador);
-
-
-
-            // Mostra mensagem de sucesso
             await JSRuntime.InvokeVoidAsync("alert", "Cadastro realizado com sucesso!");
-
-            // Redireciona para a home
             Navigation.NavigateTo("/");
 
         }

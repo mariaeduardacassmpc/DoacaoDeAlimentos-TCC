@@ -1,11 +1,47 @@
-﻿@page "/Geolocalizacao"
+﻿@page "/geolocalizacao"
+@inject IJSRuntime JS
 
-<div class="min-vh-100" style="background-color: #d4edda;">
+<h3>Mapa de localização</h3>
 
-</div>
+<div id="map" style="height: 400px;"></div>
 
-
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color:red">@errorMessage</p>
+}
 
 @code {
+    private string errorMessage;
+    private double userLat;
+    private double userLng;
+    private bool mapCarregado = false;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                await Task.Delay(10000); // Dá tempo para o DOM carregar
+
+                var pos = await JS.InvokeAsync<Location>("getUserLocation");
+                userLat = pos.Lat;
+                userLng = pos.Lng;
+
+                await JS.InvokeVoidAsync("initializeMap", userLat, userLng);
+                mapCarregado = true;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Erro ao obter localização: {ex.Message}";
+                StateHasChanged();
+            }
+        }
+    }
+
+    private class Location
+    {
+        public double Lat { get; set; }
+        public double Lng { get; set; }
+    }
 }
