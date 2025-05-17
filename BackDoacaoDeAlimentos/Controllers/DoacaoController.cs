@@ -16,6 +16,16 @@ namespace BackDoacaoDeAlimentos.Controllers
             _doacaoService = doacaoService;
         }
 
+        [HttpPost("obterEstatisticas")]
+        public async Task<IActionResult> obterEstatisticas()
+        {
+            var doacoes = await _doacaoService.ObterEstatisticas();
+            if (doacoes == null)
+                return NotFound();
+
+            return Ok(doacoes);
+        }
+
         [HttpPost("filtrarDoacao")]
         public async Task<IActionResult> ObterTodasPorEntidade([FromBody] FiltroDoacaoDto filtroDoacaoDto)
         {

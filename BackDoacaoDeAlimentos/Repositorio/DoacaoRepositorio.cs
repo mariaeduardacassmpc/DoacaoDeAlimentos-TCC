@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
+using TCCDoacaoDeAlimentos.Shared.Dto;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 public class DoacaoRepositorio : IDoacaoRepositorio
@@ -77,5 +78,16 @@ public class DoacaoRepositorio : IDoacaoRepositorio
         //}
         
         return await _db.QueryAsync<Doacao>(sql, filtroDoacaoDto);
+    }
+
+    public async Task<EstatisticasDto> ObterEstatisticas()
+    {
+        var sql = @"
+            SELECT 
+                (SELECT COUNT(DISTINCT IdOng) FROM Doacoes WHERE Status = 'Entregue') AS TotalOngsAjudadas,
+                (SELECT SUM(PesoKg) FROM Doacoes WHERE Status = 'Entregue') AS TotalKgAlimentosDoado
+        ";
+
+        return await _db.QueryFirstOrDefaultAsync<EstatisticasDto>(sql);
     }
 }

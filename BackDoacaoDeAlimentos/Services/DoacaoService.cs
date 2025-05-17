@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Threading.Tasks;
+using TCCDoacaoDeAlimentos.Shared.Dto;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 public class DoacaoService : IDoacaoService
@@ -93,6 +95,18 @@ public class DoacaoService : IDoacaoService
         catch (Exception ex)
         {
             throw new Exception($"Não foi possível obter as doações do doador com ID {filtroDoacaoDto}. Por favor, verifique o ID e tente novamente.", ex);
+        }
+    }
+
+    public async Task<EstatisticasDto> ObterEstatisticas()
+    {
+        try
+        {
+            return await _doacaoRepositorio.ObterEstatisticas();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Não foi possível obter as estatisticas");
         }
     }
 }

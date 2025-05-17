@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TCCDoacaoDeAlimentos.Shared.Dto;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 public interface IDoacaoRepositorio
@@ -10,4 +11,5 @@ public interface IDoacaoRepositorio
     Task<IEnumerable<Doacao>> ObterTodasDoacao();
     Task AtualizarDoacao(Doacao doacao);
     Task DeletarDoacao(int id);
+    Task<EstatisticasDto> ObterEstatisticas();
 }
