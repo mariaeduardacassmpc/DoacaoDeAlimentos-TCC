@@ -7,11 +7,12 @@ public class Entidade
 {
     [Key]
     public int Id { get; set; }
+    [Required(ErrorMessage = "O tipo de pessoa é obrigatório.")]
     public TipoEntidade Tipo { get; set; }
 
     [Required(ErrorMessage = "Nome é obrigatório.")]
     [StringLength(100, ErrorMessage = "Máximo de 100 caracteres.")]
-    public string NomeFantasia { get; set; }
+    public string RazaoSocial { get; set; }
 
     [Required(ErrorMessage = "Documento é obrigatório.")]
     [CustomValidation(typeof(Entidade), "ValidateDocumento")]
@@ -40,22 +41,19 @@ public class Entidade
     [Required(ErrorMessage = "O e-mail é obrigatório.")]
     [EmailAddress(ErrorMessage = "E-mail inválido.")]
     public string Email { get; set; }
-    public string? Sexo { get; set; }          
+    public string? Sexo { get; set; }
     public string? Responsavel { get; set; }
-    [StringLength(100, ErrorMessage = "Máximo de 100 caracteres.")]
-    public string? RazaoSocial { get; set; }
-
 
     public static ValidationResult ValidateDocumento(string documento, ValidationContext context)
     {
-        var doador = (Entidade)context.ObjectInstance;
+        var entidade = (Entidade)context.ObjectInstance;
 
-        if (doador.Tipo == TipoEntidade.F) 
+        if (entidade.Tipo == TipoEntidade.F)
         {
             if (!System.Text.RegularExpressions.Regex.IsMatch(documento, @"^\d{3}\.\d{3}\.\d{3}\-\d{2}$"))
                 return new ValidationResult("CPF deve estar no formato 000.000.000-00");
         }
-        else if (doador.Tipo == TipoEntidade.J || doador.Tipo == TipoEntidade.O) 
+        else // Para ONG (O) e Pessoa Jurídica (J) usamos CNPJ
         {
             if (!System.Text.RegularExpressions.Regex.IsMatch(documento, @"^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$"))
                 return new ValidationResult("CNPJ deve estar no formato 00.000.000/0000-00");

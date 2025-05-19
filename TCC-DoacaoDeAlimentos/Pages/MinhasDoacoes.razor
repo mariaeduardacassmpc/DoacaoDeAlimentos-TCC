@@ -32,7 +32,7 @@
                                         <option value="">Todas</option>
                                         @foreach (var ong in ListaDeOngs)
                                         {
-                                            <option value="@ong.Id.ToString()">@ong.NomeFantasia</option>
+                                            <option value="@ong.Id.ToString()">@ong.RazaoSocial</option>
                                         }
                                     </select>
                                 </div>
@@ -194,7 +194,7 @@
 
     private string ObterNomeOng(int idOng)
     {
-        return ListaDeOngs.FirstOrDefault(o => o.Id == idOng)?.NomeFantasia ?? "Desconhecida";
+        return ListaDeOngs.FirstOrDefault(o => o.Id == idOng)?.RazaoSocial ?? "Desconhecida";
     }
 
     private string ObterNomeAlimento(int alimentoId)

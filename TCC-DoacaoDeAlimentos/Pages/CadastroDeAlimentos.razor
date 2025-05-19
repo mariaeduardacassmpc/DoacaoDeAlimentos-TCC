@@ -5,7 +5,6 @@
 @inject Blazored.Toast.Services.IToastService ToastService
 @using TCCDoacaoDeAlimentos.Shared.Models;
 
-
 <div class="min-vh-100 py-5" style="background-color: #d4edda;">
     <div class="container text-center my-5">
         <h1>Cadastro de Alimentos</h1>
@@ -18,7 +17,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Adicionar Novo Alimento</h5>
 
-                        <EditForm Model="@NovoAlimento" OnValidSubmit="@CadastrarAlimento" >
+                        <EditForm Model="@NovoAlimento" OnValidSubmit="@CadastrarAlimento">
                             <DataAnnotationsValidator />
                             <ValidationSummary />
 
@@ -46,7 +45,7 @@
                                 <label for="descricao" class="form-label">Descrição <small class="text-muted">(opcional)</small></label>
                                 <InputTextArea id="descricao" @bind-Value="NovoAlimento.Descricao" class="form-control" placeholder="Ex: Alimento Perecível." />
                             </div>
-                            <button class="btn btn-success w-100" @onclick="CadastrarAlimento">Cadastrar Alimento</button>
+                            <button type="submit" class="btn btn-success w-100">Cadastrar Alimento</button>
                         </EditForm>
                     </div>
                 </div>
@@ -99,7 +98,6 @@
     </div>
 </div>
 
-
 @code {
     private Alimento NovoAlimento { get; set; } = new Alimento();
     private List<Alimento> alimentos;
@@ -107,9 +105,15 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await CarregarAlimentos();
+    }
+
+    private async Task CarregarAlimentos()
+    {
         try
         {
             alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimento");
+            StateHasChanged();
         }
         catch (Exception ex)
         {
@@ -121,16 +125,17 @@
     {
         try
         {
-            var response = await Http.PostAsJsonAsync("api/alimento", NovoAlimento);
+            // Corrija a URL para incluir "/adicionar"
+            var response = await Http.PostAsJsonAsync("api/alimento/adicionar", NovoAlimento);
+
             if (response.IsSuccessStatusCode)
             {
+                // Recebe o alimento cadastrado
                 var alimentoRetornado = await response.Content.ReadFromJsonAsync<Alimento>();
-                alimentos.Add(alimentoRetornado ?? NovoAlimento);
+                alimentos.Add(alimentoRetornado);
                 NovoAlimento = new Alimento();
                 ToastService.ShowSuccess("Alimento cadastrado com sucesso!");
-
-                Mensagem = "Dados do formulario salvos.";
-
+                StateHasChanged();
             }
             else
             {
@@ -151,8 +156,8 @@
             var response = await Http.DeleteAsync($"api/alimento/{alimento.Id}");
             if (response.IsSuccessStatusCode)
             {
-                alimentos.Remove(alimento);
                 ToastService.ShowSuccess("Alimento removido com sucesso!");
+                await CarregarAlimentos(); // Recarrega a lista após remoção
             }
             else
             {
@@ -165,5 +170,4 @@
             ToastService.ShowError("Erro inesperado: " + ex.Message);
         }
     }
-
 }

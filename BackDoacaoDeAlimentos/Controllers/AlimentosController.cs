@@ -40,8 +40,18 @@ namespace BackDoacaoDeAlimentos.Controllers
         [HttpPost("adicionar")]
         public async Task<IActionResult> Adicionar([FromBody] Alimento alimento)
         {
-            await _alimentoService.AdicionarAlimento(alimento);
-            return Ok();
+            try
+            {
+                await _alimentoService.AdicionarAlimento(alimento);
+
+                // Retorna o alimento com ID gerado
+                var alimentoCadastrado = await _alimentoService.ObterAlimentoPorId(alimento.Id);
+                return CreatedAtAction(nameof(ObterPorId), new { id = alimento.Id }, alimentoCadastrado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("deletar/{id}")]

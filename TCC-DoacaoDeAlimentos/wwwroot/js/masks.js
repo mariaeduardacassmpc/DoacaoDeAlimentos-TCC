@@ -48,9 +48,6 @@ if (typeof window !== 'undefined') {
     window.applyOngMasks = applyOngMasks;
 }
 
-// Funções de máscara para Doador
-    // wwwroot/js/masks.js - CÓDIGO COMPLETO E FUNCIONAL
-
     function applyDoadorMasks() {
         // Função auxiliar segura para selecionar elementos
         function getElement(id) {
@@ -60,8 +57,13 @@ if (typeof window !== 'undefined') {
         // Verifica se é pessoa física (com fallback seguro)
         function isPessoaFisica() {
             try {
-                const radio = getElement('pessoaFisica');
-                return radio ? radio.checked : true;
+                // Verifica qual radio button está selecionado
+                const fisica = getElement('pessoaFisica');
+                const juridica = getElement('pessoaJuridica');
+
+                if (fisica && fisica.checked) return true;
+                if (juridica && juridica.checked) return false;
+                return true; // default
             } catch {
                 return true;
             }

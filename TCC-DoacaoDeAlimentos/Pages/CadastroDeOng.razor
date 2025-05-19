@@ -1,5 +1,5 @@
 ﻿@page "/CadastroDeOng"
-@using TCCDoacaoDeAlimentos.Shared.Models;
+@using TCCDoacaoDeAlimentos.Shared.Models
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
 
@@ -16,7 +16,6 @@
 
                         <EditForm Model="@ong" OnValidSubmit="HandleValidSubmit">
                             <DataAnnotationsValidator />
-                            <ValidationSummary />
 
                             <hr />
 
@@ -28,7 +27,7 @@
                                            class="form-control"
                                            id="ong-razaoSocial"
                                            placeholder="Nome da sua organização" />
-                                <ValidationMessage For="@(() => ong.RazaoSocial)" />
+                                <ValidationMessage For="@(() => ong.RazaoSocial)" class="text-danger" />
                             </div>
 
                             <div class="mb-3">
@@ -39,7 +38,7 @@
                                        class="form-control"
                                        id="cnpj"
                                        placeholder="00.000.000/0000-00" />
-                                <ValidationMessage For="@(() => ong.CNPJ_CPF)" />
+                                <ValidationMessage For="@(() => ong.CNPJ_CPF)" class="text-danger" />
                             </div>
 
                             <div class="row">
@@ -49,7 +48,7 @@
                                                class="form-control"
                                                id="email"
                                                placeholder="contato@ong.org" />
-                                    <ValidationMessage For="@(() => ong.Email)" />
+                                    <ValidationMessage For="@(() => ong.Email)" class="text-danger" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="phone" class="form-label">Telefone *</label>
@@ -59,7 +58,7 @@
                                            class="form-control"
                                            id="phone"
                                            placeholder="(00) 00000-0000" />
-                                    <ValidationMessage For="@(() => ong.Telefone)" />
+                                    <ValidationMessage For="@(() => ong.Telefone)" class="text-danger" />
                                 </div>
                             </div>
 
@@ -69,7 +68,7 @@
                                            class="form-control"
                                            id="responsible-name"
                                            placeholder="Nome completo do responsável" />
-                                <ValidationMessage For="@(() => ong.Responsavel)" />
+                                <ValidationMessage For="@(() => ong.Responsavel)" class="text-danger" />
                             </div>
 
                             <div class="row">
@@ -81,7 +80,7 @@
                                            class="form-control"
                                            id="cep"
                                            placeholder="00000-000" />
-                                    <ValidationMessage For="@(() => ong.CEP)" />
+                                    <ValidationMessage For="@(() => ong.CEP)" class="text-danger" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="cidade" class="form-label">Cidade *</label>
@@ -89,7 +88,7 @@
                                                class="form-control"
                                                id="cidade"
                                                placeholder="Sua cidade" />
-                                    <ValidationMessage For="@(() => ong.Cidade)" />
+                                    <ValidationMessage For="@(() => ong.Cidade)" class="text-danger" />
                                 </div>
                             </div>
 
@@ -99,7 +98,7 @@
                                            class="form-control"
                                            id="endereco"
                                            placeholder="Endereço completo" />
-                                <ValidationMessage For="@(() => ong.Endereco)" />
+                                <ValidationMessage For="@(() => ong.Endereco)" class="text-danger" />
                             </div>
 
                             <div class="mb-3">
@@ -108,7 +107,7 @@
                                            class="form-control"
                                            id="bairro"
                                            placeholder="Bairro" />
-                                <ValidationMessage For="@(() => ong.Bairro)" />
+                                <ValidationMessage For="@(() => ong.Bairro)" class="text-danger" />
                             </div>
 
                             <div class="d-grid">
@@ -124,9 +123,8 @@
     </div>
 </div>
 
-
 @code {
-    private Entidade ong = new Entidade();
+    private Entidade ong = new Entidade() { Tipo = Entidade.TipoEntidade.O };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -136,12 +134,11 @@
         }
     }
 
-
     private async Task HandleValidSubmit()
     {
         try
         {
-            //remove máscaras antes de enviar
+            // Remove máscaras antes de enviar
             ong.CNPJ_CPF = RemoveMask(ong.CNPJ_CPF);
             ong.Telefone = RemoveMask(ong.Telefone);
             ong.CEP = RemoveMask(ong.CEP);
@@ -149,26 +146,19 @@
             await JSRuntime.InvokeVoidAsync("alert", "Cadastro realizado com sucesso!");
             Navigation.NavigateTo("/");
         }
-
         catch (Exception ex)
         {
             await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar: {ex.Message}");
         }
     }
 
-
     private string RemoveMask(string value)
     {
         return value?.Replace(".", "")
-
                    .Replace("/", "")
-
                    .Replace("-", "")
-
                    .Replace("(", "")
-
                    .Replace(")", "")
-
                    .Replace(" ", "");
     }
 }
