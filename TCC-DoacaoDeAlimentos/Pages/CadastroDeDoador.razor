@@ -32,15 +32,15 @@
                                 <div class="col-md-6">
                                     <label class="form-label">Senha *</label>
                                     <div class="position-relative">
-                                        <InputText type="password"
+                                        <InputText type="@(_showPassword ? "text" : "password")"
                                                    @bind-Value="doador.Senha"
                                                    class="form-control pe-5"
                                                    placeholder="Digite sua senha"
                                                    id="senhaDoador" />
                                         <button type="button"
                                                 class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
-                                                @onclick="@(() => TogglePassword("senhaDoador"))">
-                                            <i class="fas fa-eye text-success"></i>
+                                                @onclick="ToggleAllPasswords">
+                                            <i class="@(_showPassword ? "fas fa-eye-slash" : "fas fa-eye") text-success"></i>
                                         </button>
                                     </div>
                                     <ValidationMessage For="@(() => doador.Senha)" class="text-danger" />
@@ -48,15 +48,15 @@
                                 <div class="col-md-6">
                                     <label class="form-label">Confirme sua senha *</label>
                                     <div class="position-relative">
-                                        <InputText type="password"
+                                        <InputText type="@(_showPassword ? "text" : "password")"
                                                    @bind-Value="doador.ConfirmarSenha"
                                                    class="form-control pe-5"
                                                    placeholder="Digite novamente sua senha"
                                                    id="confirmarSenhaDoador" />
                                         <button type="button"
                                                 class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
-                                                @onclick="@(() => TogglePassword("confirmarSenhaDoador"))">
-                                            <i class="fas fa-eye text-success"></i>
+                                                @onclick="ToggleAllPasswords">
+                                            <i class="@(_showPassword ? "fas fa-eye-slash" : "fas fa-eye") text-success"></i>
                                         </button>
                                     </div>
                                     <ValidationMessage For="@(() => doador.ConfirmarSenha)" class="text-danger" />
@@ -251,8 +251,10 @@
                    .Replace(" ", "");
     }
 
-    private async Task TogglePassword(string elementId)
+    private bool _showPassword = false;
+
+    private void ToggleAllPasswords()
     {
-        await JSRuntime.InvokeVoidAsync("togglePassword", elementId);
+        _showPassword = !_showPassword;
     }
 }

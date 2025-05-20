@@ -124,22 +124,6 @@
         });
     </script>
 
-    <script>
-        function togglePassword(id) {
-            const input = document.getElementById(id);
-            const button = input.nextElementSibling;
-            const icon = button.querySelector('i');
-
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = "password";
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        }
-    </script>
-
     <!-- Fechar o menu ao clicar em um item -->
     <script>
         window.fecharMenuNavbar = function () {
