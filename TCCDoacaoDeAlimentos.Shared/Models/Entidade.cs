@@ -38,6 +38,8 @@ public class Entidade
 
     [Required(ErrorMessage = "O bairro é obrigatório.")]
     [StringLength(60, ErrorMessage = "Máximo de 60 caracteres.")]
+    public string Altitute;
+    public string Latitude;
     public string Bairro { get; set; }
 
     [Required(ErrorMessage = "O CEP é obrigatório.")]
