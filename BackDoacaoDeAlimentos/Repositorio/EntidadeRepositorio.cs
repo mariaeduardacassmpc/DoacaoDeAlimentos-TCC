@@ -3,6 +3,7 @@ using System.Data;
 using TCCDoacaoDeAlimentos.Shared.Models;
 using Dapper;
 using System.Data.Common;
+using System.Text.Json;
 namespace BackDoacaoDeAlimentos.Repositorios
 {
     public class EntidadeRepositorio : IEntidadeRepositorio
@@ -16,12 +17,27 @@ namespace BackDoacaoDeAlimentos.Repositorios
 
         public async Task AdicionarEntidade(Entidade entidade)
         {
-            var sql = @"
-                INSERT INTO CadastroEntidade
-                (TipoEntidade, NomeFantasia, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel)
-                VALUES (@Tipo, @NomeFantasia, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel);
-            ";
-            await _db.ExecuteAsync(sql, entidade);
+            try
+            {
+                Console.WriteLine($"Executando SQL para: {entidade.RazaoSocial}"); // Debug
+
+                var sql = @"
+            INSERT INTO CadastroEntidade
+            (TipoEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, 
+             Email, Sexo, Responsavel, Senha)
+            VALUES (@Tipo, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
+                    @Email, @Sexo, @Responsavel, @Senha)";
+
+                Console.WriteLine($"SQL: {sql}"); // Debug
+                Console.WriteLine($"Parâmetros: {JsonSerializer.Serialize(entidade)}"); // Debug
+
+                await _db.ExecuteAsync(sql, entidade);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro no repositório: {ex.ToString()}"); // Debug
+                throw;
+            }
         }
 
         public async Task<Entidade> ObterEntidadePorId(int id)
@@ -38,10 +54,15 @@ namespace BackDoacaoDeAlimentos.Repositorios
 
         public async Task AtualizarEntidade(Entidade entidade)
         {
-            var sql = @"UPDATE CadastroEntidade SET NomeFantasia = @NomeFantasia, CNPJ_CPF = @CNPJ_CPF, 
-               Telefone = @Telefone, Email = @Email, Endereco = @Endereco, Bairro = @Bairro, CEP = @Cep, Cidade = @Cidade
-               Sexo = @Sexo, Responsavel = @Responsavel WHERE Id = @Id";
-            
+            var sql = @"UPDATE CadastroEntidade SET 
+        INSERT INTO CadastroEntidade
+        (TipoEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, 
+         Email, Sexo, Responsavel, Senha, ConfirmarSenha)
+        VALUES (@Tipo, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
+                @Email, @Sexo, @Responsavel, @Senha, @ConfirmarSenha);
+
+         WHERE Id = @Id"";
+    ";
             await _db.ExecuteAsync(sql, entidade);
         }
 
@@ -57,6 +78,19 @@ namespace BackDoacaoDeAlimentos.Repositorios
 
             return await _db.QueryAsync<Entidade>(sql, new { Cidade = cidade });
         }
+
+        public async Task<bool> VerificarCnpjExistente(string documento)
+        {
+            try
+            {
+                var sql = "SELECT COUNT(1) FROM CadastroEntidade WHERE CNPJ_CPF = @Documento";
+                return await _db.ExecuteScalarAsync<bool>(sql, new { Documento = documento });
+            }
+            catch (Exception ex)
+            {
+                // Logar o erro se necessário
+                throw new Exception($"Erro ao verificar documento: {ex.Message}", ex);
+            }
+        }
     }
-   
 }

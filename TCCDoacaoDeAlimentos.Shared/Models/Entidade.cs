@@ -29,7 +29,7 @@ public class Entidade
     public string CNPJ_CPF { get; set; }
 
     [Required(ErrorMessage = "O telefone é obrigatório.")]
-    [RegularExpression(@"^\(\d{2}\) \d{5}\-\d{4}$", ErrorMessage = "Telefone no formato inválido ((00) 00000-0000).")]
+    [RegularExpression(@"^\(\d{2}\) \d{5}-\d{4}$", ErrorMessage = "Telefone deve estar no formato (00) 00000-0000")]
     public string Telefone { get; set; }
 
     [Required(ErrorMessage = "O endereço é obrigatório.")]
@@ -43,7 +43,7 @@ public class Entidade
     public string Bairro { get; set; }
 
     [Required(ErrorMessage = "O CEP é obrigatório.")]
-    [RegularExpression(@"^\d{5}\-\d{3}$", ErrorMessage = "CEP no formato inválido (00000-000).")]
+    [RegularExpression(@"^\d{5}-\d{3}$", ErrorMessage = "CEP deve estar no formato 00000-000")]
     public string CEP { get; set; }
 
     [Required(ErrorMessage = "Cidade é obrigatória.")]
@@ -60,15 +60,18 @@ public class Entidade
     {
         var entidade = (Entidade)context.ObjectInstance;
 
+        // Remove máscaras para validação
+        var docSemMascara = documento?.Replace(".", "").Replace("-", "").Replace("/", "");
+
         if (entidade.Tipo == TipoEntidade.F)
         {
-            if (!System.Text.RegularExpressions.Regex.IsMatch(documento, @"^\d{3}\.\d{3}\.\d{3}\-\d{2}$"))
-                return new ValidationResult("CPF deve estar no formato 000.000.000-00");
+            if (docSemMascara?.Length != 11)
+                return new ValidationResult("CPF deve ter 11 dígitos");
         }
-        else // Para ONG (O) e Pessoa Jurídica (J) usamos CNPJ
+        else // Para ONG (O) e Pessoa Jurídica (J)
         {
-            if (!System.Text.RegularExpressions.Regex.IsMatch(documento, @"^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$"))
-                return new ValidationResult("CNPJ deve estar no formato 00.000.000/0000-00");
+            if (docSemMascara?.Length != 14)
+                return new ValidationResult("CNPJ deve ter 14 dígitos");
         }
 
         return ValidationResult.Success;

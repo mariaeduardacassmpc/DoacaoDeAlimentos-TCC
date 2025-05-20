@@ -1,4 +1,5 @@
-﻿using BackDoacaoDeAlimentos.Interfaces.Servicos;
+﻿using System.Text.Json;
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using Microsoft.AspNetCore.Mvc;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
@@ -45,8 +46,29 @@ namespace BackDoacaoDeAlimentos.Controllers
         [HttpPost("adicionar")]
         public async Task<IActionResult> Adicionar([FromBody] Entidade entidade)
         {
-            await _entidadeService.AdicionarEntidade(entidade);
-            return CreatedAtAction(nameof(Adicionar), new { id = entidade.Id }, entidade);
+            try
+            {
+                Console.WriteLine($"Recebendo cadastro: {JsonSerializer.Serialize(entidade)}"); // Debug
+
+                if (entidade.Senha != entidade.ConfirmarSenha)
+                {
+                    return BadRequest("As senhas não coincidem");
+                }
+
+                var documentoExistente = await _entidadeService.VerificarCpfCnpjExistente(entidade.CNPJ_CPF);
+                if (documentoExistente)
+                {
+                    return BadRequest(entidade.Tipo == Entidade.TipoEntidade.F ? "CPF já cadastrado" : "CNPJ já cadastrado");
+                }
+
+                await _entidadeService.AdicionarEntidade(entidade);
+                return Ok(new { success = true, message = "Cadastro realizado com sucesso!" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro no cadastro: {ex.ToString()}"); // Debug
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
         }
 
         [HttpPut("atualizar/{id}")]
@@ -69,6 +91,13 @@ namespace BackDoacaoDeAlimentos.Controllers
 
             await _entidadeService.DeletarEntidade(id);
             return NoContent();
+        }
+
+        [HttpGet("verificar-cpf-cnpj/{documento}")]
+        public async Task<IActionResult> VerificarCpfCnpjExistente(string documento)
+        {
+            var existe = await _entidadeService.VerificarCpfCnpjExistente(documento);
+            return Ok(new { existe });
         }
     }
 }

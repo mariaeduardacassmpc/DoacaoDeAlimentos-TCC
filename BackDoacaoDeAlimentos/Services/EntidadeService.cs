@@ -17,11 +17,24 @@ namespace BackDoacaoDeAlimentos.Servicos
         {
             try
             {
+                Console.WriteLine($"Adicionando entidade no service: {entidade.RazaoSocial}"); // Debug
+
+                if (entidade == null)
+                    throw new ArgumentNullException(nameof(entidade));
+
+                if (string.IsNullOrWhiteSpace(entidade.CNPJ_CPF))
+                    throw new ArgumentException("CNPJ/CPF é obrigatório");
+
+                var existe = await _entidadeRepositorio.VerificarCnpjExistente(entidade.CNPJ_CPF);
+                if (existe)
+                    throw new InvalidOperationException("Documento já cadastrado");
+
                 await _entidadeRepositorio.AdicionarEntidade(entidade);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter Entidade por Id. ", ex);
+                Console.WriteLine($"Erro no service: {ex.ToString()}"); // Debug
+                throw;
             }
         }
 
@@ -79,6 +92,11 @@ namespace BackDoacaoDeAlimentos.Servicos
                 throw new ArgumentException("Cidade inválida.");
 
             return await _entidadeRepositorio.BuscarOngsPorCidade(cidade);
+        }
+
+        public async Task<bool> VerificarCpfCnpjExistente(string documento)
+        {
+            return await _entidadeRepositorio.VerificarCnpjExistente(documento);
         }
     }
 }

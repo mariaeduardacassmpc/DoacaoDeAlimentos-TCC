@@ -2,6 +2,7 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
 @using TCCDoacaoDeAlimentos.Shared.Models
+@inject HttpClient Http
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
     <div class="container py-5">
@@ -216,11 +217,26 @@
             doador.Telefone = RemoveMask(doador.Telefone);
             doador.CEP = RemoveMask(doador.CEP);
 
-            await JSRuntime.InvokeVoidAsync("alert", "Cadastro realizado com sucesso!");
-            Navigation.NavigateTo("/");
+            Console.WriteLine("Dados sendo enviados:"); // Debug
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(doador)); // Debug
+
+            var response = await Http.PostAsJsonAsync("api/entidade/adicionar", doador);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Cadastro realizado com sucesso!");
+                Navigation.NavigateTo("/");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Erro no servidor: {errorContent}"); // Debug
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar: {errorContent}");
+            }
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Exceção: {ex.ToString()}"); // Debug
             await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar: {ex.Message}");
         }
     }
