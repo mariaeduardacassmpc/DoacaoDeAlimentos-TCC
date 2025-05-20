@@ -84,8 +84,8 @@ public class DoacaoRepositorio : IDoacaoRepositorio
     {
         var sql = @"
             SELECT 
-                (SELECT COUNT(DISTINCT IdOng) FROM Doacoes WHERE Status = 'Entregue') AS TotalOngsAjudadas,
-                (SELECT SUM(PesoKg) FROM Doacoes WHERE Status = 'Entregue') AS TotalKgAlimentosDoado
+                (SELECT COUNT(DISTINCT IdOng) FROM Doacao WHERE Status = 3) AS TotalOngsAjudadas,
+                (SELECT SUM(Quantidade) FROM AlimentoDoacao) AS TotalKgAlimentosDoado
         ";
 
         return await _db.QueryFirstOrDefaultAsync<EstatisticasDto>(sql);

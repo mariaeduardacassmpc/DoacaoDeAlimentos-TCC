@@ -1,20 +1,28 @@
 ﻿@page "/geolocalizacao"
 @inject IJSRuntime JS
-
+<div class="min-vh-100 py-5 d-flex flex-column align-items-center" style="background-color: #d4edda;">
 <h3>Mapa de localização</h3>
 
-<div id="map" style="height: 400px;"></div>
+    @if (isLoading)
+    {
+        <div class="mb-3">
+            <span>Carregando...</span>
+        </div>
+    }
 
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <p style="color:red">@errorMessage</p>
-}
+    <div id="map" style="height: 550px; width: 1400px; mt-3"></div>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <p style="color:red">@errorMessage</p>
+    }
+</div>
 
 @code {
     private string errorMessage;
     private double userLat;
     private double userLng;
-    private bool mapCarregado = false;
+    private bool isLoading = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -22,18 +30,24 @@
         {
             try
             {
-                await Task.Delay(10000); // Dá tempo para o DOM carregar
+                while (await JS.InvokeAsync<bool>("eval", "document.getElementById('map') === null"))
+                {
+                    await Task.Delay(100);
+                }
 
                 var pos = await JS.InvokeAsync<Location>("getUserLocation");
                 userLat = pos.Lat;
                 userLng = pos.Lng;
 
                 await JS.InvokeVoidAsync("initializeMap", userLat, userLng);
-                mapCarregado = true;
+
+                isLoading = false;
+                StateHasChanged();
             }
             catch (Exception ex)
             {
                 errorMessage = $"Erro ao obter localização: {ex.Message}";
+                isLoading = false;
                 StateHasChanged();
             }
         }

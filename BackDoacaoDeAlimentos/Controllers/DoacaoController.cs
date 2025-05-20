@@ -16,7 +16,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             _doacaoService = doacaoService;
         }
 
-        [HttpPost("obterEstatisticas")]
+        [HttpGet("obterEstatisticas")]
         public async Task<IActionResult> obterEstatisticas()
         {
             var doacoes = await _doacaoService.ObterEstatisticas();
