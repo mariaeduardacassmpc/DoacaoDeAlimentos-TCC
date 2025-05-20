@@ -118,26 +118,24 @@
                 <p class="lead mb-2 text-secondary" style="max-width: 780px; margin: 0 auto; line-height: 1.6;">
                    Veja como nosso trabalho está ajudando a combater a fome e construir um futuro melhor.
                 </p>
-                <div class="row justify-content-center align-items-end mt-5 g-4">
-                    <div class="col-12 col-md-5">
-                        <div class="stat-item">
-                            <div class="display-3 fw-bold text-success mb-3">@estatisticas.TotalOngsAjudadas</div>
-                            <p class="fs-4 text-muted">ONGs Ajudadas</p>
-                        </div>
+                <div class="d-flex flex-column flex-md-row justify-content-center align-items-stretch gap-5 mt-5">
+                    <div class="stat-item text-center d-flex flex-column justify-content-center" style="min-height: 150px;">
+                        <div class="display-4 fw-bold text-success mb-2">@estatisticas.TotalOngsAjudadas</div>
+                        <p class="fs-5 text-muted">ONGs Ajudadas</p>
                     </div>
-                    <div class="d-none d-md-flex col-md-2 justify-content-center align-items-center">
-                        <div class="bg-success bg-opacity-25" style="width: 2px; height: 100px;"></div>
+
+                    <div class="d-none d-md-flex align-items-center">
+                        <div class="bg-success bg-opacity-25 mx-2" style="width: 2px; height: 80%; min-height: 100px;"></div>
                     </div>
-                    <div class="col-12 col-md-5">
-                        <div class="stat-item">
-                            <div class="display-3 fw-bold text-success mb-3">@estatisticas.TotalKgAlimentosDoado.ToString("N0")</div>
-                            <p class="fs-4 text-muted">Kg de Alimentos</p>
-                        </div>
+
+                    <div class="stat-item text-center d-flex flex-column justify-content-center" style="min-height: 150px;">
+                        <div class="display-4 fw-bold text-success mb-2">@estatisticas.TotalKgAlimentosDoado.ToString("N0")</div>
+                        <p class="fs-5 text-muted">Kg de Alimentos</p>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
-    </div>
 </section>
 
 
