@@ -23,7 +23,7 @@
 
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome</label>
-                                <InputText id="nome" @bind-Value="NovoAlimento.Nome" class="form-control" placeholder="Ex: Arroz Integral" />
+                                <InputText id="nome" @bind-Value="NovoAlimento.Nome" class="form-control" placeholder="Nome do Alimento" />
                                 <ValidationMessage For="@(() => NovoAlimento.Nome)" />
                             </div>
                             <div class="mb-3">
@@ -50,6 +50,8 @@
                     </div>
                 </div>
             </div>
+
+
             <div class="col-md-7">
                 <div class="card shadow-sm">
                     <div class="card-body">

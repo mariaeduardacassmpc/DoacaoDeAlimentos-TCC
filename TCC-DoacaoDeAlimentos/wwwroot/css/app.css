@@ -622,3 +622,33 @@ footer {
     padding-top: 5rem !important;
     margin-top: 1rem !important;
 }
+
+/* Radio buttons verdes - versão com alta especificidade */
+.form-check-input[type="radio"]:checked {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e") !important;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25) !important;
+    border-color: #28a745 !important;
+}
+
+/* Bordas dos campos quando focados */
+.form-control:focus, .form-select:focus {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25) !important;
+}
+
+/* Estilo dos olhos de senha */
+.btn.position-absolute.top-50.end-0.translate-middle-y {
+    color: #28a745 !important;
+}
+
+/* Categoria/ Lista de alimentos na cor verde */
+select.form-control option:checked,
+select.form-control option:hover {
+    background-color: #28a745 !important;
+    color: white !important;
+}
