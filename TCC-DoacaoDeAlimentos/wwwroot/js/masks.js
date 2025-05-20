@@ -211,4 +211,15 @@ if (typeof window !== 'undefined') {
     // Exporta função global com verificação de segurança
     if (typeof window !== 'undefined') {
         window.applyDoadorMasks = applyDoadorMasks;
+}
+
+function togglePassword(id) {
+    const input = document.getElementById(id);
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
     }
+}
+
+window.togglePassword = togglePassword;

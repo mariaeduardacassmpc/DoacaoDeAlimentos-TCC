@@ -36,6 +36,9 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://alimentacao.org">
     <meta property="og:image" content="https://alimentacao.org/img-home.jpg">
+
+    <!-- Icone da senha-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body>
@@ -117,6 +120,22 @@
                 observer.observe(statsSection);
             }
         });
+    </script>
+
+    <script>
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const button = input.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
     </script>
 </body>
 </html>

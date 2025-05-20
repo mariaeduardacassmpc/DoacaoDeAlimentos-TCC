@@ -471,23 +471,23 @@ footer {
 
 /* Estilo apenas para os itens do dropdown */
 .nav-item.dropdown .dropdown-menu {
-    border: 1px solid rgba(46, 139, 87, 0.1); 
+    border: 1px solid rgba(46, 139, 87, 0.1);
 }
 
 .nav-item.dropdown .dropdown-item {
-    color: var(--dark-color); 
+    color: var(--dark-color);
     transition: var(--transition-base);
 }
 
     .nav-item.dropdown .dropdown-item:hover,
     .nav-item.dropdown .dropdown-item:focus {
-        background-color: var(--primary-light); 
-        color: var(--primary-color); 
+        background-color: var(--primary-light);
+        color: var(--primary-color);
     }
 
     .nav-item.dropdown .dropdown-item.active {
-        background-color: var(--primary-color); 
-        color: white; 
+        background-color: var(--primary-color);
+        color: white;
     }
 
 /* Estilos para o carrossel */
@@ -532,7 +532,7 @@ footer {
 
 .stat-item {
     padding: 2rem;
-    min-width: 250px; 
+    min-width: 250px;
     position: relative;
 }
 
@@ -561,7 +561,7 @@ footer {
 
 .stat-item:hover .display-3 {
     transform: scale(1.05);
-    color: #1e6f4a !important; 
+    color: #1e6f4a !important;
 }
 
 .stat-item {
@@ -591,7 +591,7 @@ footer {
 }
 */
 .bg-light-success {
-    background-color: #d5ebd8 !important; 
+    background-color: #d5ebd8 !important;
 }
 
 /* Divisor vertical atualizado */
@@ -599,26 +599,26 @@ footer {
     width: 1px;
     height: 80px;
     margin: 0 2rem;
-    opacity: 0.5; 
+    opacity: 0.5;
 }
 
 /* Textos escuros para contraste */
 .bg-light-success .text-dark {
-    color: #2e2b27 !important; 
+    color: #2e2b27 !important;
 }
 
 .bg-light-success .text-secondary {
-    color: #4a4a4a !important; 
+    color: #4a4a4a !important;
 }
 
 /* Efeito hover mais suave */
 .bg-light-success .stat-item:hover .display-3 {
     transform: scale(1.05);
-    text-shadow: none; 
+    text-shadow: none;
 }
 
 /* NOVO ESPAÇAMENTO */
 .section-como-doar {
-    padding-top: 5rem !important; 
-    margin-top: 1rem !important; 
+    padding-top: 5rem !important;
+    margin-top: 1rem !important;
 }
