@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.RegularExpressions;
 
 namespace TCCDoacaoDeAlimentos.Shared.Models;
 
@@ -28,8 +29,7 @@ public class Entidade
     [CustomValidation(typeof(Entidade), "ValidateDocumento")]
     public string CNPJ_CPF { get; set; }
 
-    [Required(ErrorMessage = "O telefone é obrigatório.")]
-    [RegularExpression(@"^\(\d{2}\) \d{5}-\d{4}$", ErrorMessage = "Telefone deve estar no formato (00) 00000-0000")]
+    [Required(ErrorMessage = "Telefone é obrigatório")]
     public string Telefone { get; set; }
 
     [Required(ErrorMessage = "O endereço é obrigatório.")]
@@ -42,8 +42,7 @@ public class Entidade
     public string Latitude;
     public string Bairro { get; set; }
 
-    [Required(ErrorMessage = "O CEP é obrigatório.")]
-    [RegularExpression(@"^\d{5}-\d{3}$", ErrorMessage = "CEP deve estar no formato 00000-000")]
+    [Required(ErrorMessage = "CEP é obrigatório")]
     public string CEP { get; set; }
 
     [Required(ErrorMessage = "Cidade é obrigatória.")]

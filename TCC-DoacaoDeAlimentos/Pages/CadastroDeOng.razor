@@ -1,4 +1,5 @@
 ﻿@page "/CadastroDeOng"
+@using System.Text.RegularExpressions
 @using TCCDoacaoDeAlimentos.Shared.Models
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
@@ -174,18 +175,30 @@
 
     private async Task HandleValidSubmit()
     {
-        if (isProcessing) return;
-        isProcessing = true;
 
         try
         {
-            // Remove máscaras antes de enviar
-            ong.CNPJ_CPF = RemoveMask(ong.CNPJ_CPF);
-            ong.Telefone = RemoveMask(ong.Telefone);
-            ong.CEP = RemoveMask(ong.CEP);
+            // Cria uma cópia do objeto para manipulação
+            var dadosParaEnvio = new Entidade
+                {
+                // Copia todas as propriedades
+                    RazaoSocial = ong.RazaoSocial,
+                    Senha = ong.Senha,
+                    ConfirmarSenha = ong.ConfirmarSenha,
+                    Email = ong.Email,
+                    Responsavel = ong.Responsavel,
+                    Cidade = ong.Cidade,
+                    Endereco = ong.Endereco,
+                    Bairro = ong.Bairro,
 
-            // Envia para o backend
-            var response = await Http.PostAsJsonAsync("api/entidade/adicionar", ong);
+                // Aplica máscaras corretamente
+                    CNPJ_CPF = RemoveMask(ong.CNPJ_CPF),
+                    Telefone = RemoveMask(ong.Telefone),
+                    CEP = RemoveMask(ong.CEP)
+                };
+
+            // Envia para a API
+            var response = await Http.PostAsJsonAsync("api/entidade/adicionar", dadosParaEnvio);
 
             if (response.IsSuccessStatusCode)
             {
@@ -195,27 +208,19 @@
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar: {error}");
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro: {error}");
             }
         }
         catch (Exception ex)
         {
-            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar: {ex.Message}");
-        }
-        finally
-        {
-            isProcessing = false;
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
         }
     }
 
     private string RemoveMask(string value)
     {
-        return value?.Replace(".", "")
-                   .Replace("/", "")
-                   .Replace("-", "")
-                   .Replace("(", "")
-                   .Replace(")", "")
-                   .Replace(" ", "");
+        if (string.IsNullOrEmpty(value)) return value;
+        return Regex.Replace(value, @"[^\d]", "");
     }
 
     private bool _showPassword = false;

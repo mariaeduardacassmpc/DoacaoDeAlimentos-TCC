@@ -1,6 +1,7 @@
 ﻿@page "/CadastroDeDoador"
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
+@using System.Text.RegularExpressions
 @using TCCDoacaoDeAlimentos.Shared.Models
 @inject HttpClient Http
 
@@ -212,15 +213,28 @@
     {
         try
         {
-            // Remove máscaras antes de enviar
-            doador.CNPJ_CPF = RemoveMask(doador.CNPJ_CPF);
-            doador.Telefone = RemoveMask(doador.Telefone);
-            doador.CEP = RemoveMask(doador.CEP);
+            // Cria uma cópia do objeto para manipulação
+            var dadosParaEnvio = new Entidade
+                {
+                // Copia todas as propriedades
+                    RazaoSocial = doador.RazaoSocial,
+                    Senha = doador.Senha,
+                    ConfirmarSenha = doador.ConfirmarSenha,
+                    Tipo = doador.Tipo,
+                    Email = doador.Email,
+                    Cidade = doador.Cidade,
+                    Endereco = doador.Endereco,
+                    Bairro = doador.Bairro,
+                    Sexo = doador.Sexo,
 
-            Console.WriteLine("Dados sendo enviados:"); // Debug
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(doador)); // Debug
+                // Aplica máscaras corretamente
+                    CNPJ_CPF = RemoveMask(doador.CNPJ_CPF),
+                    Telefone = RemoveMask(doador.Telefone),
+                    CEP = RemoveMask(doador.CEP)
+                };
 
-            var response = await Http.PostAsJsonAsync("api/entidade/adicionar", doador);
+            // Envia para a API
+            var response = await Http.PostAsJsonAsync("api/entidade/adicionar", dadosParaEnvio);
 
             if (response.IsSuccessStatusCode)
             {
@@ -229,26 +243,20 @@
             }
             else
             {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Erro no servidor: {errorContent}"); // Debug
-                await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar: {errorContent}");
+                var error = await response.Content.ReadAsStringAsync();
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro: {error}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Exceção: {ex.ToString()}"); // Debug
-            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
         }
     }
 
     private string RemoveMask(string value)
     {
-        return value?.Replace(".", "")
-                   .Replace("/", "")
-                   .Replace("-", "")
-                   .Replace("(", "")
-                   .Replace(")", "")
-                   .Replace(" ", "");
+        if (string.IsNullOrEmpty(value)) return value;
+        return Regex.Replace(value, @"[^\d]", "");
     }
 
     private bool _showPassword = false;

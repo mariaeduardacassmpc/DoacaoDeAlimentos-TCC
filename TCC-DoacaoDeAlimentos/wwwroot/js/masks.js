@@ -93,21 +93,26 @@ if (typeof window !== 'undefined') {
         }
 
         // Formata Telefone ((00) 00000-0000) - 11 dígitos
-        function formatTelefone(value) {
-            if (!value) return '';
-            const digits = value.replace(/\D/g, '').substring(0, 11);
-
-            if (digits.length <= 2) return digits;
-            if (digits.length <= 7) return `(${digits.substring(0, 2)}) ${digits.substring(2)}`;
-            return `(${digits.substring(0, 2)}) ${digits.substring(2, 7)}-${digits.substring(7)}`;
+        const phoneField = document.getElementById('phone');
+        if (phoneField) {
+            phoneField.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 2) value = `(${value.substring(0, 2)}) ${value.substring(2)}`;
+                if (value.length > 10) value = `${value.substring(0, 10)}-${value.substring(10)}`;
+                e.target.value = value.substring(0, 15);
+            });
         }
 
         // Formata CEP (00000-000) - 8 dígitos
-        function formatCEP(value) {
-            if (!value) return '';
-            const digits = value.replace(/\D/g, '').substring(0, 8);
-            return digits.length > 5 ? `${digits.substring(0, 5)}-${digits.substring(5)}` : digits;
+        const cepField = document.getElementById('cep');
+        if (cepField) {
+            cepField.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 5) value = `${value.substring(0, 5)}-${value.substring(5)}`;
+                e.target.value = value.substring(0, 9);
+            });
         }
+    }
 
         // Configura máscara CPF/CNPJ
         function setupCPFCNPJ() {
