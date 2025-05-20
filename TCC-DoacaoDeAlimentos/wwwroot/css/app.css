@@ -1,4 +1,4 @@
-/* ====== Configurações Globais ====== */
+/* Configurações Globais */
 :root {
     --primary-color: #2e8b57;
     --primary-light: rgba(46, 139, 87, 0.1);
@@ -37,7 +37,7 @@ a, .btn-link {
         color: #1e6f4a;
     }
 
-/* ====== Componentes Comuns ====== */
+/* Componentes Comuns */
 .btn {
     padding: 0.5rem 1.5rem;
     border-radius: 0.5rem;
@@ -98,7 +98,6 @@ a, .btn-link {
     border-radius: 50px;
 }
 
-/* ====== Hero Section ====== */
 .hero-section {
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/img-home.jpg') no-repeat center center;
     background-size: cover;
@@ -108,7 +107,7 @@ a, .btn-link {
     position: relative;
 }
 
-/* ====== Seção Histórias de Esperança ====== */
+/*  Seção Histórias de Esperança */
 .testimonial-card {
     background: white;
     border-radius: 12px;
@@ -159,7 +158,7 @@ a, .btn-link {
     border: 3px solid var(--primary-light);
 }
 
-/* ====== Seção Nosso Impacto ====== */
+/* Seção Nosso Impacto */
 .stat-card {
     background: white;
     border-radius: 12px;
@@ -195,7 +194,7 @@ a, .btn-link {
     letter-spacing: 1px;
 }
 
-/* ====== Seção Como Funciona ====== */
+/* Seção Como Funciona */
 .step-card {
     text-align: center;
     padding: 2rem;
@@ -235,7 +234,7 @@ a, .btn-link {
     margin-bottom: 1.5rem;
 }
 
-/* ====== Efeitos e Animações ====== */
+/* Efeitos e Animações */
 .hover-lift {
     transition: var(--transition-base);
 }
@@ -277,7 +276,7 @@ section {
     animation: fadeInUp 0.8s ease-out both;
 }
 
-/* ====== Ícones e Elementos Visuais ====== */
+/* Ícones e Elementos Visuais */
 .icon-stack {
     display: inline-flex;
     align-items: center;
@@ -297,7 +296,7 @@ section {
     font-size: 32px;
 }
 
-/* ====== Footer ====== */
+/* Footer */
 footer {
     background-color: var(--dark-color);
     color: white;
@@ -355,7 +354,7 @@ footer {
         color: white !important;
     }
 
-/* ====== Responsividade ====== */
+/* Responsividade */
 @media (max-width: 992px) {
     .display-5 {
         font-size: 2.5rem;
@@ -414,7 +413,7 @@ footer {
     }
 }
 
-/* ====== Blazor Specific Styles ====== */
+/* Blazor Specific Styles */
 #blazor-error-ui {
     background: #fff3cd;
     bottom: 0;
@@ -470,25 +469,25 @@ footer {
     inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
 }
 
-/* ====== Estilo apenas para os itens do dropdown ====== */
+/* Estilo apenas para os itens do dropdown */
 .nav-item.dropdown .dropdown-menu {
-    border: 1px solid rgba(46, 139, 87, 0.1); /* Borda sutil verde */
+    border: 1px solid rgba(46, 139, 87, 0.1);
 }
 
 .nav-item.dropdown .dropdown-item {
-    color: var(--dark-color); /* Cor padrão (cinza escuro) */
+    color: var(--dark-color);
     transition: var(--transition-base);
 }
 
     .nav-item.dropdown .dropdown-item:hover,
     .nav-item.dropdown .dropdown-item:focus {
-        background-color: var(--primary-light); /* Fundo verde claro ao passar o mouse */
-        color: var(--primary-color); /* Texto verde */
+        background-color: var(--primary-light);
+        color: var(--primary-color);
     }
 
     .nav-item.dropdown .dropdown-item.active {
-        background-color: var(--primary-color); /* Fundo verde quando ativo */
-        color: white; /* Texto branco */
+        background-color: var(--primary-color);
+        color: white;
     }
 
 /* Estilos para o carrossel */
@@ -533,7 +532,7 @@ footer {
 
 .stat-item {
     padding: 2rem;
-    min-width: 250px; /* Largura mínima para cada estatística */
+    min-width: 250px;
     position: relative;
 }
 
@@ -560,10 +559,9 @@ footer {
     margin-bottom: 4rem;
 }
 
-/* Efeitos de hover para os números */
 .stat-item:hover .display-3 {
     transform: scale(1.05);
-    color: #1e6f4a !important; /* Verde mais escuro no hover */
+    color: #1e6f4a !important;
 }
 
 .stat-item {
@@ -571,7 +569,7 @@ footer {
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .display-3 {
         font-size: 3rem;
     }
@@ -591,10 +589,9 @@ footer {
         margin: 1rem auto;
     }
 }
-
-/* === NOVAS CLASSES ADICIONADAS === */
+*/
 .bg-light-success {
-    background-color: #d5ebd8 !important; /* Verde 12% mais escuro que #e8f5e9 */
+    background-color: #d5ebd8 !important;
 }
 
 /* Divisor vertical atualizado */
@@ -602,26 +599,26 @@ footer {
     width: 1px;
     height: 80px;
     margin: 0 2rem;
-    opacity: 0.5; /* Transparência reduzida */
+    opacity: 0.5;
 }
 
 /* Textos escuros para contraste */
 .bg-light-success .text-dark {
-    color: #2e2b27 !important; /* Cor escura do seu tema */
+    color: #2e2b27 !important;
 }
 
 .bg-light-success .text-secondary {
-    color: #4a4a4a !important; /* Cinza escuro */
+    color: #4a4a4a !important;
 }
 
 /* Efeito hover mais suave */
 .bg-light-success .stat-item:hover .display-3 {
     transform: scale(1.05);
-    text-shadow: none; /* Removi a sombra */
+    text-shadow: none;
 }
 
-/* === NOVO ESPAÇAMENTO === */
+/* NOVO ESPAÇAMENTO */
 .section-como-doar {
-    padding-top: 5rem !important; /* Espaço acima do título */
-    margin-top: 1rem !important; /* Ajuste fino se necessário */
+    padding-top: 5rem !important;
+    margin-top: 1rem !important;
 }

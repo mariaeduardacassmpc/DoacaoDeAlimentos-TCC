@@ -13,6 +13,7 @@
                         <h6 class="text-center mb-4">
                             Faça o Cadastro para poder doar
                         </h6>
+
                         <EditForm Model="@doador" OnValidSubmit="HandleValidSubmit">
                             <DataAnnotationsValidator />
                             <hr />
@@ -27,15 +28,54 @@
                             </div>
 
                             <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Senha *</label>
+                                    <div class="position-relative">
+                                        <InputText type="password"
+                                                   @bind-Value="doador.Senha"
+                                                   class="form-control pe-5"
+                                                   placeholder="Digite sua senha"
+                                                   id="senhaDoador" />
+                                        <button type="button"
+                                                class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
+                                                @onclick="@(() => TogglePassword("senhaDoador"))">
+                                            <i class="fas fa-eye text-success"></i>
+                                        </button>
+                                    </div>
+                                    <ValidationMessage For="@(() => doador.Senha)" class="text-danger" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Confirme sua senha *</label>
+                                    <div class="position-relative">
+                                        <InputText type="password"
+                                                   @bind-Value="doador.ConfirmarSenha"
+                                                   class="form-control pe-5"
+                                                   placeholder="Digite novamente sua senha"
+                                                   id="confirmarSenhaDoador" />
+                                        <button type="button"
+                                                class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
+                                                @onclick="@(() => TogglePassword("confirmarSenhaDoador"))">
+                                            <i class="fas fa-eye text-success"></i>
+                                        </button>
+                                    </div>
+                                    <ValidationMessage For="@(() => doador.ConfirmarSenha)" class="text-danger" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <div class="col-md-12">
                                     <label class="form-label">Tipo de Pessoa: *</label>
                                     <InputRadioGroup @bind-Value="doador.Tipo" class="form-check">
                                         <div class="form-check form-check-inline">
-                                            <InputRadio Value="@Entidade.TipoEntidade.F" class="form-check-input" id="pessoaFisica" />
+                                            <InputRadio Value="@Entidade.TipoEntidade.F"
+                                                        class="form-check-input"
+                                                        id="pessoaFisica" />
                                             <label class="form-check-label" for="pessoaFisica">Física</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <InputRadio Value="@Entidade.TipoEntidade.J" class="form-check-input" id="pessoaJuridica" />
+                                            <InputRadio Value="@Entidade.TipoEntidade.J"
+                                                        class="form-check-input"
+                                                        id="pessoaJuridica" />
                                             <label class="form-check-label" for="pessoaJuridica">Jurídica</label>
                                         </div>
                                     </InputRadioGroup>
@@ -117,11 +157,15 @@
                                     <label class="form-label">Sexo:</label>
                                     <InputRadioGroup @bind-Value="doador.Sexo" class="form-check">
                                         <div class="form-check form-check-inline">
-                                            <InputRadio Value="@("Masculino")" class="form-check-input" id="sexoMasculino" />
+                                            <InputRadio Value="@("Masculino")"
+                                                        class="form-check-input"
+                                                        id="sexoMasculino" />
                                             <label class="form-check-label" for="sexoMasculino">Masculino</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <InputRadio Value="@("Feminino")" class="form-check-input" id="sexoFeminino" />
+                                            <InputRadio Value="@("Feminino")"
+                                                        class="form-check-input"
+                                                        id="sexoFeminino" />
                                             <label class="form-check-label" for="sexoFeminino">Feminino</label>
                                         </div>
                                     </InputRadioGroup>
@@ -130,7 +174,9 @@
                             </div>
 
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-success btn-lg mt-3">Enviar Cadastro</button>
+                                <button type="submit" class="btn btn-success btn-lg mt-3">
+                                    Enviar Cadastro
+                                </button>
                             </div>
                         </EditForm>
                     </div>
@@ -156,6 +202,7 @@
             }
             catch
             {
+                // Ignora erros de JavaScript
             }
         }
     }
@@ -164,6 +211,7 @@
     {
         try
         {
+            // Remove máscaras antes de enviar
             doador.CNPJ_CPF = RemoveMask(doador.CNPJ_CPF);
             doador.Telefone = RemoveMask(doador.Telefone);
             doador.CEP = RemoveMask(doador.CEP);
@@ -185,5 +233,10 @@
                    .Replace("(", "")
                    .Replace(")", "")
                    .Replace(" ", "");
+    }
+
+    private async Task TogglePassword(string elementId)
+    {
+        await JSRuntime.InvokeVoidAsync("togglePassword", elementId);
     }
 }

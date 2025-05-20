@@ -30,6 +30,42 @@
                                 <ValidationMessage For="@(() => ong.RazaoSocial)" class="text-danger" />
                             </div>
 
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Senha *</label>
+                                    <div class="position-relative">
+                                        <InputText type="password"
+                                                   @bind-Value="ong.Senha"
+                                                   class="form-control pe-5"
+                                                   placeholder="Digite sua senha"
+                                                   id="senhaOng" />
+                                        <button type="button"
+                                                class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
+                                                @onclick="@(() => TogglePassword("senhaOng"))">
+                                            <i class="fas fa-eye text-success"></i>
+                                        </button>
+                                    </div>
+                                    <ValidationMessage For="@(() => ong.Senha)" class="text-danger" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Confirme sua senha *</label>
+                                    <div class="position-relative">
+                                        <InputText type="password"
+                                                   @bind-Value="ong.ConfirmarSenha"
+                                                   class="form-control pe-5"
+                                                   placeholder="Digite novamente sua senha"
+                                                   id="confirmarSenhaOng" />
+                                        <button type="button"
+                                                class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
+                                                @onclick="@(() => TogglePassword("confirmarSenhaOng"))">
+                                            <i class="fas fa-eye text-success"></i>
+                                        </button>
+                                    </div>
+                                    <ValidationMessage For="@(() => ong.ConfirmarSenha)" class="text-danger" />
+                                </div>
+                            </div>
+
                             <div class="mb-3">
                                 <label for="cnpj" class="form-label">CNPJ *</label>
                                 <input type="text"
@@ -160,5 +196,10 @@
                    .Replace("(", "")
                    .Replace(")", "")
                    .Replace(" ", "");
+    }
+
+    private async Task TogglePassword(string elementId)
+    {
+        await JSRuntime.InvokeVoidAsync("togglePassword", elementId);
     }
 }

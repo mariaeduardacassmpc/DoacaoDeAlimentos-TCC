@@ -14,6 +14,16 @@ public class Entidade
     [StringLength(100, ErrorMessage = "Máximo de 100 caracteres.")]
     public string RazaoSocial { get; set; }
 
+    [Required(ErrorMessage = "A senha é obrigatória.")]
+    [DataType(DataType.Password)]
+    [StringLength(30, MinimumLength = 8, ErrorMessage = "A senha deve ter no minímo 8 caracteres")]
+    public string Senha { get; set; }
+
+    [Required(ErrorMessage = "Confirme sua senha.")]
+    [DataType(DataType.Password)]
+    [Compare("Senha", ErrorMessage = "As senhas não coincidem.")]
+    public string ConfirmarSenha { get; set; }
+
     [Required(ErrorMessage = "Documento é obrigatório.")]
     [CustomValidation(typeof(Entidade), "ValidateDocumento")]
     public string CNPJ_CPF { get; set; }
