@@ -139,5 +139,18 @@
             }
         }
     </script>
+
+    <script>
+        window.fecharMenuNavbar = function () {
+            var navbar = document.getElementById('navbarSupportedContent');
+            if (navbar && navbar.classList.contains('show')) {
+                var collapse = bootstrap.Collapse.getInstance(navbar);
+                if (collapse) {
+                    collapse.hide();
+                }
+            }
+        }
+    </script>
+
 </body>
 </html>

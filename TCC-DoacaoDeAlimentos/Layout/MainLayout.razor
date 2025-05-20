@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime JS
 
 <div class="page">
     <main>
@@ -17,7 +18,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item mx-2">
-                            <NavLink class="nav-link" active-class="active" href="/">Início</NavLink>
+                            <NavLink class="nav-link" active-class="active" href="/" @onclick="FecharMenu">Início</NavLink>
                         </li>
 
                         <li class="nav-item dropdown mx-2">
@@ -25,24 +26,24 @@
                                 Cadastro
                             </a>
                             <ul class="dropdown-menu shadow">
-                                <li><NavLink class="dropdown-item" href="/CadastroDeOng">ONG</NavLink></li>
-                                <li><NavLink class="dropdown-item" href="/CadastroDeDoador">Doador</NavLink></li>
-                                <li><NavLink class="dropdown-item" href="/CadastroDeAlimentos">Alimento</NavLink></li>
+                                <NavLink class="dropdown-item" href="/CadastroDeOng" @onclick="FecharMenu">ONG</NavLink>
+                                <NavLink class="dropdown-item" href="/CadastroDeDoador" @onclick="FecharMenu">Doador</NavLink>
+                                <NavLink class="dropdown-item" href="/CadastroDeAlimentos" @onclick="FecharMenu">Alimento</NavLink>
                             </ul>
                         </li>
                         
                          <li class="nav-item mx-2">
-                                <NavLink class="nav-link" href="/MinhasDoacoes">Minhas Doações</NavLink>
-                         </li>
+                            <NavLink class="nav-link" href="/MinhasDoacoes" @onclick="FecharMenu">Minhas Doações</NavLink>
+                        </li>
                         
                         <li class="nav-item mx-2">
-                            <NavLink class="nav-link" href="/Geolocalizacao">Geolocalização</NavLink>
+                            <NavLink class="nav-link" href="/Geolocalizacao" @onclick="FecharMenu">Geolocalização</NavLink>
                         </li>
                     </ul>
 
                     <div class="d-flex">
-                        <a class="btn btn-outline-success me-2" href="/Login">Entrar</a>
-                        <a class="btn btn-success" href="/CadastroDeDoacao">
+                        <a class="btn btn-outline-success me-2" href="/Login" @onclick="FecharMenu">Entrar</a>
+                        <a class="btn btn-success" href="/CadastroDeDoacao" @onclick="FecharMenu">
                             <i class="bi bi-gift-fill me-1"></i> Doar
                         </a>
                     </div>
@@ -60,6 +61,11 @@
 
 @code {
     string TipoUsuario;
+
+    private async Task FecharMenu()
+    {
+        await JS.InvokeVoidAsync("fecharMenuNavbar");
+    }
 
     protected override async Task OnInitializedAsync()
     {

@@ -652,3 +652,8 @@ select.form-control option:hover {
     background-color: #28a745 !important;
     color: white !important;
 }
+
+.navbar-toggler:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}

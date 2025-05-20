@@ -1,7 +1,7 @@
-﻿@page "/geolocalizacao"
+﻿@page "/Geolocalizacao"
 @inject IJSRuntime JS
 <div class="min-vh-100 py-5 d-flex flex-column align-items-center" style="background-color: #d4edda;">
-<h3>Mapa de localização</h3>
+    <h5>Veja abaixo as Instituições cadastradas na sua cidade!</h5>
 
     @if (isLoading)
     {
@@ -10,12 +10,15 @@
         </div>
     }
 
-    <div id="map" style="height: 550px; width: 1400px; mt-3"></div>
+    <div class="w-100 mt-5" style="max-width: 100%; display: flex; justify-content: center;">
+        <div id="map" style="height: 450px; width: 100%; max-width: 1400px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);"></div>
+    </div>
 
     @if (!string.IsNullOrEmpty(errorMessage))
     {
         <p style="color:red">@errorMessage</p>
     }
+
 </div>
 
 @code {
