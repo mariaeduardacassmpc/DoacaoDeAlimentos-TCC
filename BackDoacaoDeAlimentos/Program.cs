@@ -9,13 +9,11 @@ using BackDoacaoDeAlimentos.Servicos;
 using BackDoacaoDeAlimentos.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
-
 var configuration = builder.Configuration;
 
-// Add services to the container.
 builder.Services.AddScoped<IAlimentoRepositorio, AlimentoRepositorio>();
 builder.Services.AddScoped<IAlimentoService, AlimentoService>();
-builder.Services.AddScoped<IEntidadeService, EntidadeService>(); 
+builder.Services.AddScoped<IEntidadeService, EntidadeService>();
 builder.Services.AddScoped<IEntidadeRepositorio, EntidadeRepositorio>();
 builder.Services.AddScoped<IDoacaoService, DoacaoService>();
 builder.Services.AddScoped<IDoacaoRepositorio, DoacaoRepositorio>();
@@ -23,17 +21,12 @@ builder.Services.AddScoped<INotificacaoRepositorio, NotificacaoRepositorio>();
 builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddSingleton<AuthService>();
-
-
 builder.Services.AddScoped<IAlimentoDoacaoRepositorio, AlimentoDoacaoRepositorio>();
 builder.Services.AddScoped<IAlimentoDoacaoService, AlimentoDoacaoService>();
 
+builder.Services.AddSingleton<AuthService>();
 builder.Services.AddBlazoredToast();
-
 builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -44,40 +37,27 @@ builder.Services.AddScoped<IDbConnection>(sp =>
     return new SqlConnection(connectionString);
 });
 
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirFrontend", policy =>
     {
-        policy.WithOrigins("https://localhost:7080")
+        policy.WithOrigins("https://localhost:7170") 
               .AllowAnyHeader()
+              .AllowAnyOrigin()
               .AllowAnyMethod();
     });
 });
-
-//builder.Services.AddScoped<IAlimentoRepositorio, AlimentoRepositorio>();
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("PermitirFrontend", policy =>
-    {
-        policy.WithOrigins("https://localhost:7080")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
-
-//builder.Services.AddScoped<IAlimentoRepositorio, AlimentoRepositorio>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseCors("PermitirFrontend");
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

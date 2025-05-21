@@ -43,10 +43,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             try
             {
                 await _alimentoService.AdicionarAlimento(alimento);
-
-                // Retorna o alimento com ID gerado
-                var alimentoCadastrado = await _alimentoService.ObterAlimentoPorId(alimento.Id);
-                return CreatedAtAction(nameof(ObterPorId), new { id = alimento.Id }, alimentoCadastrado);
+                return Ok();
             }
             catch (Exception ex)
             {

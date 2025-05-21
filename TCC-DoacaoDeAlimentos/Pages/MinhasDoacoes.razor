@@ -151,33 +151,23 @@
                     IdDoador = 1
                 };
 
-            // Exibe o JSON que está sendo enviado
             var jsonEnviado = System.Text.Json.JsonSerializer.Serialize(Filtro);
-            Console.WriteLine($"📤 Enviando filtro para API: {jsonEnviado}");
-
             var response = await Http.PostAsJsonAsync("api/doacao/filtrarDoacao", Filtro);
 
-            Console.WriteLine($"📥 Resposta da API: {(int)response.StatusCode} {response.StatusCode}");
 
             if (response.IsSuccessStatusCode)
             {
                 DoacoesSalvas = await response.Content.ReadFromJsonAsync<List<Doacao>>();
-                Console.WriteLine($"✅ Doações carregadas: {DoacoesSalvas.Count}");
             }
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"❌ Erro ao carregar doações: {response.StatusCode}");
-                Console.WriteLine($"🔎 Conteúdo do erro: {errorContent}");
             }
 
-            Console.WriteLine("📡 Carregando lista de ONGs...");
             ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodas");
-            Console.WriteLine($"✅ ONGs carregadas: {ListaDeOngs.Count}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"🔥 Erro inesperado: {ex.Message}");
         }
     }
 

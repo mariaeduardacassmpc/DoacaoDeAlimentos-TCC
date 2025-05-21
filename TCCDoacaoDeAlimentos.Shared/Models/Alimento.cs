@@ -13,8 +13,5 @@ namespace TCCDoacaoDeAlimentos.Shared.Models
 
         [Required(ErrorMessage = "A categoria é obrigatória")]
         public string Categoria { get; set; } = string.Empty;
-
-        [StringLength(500, ErrorMessage = "A descrição não pode exceder 500 caracteres")]
-        public string? Descricao { get; set; } = string.Empty;
     }
 }

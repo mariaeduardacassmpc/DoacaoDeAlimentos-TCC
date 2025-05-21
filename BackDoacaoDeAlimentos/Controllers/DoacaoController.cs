@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TCCDoacaoDeAlimentos.Shared.Dto;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Controllers
@@ -21,7 +22,7 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             var doacoes = await _doacaoService.ObterEstatisticas();
             if (doacoes == null)
-                return NotFound();
+                return Ok(new EstatisticasDto { TotalOngsAjudadas = 0, TotalKgAlimentosDoado = 0 });
 
             return Ok(doacoes);
         }

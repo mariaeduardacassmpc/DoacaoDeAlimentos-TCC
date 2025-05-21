@@ -34,14 +34,11 @@ namespace BackDoacaoDeAlimentos.Repositorio
 
         public async Task AdicionarAlimento(Alimento alimento)
         {
-            var sql = @"INSERT INTO Alimento
-                            (Nome, Categoria, Descricao) 
-                               OUTPUT INSERTED.* VALUES 
-                            (@Nome, @Categoria, @Descricao); 
-            ";
-
-            await _db.QuerySingleAsync<Alimento>(sql, alimento);
+            var sql = @"INSERT INTO Alimento (Nome, Categoria)
+                VALUES (@Nome, @Categoria)";
+            await _db.ExecuteAsync(sql, alimento);
         }
+
 
         public async Task DeletarAlimento(int id)
         {

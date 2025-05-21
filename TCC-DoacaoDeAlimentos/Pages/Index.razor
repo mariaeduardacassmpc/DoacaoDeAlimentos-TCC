@@ -2,6 +2,7 @@
 @using TCCDoacaoDeAlimentos.Shared.Dto
 @inject NavigationManager Navigation
 @inject HttpClient Http
+@using System.Text.Json;
 
 <div class="hero-section py-5" style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/img-home.jpg') no-repeat center center; background-size: cover; min-height: 80vh; display: flex; align-items: center;">
     <div class="container text-white">
@@ -116,7 +117,7 @@
                 </h2>
 
                 <p class="lead mb-2 text-secondary" style="max-width: 780px; margin: 0 auto; line-height: 1.6;">
-                   Veja como nosso trabalho está ajudando a combater a fome e construir um futuro melhor.
+                    Veja como nosso trabalho está ajudando a combater a fome e construir um futuro melhor.
                 </p>
                 <div class="d-flex flex-column flex-md-row justify-content-center align-items-stretch gap-5 mt-5">
                     <div class="stat-item text-center d-flex flex-column justify-content-center" style="min-height: 150px;">
@@ -133,9 +134,9 @@
                         <p class="fs-5 text-muted">Kg de Alimentos</p>
                     </div>
                 </div>
-                </div>
             </div>
         </div>
+    </div>
 </section>
 
 
@@ -304,11 +305,27 @@ else if (modalAberto == "saibaMais")
     private string? modalAberto = null;
     private EstatisticasDto estatisticas = new();
     private string tipoCadastro;
+    private string mensagem = " ";
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     estatisticas = await Http.GetFromJsonAsync<EstatisticasDto>("api/doacao/obterEstatisticas");
-    // }
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            using var response = await Http.GetAsync("api/doacao/obterEstatisticas");
+            var raw = await response.Content.ReadAsStringAsync();
+            mensagem = $"Status: {response.StatusCode}, Conteúdo: {raw}";
+
+            if (response.IsSuccessStatusCode)
+            {
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                estatisticas = JsonSerializer.Deserialize<EstatisticasDto>(raw, options) ?? new EstatisticasDto();
+            }
+        }
+        catch (Exception ex)
+        {
+            mensagem = $"Erro ao carregar estatísticas: {ex.Message}";
+        }
+    }
 
     private void AbrirModal(string modal)
     {

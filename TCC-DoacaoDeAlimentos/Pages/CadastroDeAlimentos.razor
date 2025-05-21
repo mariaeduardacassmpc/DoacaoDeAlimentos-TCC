@@ -41,10 +41,6 @@
                                 </InputSelect>
                                 <ValidationMessage For="@(() => NovoAlimento.Categoria)" />
                             </div>
-                            <div class="mb-3">
-                                <label for="descricao" class="form-label">Descrição <small class="text-muted">(opcional)</small></label>
-                                <InputTextArea id="descricao" @bind-Value="NovoAlimento.Descricao" class="form-control" placeholder="Ex: Alimento Perecível." />
-                            </div>
                             <button type="submit" class="btn btn-success w-100">Cadastrar Alimento</button>
                         </EditForm>
                     </div>
@@ -73,7 +69,6 @@
                                         <tr>
                                             <th>Nome</th>
                                             <th>Categoria</th>
-                                            <th>Descrição</th>
                                             <th>Ações</th>
                                         </tr>
                                     </thead>
@@ -83,7 +78,6 @@
                                             <tr>
                                                 <td>@alimento.Nome</td>
                                                 <td>@alimento.Categoria</td>
-                                                <td>@(string.IsNullOrEmpty(alimento.Descricao) ? "-" : alimento.Descricao)</td>
                                                 <td>
                                                     <button @onclick="@(() => RemoverAlimento(alimento))" class="btn btn-sm btn-success">Remover</button>
                                                 </td>
@@ -103,53 +97,56 @@
 @code {
     private Alimento NovoAlimento { get; set; } = new Alimento();
     private List<Alimento> alimentos;
-    private string Mensagem = "";
+    private string mensagem = "";
 
     protected override async Task OnInitializedAsync()
     {
-        await CarregarAlimentos();
-    }
+        var response = await Http.GetAsync("api/alimento/obterAlimentos");
+        var raw = await response.Content.ReadAsStringAsync();
+        mensagem = $"Status: {response.StatusCode}, Conteúdo: {raw}";
 
-    private async Task CarregarAlimentos()
-    {
-        try
-        {
-            alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimento");
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            ToastService.ShowError("Erro ao carregar alimentos: " + ex.Message);
-        }
+        // if (response.IsSuccessStatusCode)
+        // {
+        //     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        //     estatisticas = JsonSerializer.Deserialize<EstatisticasDto>(raw, options) ?? new EstatisticasDto();
+        // }
     }
 
     private async Task CadastrarAlimento()
     {
-        try
-        {
-            // Corrija a URL para incluir "/adicionar"
-            var response = await Http.PostAsJsonAsync("api/alimento/adicionar", NovoAlimento);
+    try
+    {
+        using var response = await Http.PostAsJsonAsync("api/alimento/adicionar", NovoAlimento);
 
             if (response.IsSuccessStatusCode)
             {
-                // Recebe o alimento cadastrado
-                var alimentoRetornado = await response.Content.ReadFromJsonAsync<Alimento>();
-                alimentos.Add(alimentoRetornado);
+                if (response.Content.Headers.ContentLength > 0)
+                {
+                    var alimentoRetornado = await response.Content.ReadFromJsonAsync<Alimento>();
+                    alimentos.Add(alimentoRetornado);
+                    ToastService.ShowSuccess("Alimento cadastrado com sucesso!");
+                }
+                else
+                {
+                    ToastService.ShowSuccess("Alimento cadastrado com sucesso (sem retorno do objeto).");
+                }
+
                 NovoAlimento = new Alimento();
-                ToastService.ShowSuccess("Alimento cadastrado com sucesso!");
                 StateHasChanged();
             }
-            else
-            {
-                var erro = await response.Content.ReadAsStringAsync();
-                ToastService.ShowError("Erro ao cadastrar: " + erro);
-            }
-        }
-        catch (Exception ex)
+
+        else
         {
-            ToastService.ShowError("Erro inesperado: " + ex.Message);
+            var erro = await response.Content.ReadAsStringAsync();
+            ToastService.ShowError($"Erro ao cadastrar alimento: {erro}");
         }
     }
+    catch (Exception ex)
+    {
+        ToastService.ShowError($"Erro inesperado: {ex.Message}");
+    }
+}
+
 
     private async Task RemoverAlimento(Alimento alimento)
     {
@@ -159,7 +156,6 @@
             if (response.IsSuccessStatusCode)
             {
                 ToastService.ShowSuccess("Alimento removido com sucesso!");
-                await CarregarAlimentos(); // Recarrega a lista após remoção
             }
             else
             {

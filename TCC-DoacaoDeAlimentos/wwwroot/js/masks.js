@@ -211,7 +211,7 @@ if (typeof window !== 'undefined') {
         } else {
             document.addEventListener('DOMContentLoaded', initializeMasks);
         }
-    }
+    
 
     // Exporta função global com verificação de segurança
     if (typeof window !== 'undefined') {

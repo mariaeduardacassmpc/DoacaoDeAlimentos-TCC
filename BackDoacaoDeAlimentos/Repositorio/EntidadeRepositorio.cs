@@ -88,7 +88,6 @@ namespace BackDoacaoDeAlimentos.Repositorios
             }
             catch (Exception ex)
             {
-                // Logar o erro se necessário
                 throw new Exception($"Erro ao verificar documento: {ex.Message}", ex);
             }
         }

@@ -16,7 +16,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             _entidadeService = entidadeService;
         }
 
-        [HttpGet("ongs/cidade/{cidade}")]
+        [HttpGet("cidade/{cidade}")]
         public async Task<IActionResult> GetOngsPorCidade(string cidade)
         {
             var ongs = await _entidadeService.BuscarOngsPorCidade(cidade);
@@ -48,7 +48,7 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             try
             {
-                Console.WriteLine($"Recebendo cadastro: {JsonSerializer.Serialize(entidade)}"); // Debug
+                Console.WriteLine($"Recebendo cadastro: {JsonSerializer.Serialize(entidade)}");
 
                 if (entidade.Senha != entidade.ConfirmarSenha)
                 {
@@ -66,7 +66,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro no cadastro: {ex.ToString()}"); // Debug
+                Console.WriteLine($"Erro no cadastro: {ex.ToString()}"); 
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }

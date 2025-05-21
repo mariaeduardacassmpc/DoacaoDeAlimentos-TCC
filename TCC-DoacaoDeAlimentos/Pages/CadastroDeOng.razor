@@ -163,7 +163,7 @@
 
 @code {
     private Entidade ong = new Entidade() { Tipo = Entidade.TipoEntidade.O };
-    private bool isProcessing = false;  // Para evitar múltiplos submits
+    private bool isProcessing = false;  
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -178,10 +178,8 @@
 
         try
         {
-            // Cria uma cópia do objeto para manipulação
             var dadosParaEnvio = new Entidade
                 {
-                // Copia todas as propriedades
                     RazaoSocial = ong.RazaoSocial,
                     Senha = ong.Senha,
                     ConfirmarSenha = ong.ConfirmarSenha,
@@ -191,13 +189,11 @@
                     Endereco = ong.Endereco,
                     Bairro = ong.Bairro,
 
-                // Aplica máscaras corretamente
                     CNPJ_CPF = RemoveMask(ong.CNPJ_CPF),
                     Telefone = RemoveMask(ong.Telefone),
                     CEP = RemoveMask(ong.CEP)
                 };
 
-            // Envia para a API
             var response = await Http.PostAsJsonAsync("api/entidade/adicionar", dadosParaEnvio);
 
             if (response.IsSuccessStatusCode)
