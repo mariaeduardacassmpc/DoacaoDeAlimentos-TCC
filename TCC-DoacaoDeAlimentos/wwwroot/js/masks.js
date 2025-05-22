@@ -116,7 +116,7 @@ if (typeof window !== 'undefined') {
 
         // Configura máscara CPF/CNPJ
         function setupCPFCNPJ() {
-            const field = getElement('cpf-cnpj');
+            const field = document.getElementById('cpf-cnpj');
             if (!field) return;
 
             const pessoaFisica = isPessoaFisica();
@@ -144,7 +144,7 @@ if (typeof window !== 'undefined') {
 
         // Configura máscara de Telefone
         function setupTelefone() {
-            const field = getElement('phone');
+            const field = document.getElementById('phone');
             if (!field) return;
 
             field.maxLength = 15;
@@ -163,7 +163,7 @@ if (typeof window !== 'undefined') {
 
         // Configura máscara de CEP
         function setupCEP() {
-            const field = getElement('cep');
+            const field = document.getElementById('cep');
             if (!field) return;
 
             field.maxLength = 9;
@@ -184,7 +184,7 @@ if (typeof window !== 'undefined') {
         function setupTipoPessoaChange() {
             document.querySelectorAll('input[name="TipoPessoa"]').forEach(radio => {
                 radio.addEventListener('change', function () {
-                    const cpfCnpjField = getElement('cpf-cnpj');
+                    const cpfCnpjField = getElementById('cpf-cnpj');
                     if (cpfCnpjField) {
                         cpfCnpjField.value = '';
                         const pessoaFisica = isPessoaFisica();

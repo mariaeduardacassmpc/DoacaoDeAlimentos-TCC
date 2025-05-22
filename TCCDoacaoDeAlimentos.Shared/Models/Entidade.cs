@@ -29,7 +29,7 @@ public class Entidade
     [CustomValidation(typeof(Entidade), "ValidateDocumento")]
     public string CNPJ_CPF { get; set; }
 
-    [Required(ErrorMessage = "Telefone é obrigatório")]
+    [Required(ErrorMessage = "Telefone é obrigatório.")]
     public string Telefone { get; set; }
 
     [Required(ErrorMessage = "O endereço é obrigatório.")]
@@ -40,9 +40,11 @@ public class Entidade
     [StringLength(60, ErrorMessage = "Máximo de 60 caracteres.")]
     public string Altitute;
     public string Latitude;
+
+    [Required(ErrorMessage = "Bairro é obrigatório.")]
     public string Bairro { get; set; }
 
-    [Required(ErrorMessage = "CEP é obrigatório")]
+    [Required(ErrorMessage = "CEP é obrigatório.")]
     public string CEP { get; set; }
 
     [Required(ErrorMessage = "Cidade é obrigatória.")]
@@ -53,6 +55,8 @@ public class Entidade
     [EmailAddress(ErrorMessage = "E-mail inválido.")]
     public string Email { get; set; }
     public string? Sexo { get; set; }
+
+    [Required(ErrorMessage = "Responsável é obrigatório.")]
     public string? Responsavel { get; set; }
 
     public static ValidationResult ValidateDocumento(string documento, ValidationContext context)
