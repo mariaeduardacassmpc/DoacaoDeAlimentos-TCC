@@ -38,7 +38,7 @@ public class Entidade
 
     [Required(ErrorMessage = "O bairro é obrigatório.")]
     [StringLength(60, ErrorMessage = "Máximo de 60 caracteres.")]
-    public string Altitute;
+    public string Altitude { get; set; }
     public string Latitude;
 
     [Required(ErrorMessage = "Bairro é obrigatório.")]
@@ -54,10 +54,11 @@ public class Entidade
     [Required(ErrorMessage = "O e-mail é obrigatório.")]
     [EmailAddress(ErrorMessage = "E-mail inválido.")]
     public string Email { get; set; }
-    public string? Sexo { get; set; }
+    [Required(ErrorMessage =" Obrigatório escolher o sexo")]
+    public string Sexo { get; set; }
 
     [Required(ErrorMessage = "Responsável é obrigatório.")]
-    public string? Responsavel { get; set; }
+    public string Responsavel { get; set; }
 
     public static ValidationResult ValidateDocumento(string documento, ValidationContext context)
     {

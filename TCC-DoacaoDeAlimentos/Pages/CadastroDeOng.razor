@@ -153,6 +153,7 @@
                                     Enviar Cadastro
                                 </button>
                             </div>
+
                         </EditForm>
                     </div>
                 </div>
@@ -163,21 +164,16 @@
 
 @code {
     private Entidade ong = new Entidade() { Tipo = Entidade.TipoEntidade.O };
-    private bool isProcessing = false;  
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("applyOngMasks");
-        }
-    }
+    private bool _showPassword = false;
 
     private async Task HandleValidSubmit()
     {
-
         try
         {
+            // Log de depuração
+            Console.WriteLine("Formulário enviado com sucesso!");
+
             var dadosParaEnvio = new Entidade
                 {
                     RazaoSocial = ong.RazaoSocial,
@@ -188,18 +184,17 @@
                     Cidade = ong.Cidade,
                     Endereco = ong.Endereco,
                     Bairro = ong.Bairro,
-
                     CNPJ_CPF = RemoveMask(ong.CNPJ_CPF),
                     Telefone = RemoveMask(ong.Telefone),
                     CEP = RemoveMask(ong.CEP)
                 };
 
-            var response = await Http.PostAsJsonAsync("api/entidade/adicionar", dadosParaEnvio);
+            var response = await Http.PostAsJsonAsync("https://localhost:7083/api/entidade/adicionar", dadosParaEnvio);
 
             if (response.IsSuccessStatusCode)
             {
                 await JSRuntime.InvokeVoidAsync("alert", "Cadastro realizado com sucesso!");
-                Navigation.NavigateTo("/");
+                Navigation.NavigateTo("/"); // Redireciona para a página inicial ou página desejada após o cadastro
             }
             else
             {
@@ -213,16 +208,24 @@
         }
     }
 
+
+
     private string RemoveMask(string value)
     {
         if (string.IsNullOrEmpty(value)) return value;
         return Regex.Replace(value, @"[^\d]", "");
     }
 
-    private bool _showPassword = false;
-
     private void ToggleAllPasswords()
     {
         _showPassword = !_showPassword;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("applyOngMasks");
+        }
     }
 }
