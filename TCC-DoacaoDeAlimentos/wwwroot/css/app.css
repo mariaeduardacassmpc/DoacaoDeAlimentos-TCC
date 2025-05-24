@@ -77,8 +77,9 @@ a, .btn-link {
     outline: none;
 }
 
-}
+/* Removido fechamento extra de bloco CSS incorreto que estava após a regra acima */
 
+/* Sombra comum */
 .shadow {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
@@ -657,3 +658,20 @@ select.form-control option:hover {
     outline: none !important;
     box-shadow: none !important;
 }
+
+/* ======================= */
+/* Alterações para modal Blazored posicionar embaixo */
+/* ======================= */
+
+.blazored-modal {
+    display: flex !important;
+    align-items: flex-end !important; /* Alinha o modal na parte inferior da tela */
+    justify-content: center !important; /* Centraliza horizontalmente */
+    padding-bottom: 2rem !important; /* Espaço do rodapé */
+}
+
+    .blazored-modal .modal-content {
+        border-radius: 1rem;
+        margin: 0 1rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }

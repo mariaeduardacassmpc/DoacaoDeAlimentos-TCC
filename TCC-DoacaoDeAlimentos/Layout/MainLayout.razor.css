@@ -95,4 +95,71 @@ main {
         color: var(--primary-color);
     }
 
+/* ========== Estilos para o modal Blazored posicionado como dropdown ========== */
 
+/* Remove o header do modal com o "x" */
+.blazored-modal-close {
+    display: none !important;
+}
+
+/* Posiciona o modal parecido com um dropdown abaixo do botão Cadastre-se */
+.blazored-modal {
+    display: flex !important;
+    align-items: flex-start !important; /* Alinha no topo da viewport */
+    justify-content: flex-end !important; /* Alinha à direita */
+    padding-top: 80px !important; /* Espaço para navbar (ajuste se necessário) */
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+    padding-bottom: 0 !important;
+    z-index: 1500; /* Garante que fique acima da navbar e outros elementos */
+}
+
+    /* Estilo da caixa do modal */
+    .blazored-modal .modal-content {
+        border-radius: 1rem;
+        margin: 0;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        width: 240px;
+        max-width: 100%;
+        padding: 1.5rem 1.5rem 2rem 1.5rem;
+        background-color: white;
+    }
+
+/* Conteúdo do modal - centralizado com espaçamento */
+.modal-body.text-center {
+    padding: 0;
+}
+
+    .modal-body.text-center h5 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+/* Botões estilizados no modal */
+.modal-body .btn {
+    min-width: 100px;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.modal-body .btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+    .modal-body .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+.modal-body .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+    .modal-body .btn-primary:hover {
+        background-color: #276749;
+        border-color: #22543d;
+    }

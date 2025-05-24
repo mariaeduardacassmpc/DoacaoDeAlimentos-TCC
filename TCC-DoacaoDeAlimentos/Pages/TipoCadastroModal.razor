@@ -1,4 +1,6 @@
 ﻿@inject Blazored.Modal.Services.IModalService Modal
+@using Blazored.Modal
+@using Blazored.Modal.Services
 
 <div class="modal-body text-center">
     <h5>Como você deseja se cadastrar?</h5>
@@ -9,7 +11,7 @@
 </div>
 
 @code {
-    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+    [CascadingParameter] public BlazoredModalInstance BlazoredModal { get; set; } = default!;
 
     private async Task SelecionarTipo(string tipo)
     {

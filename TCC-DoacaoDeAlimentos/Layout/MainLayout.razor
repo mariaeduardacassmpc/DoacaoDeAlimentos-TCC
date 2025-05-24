@@ -1,5 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using FrontDoacaoDeAlimentos.Pages
+@inherits LayoutComponentBase
 @inject IJSRuntime JS
+@inject NavigationManager Navigation
+@inject Blazored.Modal.Services.IModalService Modal
+
 
 <div class="page">
     <main>
@@ -21,7 +25,7 @@
                             <NavLink class="nav-link" active-class="active" href="/" @onclick="FecharMenu">Início</NavLink>
                         </li>
                         
-                         <li class="nav-item mx-2">
+                        <li class="nav-item mx-2">
                             <NavLink class="nav-link" href="/MinhasDoacoes" @onclick="FecharMenu">Minhas Doações</NavLink>
                         </li>
 
@@ -41,21 +45,10 @@
                             <i class="bi bi-gift-fill me-1"></i> Doar
                         </a>
 
-                        <!-- Botão Cadastre-se com dropdown -->
-                        <div class="cadastre-se-wrapper position-relative" @onclick:stopPropagation="true">
-                            <button class="btn btn-outline-success d-flex align-items-center gap-1"
-                                    @onclick="ToggleDropdown" aria-haspopup="true" aria-expanded="@DropdownOpen">
-                                Cadastre-se <i class="bi bi-chevron-down"></i>
-                            </button>
-
-                            @if (DropdownOpen)
-                            {
-                                <div class="cadastre-se-menu shadow">
-                                    <a href="/CadastroDeOng" class="cadastre-se-link" @onclick="FecharMenu">Cadastro de Ong</a>
-                                    <a href="/CadastroDeDoador" class="cadastre-se-link" @onclick="FecharMenu">Cadastro de Doador</a>
-                                </div>
-                            }
-                        </div>
+                        <button class="btn btn-outline-success"
+                                @onclick="AbrirModalCadastro">
+                            Cadastre-se
+                        </button>
                     </div>
                 </div>
             </div>
@@ -69,42 +62,42 @@
 </div>
 
 @code {
-    string TipoUsuario;
-
-    private bool DropdownOpen = false;
+    private bool modalAberto = false;
 
     private async Task FecharMenu()
     {
         await JS.InvokeVoidAsync("fecharMenuNavbar");
-        DropdownOpen = false;  // Fecha o dropdown ao clicar em um link
     }
 
-    private void ToggleDropdown()
+    private async Task AbrirModalCadastro()
     {
-        DropdownOpen = !DropdownOpen;
-    }
+        if (modalAberto)
+            return;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
+        modalAberto = true;
+
+        try
         {
-            await JS.InvokeVoidAsync("addBodyClickListener");
-        }
-    }
+            var modal = Modal.Show<TipoCadastroModal>("Cadastro de");
+            var result = await modal.Result;
 
-    [JSInvokable]
-    public void CloseDropdown()
-    {
-        if (DropdownOpen)
+            if (!result.Cancelled)
+            {
+                var tipo = result.Data as string;
+
+                if (tipo == "doador")
+                {
+                    Navigation.NavigateTo("/CadastroDeDoador");
+                }
+                else if (tipo == "ong")
+                {
+                    Navigation.NavigateTo("/CadastroDeOng");
+                }
+            }
+        }
+        finally
         {
-            DropdownOpen = false;
-            StateHasChanged();
+            modalAberto = false;
         }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        // var usuario = await AuthService.ObterUsuarioLogadoAsync();
-        // TipoUsuario = usuario.Tipo; 
     }
 }
