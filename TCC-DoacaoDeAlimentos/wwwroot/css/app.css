@@ -79,6 +79,16 @@ a, .btn-link {
 
 /* Removido fechamento extra de bloco CSS incorreto que estava após a regra acima */
 
+.card,
+.card.shadow-sm,
+.card:hover,
+.card.shadow-sm:hover {
+    transform: none !important;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important; /* mantém a sombra padrão, sem animação extra */
+    transition: none !important;
+}
+
+
 /* Sombra comum */
 .shadow {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;

@@ -39,7 +39,6 @@ namespace BackDoacaoDeAlimentos.Repositorio
             await _db.ExecuteAsync(sql, alimento);
         }
 
-
         public async Task DeletarAlimento(int id)
         {
             var sql = @"DELETE FROM Alimento
@@ -53,8 +52,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
         {
             var sql = @"UPDATE Alimento
                         SET Nome = @Nome, 
-                           Categoria = @Categoria, 
-                           Descricao = @Descricao
+                           Categoria = @Categoria
                         WHERE Id = @Id;
             ";
 
