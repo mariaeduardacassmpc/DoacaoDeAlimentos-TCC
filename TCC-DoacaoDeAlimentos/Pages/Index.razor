@@ -152,9 +152,9 @@
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0 pt-0 text-center">
-                    <button class="btn btn-outline-success" @onclick='() => AbrirModal("cadastro")'>
+                    <a href="/CadastroDeEntidade" class="btn btn-outline-success">
                         Criar Conta <i class="bi bi-arrow-right ms-2"></i>
-                    </button>
+                    </a>
 
                 </div>
             </div>
@@ -201,35 +201,7 @@
     </div>
 </div>
 
-@if (modalAberto == "cadastro")
-{
-    <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);" @onclick="FecharModal">
-        <div class="modal-dialog" @onclick:stopPropagation>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Cadastro de</h5>
-                    <button class="btn-close" @onclick="FecharModal"></button>
-                </div>
-                <div class="modal-body d-flex justify-content-center align-items-center gap-4">
-                    <div class="form-check form-check-inline">
-                        <input type="radio" id="doador" name="tipoCadastro" value="Doador" @onchange="SelecionarTipo" checked="@("Doador" == tipoCadastro)" />
-                        <label for="doador">Doador</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input type="radio" id="ong" name="tipoCadastro" value="ONG" @onchange="SelecionarTipo" checked="@("ONG" == tipoCadastro)" />
-                        <label for="ong">ONG</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-success" @onclick="Redirecionar">Confirmar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
-
-else if (modalAberto == "saibaMais")
+ @if (modalAberto == "saibaMais")
 {
     <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);" @onclick="FecharModal">
         <div class="modal-dialog" @onclick:stopPropagation>
@@ -329,17 +301,5 @@ else if (modalAberto == "saibaMais")
         modalAberto = null;
     }
 
-    private void SelecionarTipo(ChangeEventArgs e)
-    {
-        tipoCadastro = e.Value?.ToString();
-    }
-
-    private void Redirecionar()
-    {
-        if (tipoCadastro == "Doador")
-            Navigation.NavigateTo("/CadastroDeEntidade");
-        else if (tipoCadastro == "ONG")
-            Navigation.NavigateTo("/CadastroDeEntidade");
-    }
 }
 

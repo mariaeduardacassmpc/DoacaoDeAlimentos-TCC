@@ -1,4 +1,6 @@
-﻿@page "/login"
+﻿Login.razor
+
+@page "/login"
 @using Blazored.Modal
 @using Blazored.Modal.Services
 @using TCCDoacaoDeAlimentos.Shared.Models
@@ -44,28 +46,10 @@
                                 <NavLink href="/recuperar-senha" class="text-decoration-none">Esqueceu sua senha?</NavLink>
                                 <p class="mt-3">
                                     Não tem conta?
-                                    <button type="button" class="btn btn-link text-success fw-semibold p-0" >Cadastre-se</button>
+                                    <button type="button" class="btn btn-link text-success fw-semibold p-0" @onclick="IrParaCadastro">
+                                        Cadastre-se
+                                    </button>
                                 </p>
-                                @if (exibirModalCadastro)
-                                {
-                                    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0, 0, 0, 0.5);">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Você é...</h5>
-                                                    <button type="button" class="btn-close" @onclick="FecharModalCadastro"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Selecione uma opção para continuar com o cadastro:</p>
-                                                    <div class="d-flex justify-content-around">
-                                                        @* <button class="btn btn-primary" @onclick='() => EscolherTipoCadastro("doador")'>Doador</button> *@
-                                                        @* <button class="btn btn-primary" @onclick='() => EscolherTipoCadastro("ong")'>Doador</button> *@
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
 
                             </div>
                         </EditForm>
@@ -81,34 +65,15 @@
     private Usuario usuario = new Usuario();
     [Inject]
     private NavigationManager NavigationManager { get; set; }
+
+    private void IrParaCadastro()
+    {
+        // Altere aqui para a página que deseja redirecionar
+        Navigation.NavigateTo("/CadastroDeEntidade");
+    }
     // [Inject] private IUsuarioService UsuarioService { get; set; }
     // [Inject] private AuthService authService { get; set; }
-   
-    private bool exibirModalCadastro = false;
 
-    private void MostrarModalCadastro()
-    {
-        exibirModalCadastro = true;
-    }
-
-    private void FecharModalCadastro()
-    {
-        exibirModalCadastro = false;
-    }
-
-    private void EscolherTipoCadastro(string tipo)
-    {
-        exibirModalCadastro = false;
-
-        if (tipo == "doador")
-        {
-            NavigationManager.NavigateTo("/cadastro-doador");
-        }
-        else if (tipo == "ong")
-        {
-            NavigationManager.NavigateTo("/cadastro-ong");
-        }
-    }
     // private async Task HandleLogin()
     // {
     //     try
@@ -118,7 +83,7 @@
     //         if (usuarioAutenticado != null)
     //         {
     //             AuthService.Logar(usuarioAutenticado);
-    //             NavigationManager.NavigateTo("/"); 
+    //             NavigationManager.NavigateTo("/");
     //         }
     //         else
     //         {
@@ -127,6 +92,6 @@
     //     catch (Exception ex)
     //     {
     //         Console.WriteLine($"Erro no login: {ex.Message}");
-    //     }
+        //     }
     // }
 }
