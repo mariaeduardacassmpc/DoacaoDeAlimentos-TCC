@@ -114,9 +114,9 @@
 
     private async Task CadastrarAlimento()
     {
-    try
-    {
-        using var response = await Http.PostAsJsonAsync("api/alimento/adicionar", NovoAlimento);
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/alimento/adicionar", NovoAlimento);
 
             if (response.IsSuccessStatusCode)
             {
@@ -135,17 +135,17 @@
                 StateHasChanged();
             }
 
-        else
+            else
+            {
+                var erro = await response.Content.ReadAsStringAsync();
+                ToastService.ShowError($"Erro ao cadastrar alimento: {erro}");
+            }
+        }
+        catch (Exception ex)
         {
-            var erro = await response.Content.ReadAsStringAsync();
-            ToastService.ShowError($"Erro ao cadastrar alimento: {erro}");
+            ToastService.ShowError($"Erro inesperado: {ex.Message}");
         }
     }
-    catch (Exception ex)
-    {
-        ToastService.ShowError($"Erro inesperado: {ex.Message}");
-    }
-}
 
 
     private async Task RemoverAlimento(Alimento alimento)
