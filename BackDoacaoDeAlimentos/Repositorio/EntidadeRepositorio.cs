@@ -84,7 +84,8 @@ namespace BackDoacaoDeAlimentos.Repositorios
             try
             {
                 var sql = "SELECT COUNT(1) FROM CadastroEntidade WHERE CNPJ_CPF = @Documento";
-                return await _db.ExecuteScalarAsync<bool>(sql, new { Documento = documento });
+                var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento });
+                return resultado > 0;
             }
             catch (Exception ex)
             {

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace TCCDoacaoDeAlimentos.Shared.Dto
 {
-    internal class UsuarioDto
+    public class UsuarioDto
     {
+
     }
 }
