@@ -19,56 +19,51 @@ namespace BackDoacaoDeAlimentos.Repositorios
         {
             try
             {
-                Console.WriteLine($"Executando SQL para: {entidade.RazaoSocial}"); // Debug
-
                 var sql = @"
-            INSERT INTO CadastroEntidade
-            (TipoEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, 
-             Email, Sexo, Responsavel, Senha)
-            VALUES (@Tipo, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
-                    @Email, @Sexo, @Responsavel, @Senha)";
-
-                Console.WriteLine($"SQL: {sql}"); // Debug
-                Console.WriteLine($"Parâmetros: {JsonSerializer.Serialize(entidade)}"); // Debug
+                    INSERT INTO Entidade
+                    (TipoEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, 
+                     Email, Sexo, Responsavel)
+                    VALUES (@Tipo, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
+                            @Email, @Sexo, @Responsavel)";
 
                 await _db.ExecuteAsync(sql, entidade);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro no repositório: {ex.ToString()}"); // Debug
+                Console.WriteLine($"Erro no repositório: {ex.ToString()}"); 
                 throw;
             }
         }
 
         public async Task<Entidade> ObterEntidadePorId(int id)
         {
-            var sql = "SELECT * FROM CadastroEntidade WHERE Id = @Id";
+            var sql = "SELECT * FROM Entidade WHERE Id = @Id";
             return await _db.QueryFirstOrDefaultAsync<Entidade>(sql, new { Id = id });
         }
 
         public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
         {
-            var sql = "SELECT * FROM CadastroEntidade";
+            var sql = "SELECT * FROM Entidade";
             return await _db.QueryAsync<Entidade>(sql);
         }
 
         public async Task AtualizarEntidade(Entidade entidade)
         {
-            var sql = @"UPDATE CadastroEntidade SET 
-        INSERT INTO CadastroEntidade
-        (TipoEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, 
-         Email, Sexo, Responsavel, Senha, ConfirmarSenha)
-        VALUES (@Tipo, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
-                @Email, @Sexo, @Responsavel, @Senha, @ConfirmarSenha);
+            var sql = @"UPDATE Entidade SET 
+                    INSERT INTO Entidade
+                    (TipoEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, 
+                     Email, Sexo, Responsavel, Senha, ConfirmarSenha)
+                    VALUES (@Tipo, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
+                            @Email, @Sexo, @Responsavel, @Senha, @ConfirmarSenha);
 
-         WHERE Id = @Id"";
-    ";
+                     WHERE Id = @Id"";
+                ";
             await _db.ExecuteAsync(sql, entidade);
         }
 
         public async Task DeletarEntidade(int id)
         {
-            var sql = "DELETE FROM CadastroEntidade WHERE Id = @Id";
+            var sql = "DELETE FROM Entidade WHERE Id = @Id";
             await _db.ExecuteAsync(sql, new { Id = id });
         }
 
@@ -83,7 +78,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
         {
             try
             {
-                var sql = "SELECT COUNT(1) FROM CadastroEntidade WHERE CNPJ_CPF = @Documento";
+                var sql = "SELECT COUNT(1) FROM Entidade WHERE CNPJ_CPF = @Documento";
                 var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento });
                 return resultado > 0;
             }

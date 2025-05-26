@@ -26,7 +26,7 @@ namespace BackDoacaoDeAlimentos.Servicos
         {
             try
             {
-                var usuario = await _usuarioRepositorio.ObterPorIdAsync(id);
+                var usuario = await _usuarioRepositorio.ObterPorId(id);
                 if (usuario == null)
                     throw new ArgumentException("Usuário não encontrado");
 
@@ -54,16 +54,16 @@ namespace BackDoacaoDeAlimentos.Servicos
                 if (usuario.Senha.Length < 8)
                     throw new ArgumentException("Senha deve ter no mínimo 8 caracteres");
 
-                if (await _usuarioRepositorio.VerificarEmailExistenteAsync(usuario.Email))
+                if (await _usuarioRepositorio.VerificarEmailExistente(usuario.Email))
                     throw new InvalidOperationException("Email já está em uso");
 
-                var entidade = await _usuarioRepositorio.ObterPorIdAsync(usuario.EntidadeId);
+                var entidade = await _usuarioRepositorio.ObterPorId(usuario.EntidadeId);
                 if (entidade == null)
                     throw new ArgumentException("Entidade não encontrada");
 
                 usuario.Senha = CriptografarSenha(usuario.Senha);
 
-                return await _usuarioRepositorio.AdicionarAsync(usuario);
+                return await _usuarioRepositorio.Adicionar(usuario);
             }
             catch (Exception ex)
             {
@@ -81,7 +81,7 @@ namespace BackDoacaoDeAlimentos.Servicos
                 if (string.IsNullOrWhiteSpace(senha))
                     throw new ArgumentException("Senha é obrigatória");
 
-                var usuario = await _usuarioRepositorio.ObterPorEmailAsync(email);
+                var usuario = await _usuarioRepositorio.ObterPorEmail(email);
                 if (usuario == null)
                     throw new ArgumentException("Usuário não encontrado");
 
@@ -103,7 +103,7 @@ namespace BackDoacaoDeAlimentos.Servicos
                 if (usuario == null)
                     throw new ArgumentNullException(nameof(usuario));
 
-                var usuarioExistente = await _usuarioRepositorio.ObterPorIdAsync(usuario.Id);
+                var usuarioExistente = await _usuarioRepositorio.ObterPorId(usuario.Id);
                 if (usuarioExistente == null)
                     throw new ArgumentException("Usuário não encontrado");
 
@@ -116,7 +116,7 @@ namespace BackDoacaoDeAlimentos.Servicos
                     usuario.Senha = usuarioExistente.Senha;
                 }
 
-                await _usuarioRepositorio.AtualizarAsync(usuario);
+                await _usuarioRepositorio.Atualizar(usuario);
             }
             catch (Exception ex)
             {
@@ -128,11 +128,11 @@ namespace BackDoacaoDeAlimentos.Servicos
         {
             try
             {
-                var usuario = await _usuarioRepositorio.ObterPorIdAsync(id);
+                var usuario = await _usuarioRepositorio.ObterPorId(id);
                 if (usuario == null)
                     throw new ArgumentException("Usuário não encontrado");
 
-                await _usuarioRepositorio.RemoverAsync(id);
+                await _usuarioRepositorio.Remover(id);
             }
             catch (Exception ex)
             {

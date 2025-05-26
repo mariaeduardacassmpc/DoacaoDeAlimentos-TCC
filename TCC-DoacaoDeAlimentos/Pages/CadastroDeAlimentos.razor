@@ -143,6 +143,7 @@
         try
         {
             var response = await Http.PostAsJsonAsync("api/alimento/adicionar", NovoAlimento);
+
             if (response.IsSuccessStatusCode)
             {
                 ToastService.ShowSuccess("Alimento cadastrado com sucesso!");
@@ -150,6 +151,8 @@
                 NovoAlimento = new Alimento();
                 StateHasChanged();
             }
+
+
             else
             {
                 var erro = await response.Content.ReadAsStringAsync();
@@ -170,21 +173,11 @@
             var response = await Http.DeleteAsync($"api/alimento/deletar/{alimento.Id}");
             if (response.IsSuccessStatusCode)
             {
-                alimentos.RemoveAll(a => a.Id == alimento.Id);
                 ToastService.ShowSuccess("Alimento removido com sucesso!");
             }
             else
             {
-                var erro = await response.Content.ReadAsStringAsync();
-                if (erro.Contains("vinculado a uma doação", StringComparison.OrdinalIgnoreCase))
-                {
-                    alimentos.RemoveAll(a => a.Id == alimento.Id);
-                    ToastService.ShowWarning("Alimento removido da lista de cadastro, mas ainda está vinculado a uma doação.");
-                }
-                else
-                {
-                    ToastService.ShowError("Erro ao remover: " + erro);
-                }
+                ToastService.ShowWarning("Alimento removido da lista de cadastro, mas ainda está vinculado a uma doação.");
             }
             StateHasChanged();
         }

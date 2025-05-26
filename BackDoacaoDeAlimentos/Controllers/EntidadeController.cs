@@ -51,7 +51,6 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             try
             {
-                // Aqui você cria a instância do modelo Entidade a partir do DTO
                 var entidade = new Entidade
                 {
                     RazaoSocial = entidadeDto.RazaoSocial,
@@ -72,7 +71,6 @@ namespace BackDoacaoDeAlimentos.Controllers
                     return BadRequest("As senhas não coincidem");
                 }
 
-                // Chama o serviço para validar e adicionar a entidade
                 var documentoExistente = await _entidadeService.VerificarCpfCnpjExistente(entidade.CNPJ_CPF);
                 if (documentoExistente)
                 {

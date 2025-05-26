@@ -16,7 +16,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
             _db = db;
         }
 
-        public async Task<Usuario> ObterPorIdAsync(int id)
+        public async Task<Usuario> ObterPorId(int id)
         {
             const string sql = @"
                 SELECT u., e. 
@@ -27,7 +27,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
             return await _db.QueryFirstOrDefaultAsync<Usuario>(sql, new { Id = id });
         }
 
-        public async Task<Usuario> ObterPorEmailAsync(string email)
+        public async Task<Usuario> ObterPorEmail(string email)
         {
             const string sql = @"
                 SELECT u., e. 
@@ -38,10 +38,10 @@ namespace BackDoacaoDeAlimentos.Repositorio
             return await _db.QueryFirstOrDefaultAsync<Usuario>(sql, new { Email = email });
         }
 
-        public async Task<Usuario> AdicionarAsync(Usuario usuario)
+        public async Task<Usuario> Adicionar(Usuario usuario)
         {
             const string sql = @"
-                INSERT INTO Usuarios 
+                INSERT INTO Usuario 
                 (EntidadeId, Email, Senha)
                 OUTPUT INSERTED.*
                 VALUES 
@@ -50,7 +50,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
             return await _db.QuerySingleAsync<Usuario>(sql, usuario);
         }
 
-        public async Task AtualizarAsync(Usuario usuario)
+        public async Task Atualizar(Usuario usuario)
         {
             const string sql = @"
                 UPDATE Usuarios SET
@@ -65,7 +65,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
             }
         }
 
-        public async Task RemoverAsync(int id)
+        public async Task Remover(int id)
         {
             const string sql = "DELETE FROM Usuarios WHERE Id = @Id";
 
@@ -76,7 +76,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
             }
         }
 
-        public async Task<bool> VerificarEmailExistenteAsync(string email)
+        public async Task<bool> VerificarEmailExistente(string email)
         {
             const string sql = "SELECT 1 FROM Usuarios WHERE Email = @Email";
             return await _db.ExecuteScalarAsync<bool>(sql, new { Email = email });

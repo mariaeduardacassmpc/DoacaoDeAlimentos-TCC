@@ -5,11 +5,11 @@ namespace BackDoacaoDeAlimentos.Interfaces.Repositorios
 {
     public interface IUsuarioRepositorio
     {
-        Task<Usuario> ObterPorIdAsync(int id);
-        Task<Usuario> ObterPorEmailAsync(string email);
-        Task<Usuario> AdicionarAsync(Usuario usuario);
-        Task AtualizarAsync(Usuario usuario);
-        Task RemoverAsync(int id);
-        Task<bool> VerificarEmailExistenteAsync(string email);
+        Task<Usuario> ObterPorId(int id);
+        Task<Usuario> ObterPorEmail(string email);
+        Task<Usuario> Adicionar(Usuario usuario);
+        Task Atualizar(Usuario usuario);
+        Task Remover(int id);
+        Task<bool> VerificarEmailExistente(string email);
     }
 }

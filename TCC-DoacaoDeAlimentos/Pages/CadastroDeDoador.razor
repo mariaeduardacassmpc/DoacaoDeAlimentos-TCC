@@ -1,9 +1,8 @@
-﻿@page "/CadastroDeDoador"
+﻿@page "/CadastroDeEntidade"
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
 @using System.Text.RegularExpressions
 @using TCCDoacaoDeAlimentos.Shared.Models
-@using static System.Net.WebRequestMethods
 @inject HttpClient Http
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
@@ -12,169 +11,159 @@
             <div class="col-lg-8 col-md-10">
                 <div class="card shadow">
                     <div class="card-body p-5">
-                        <h1 class="card-title text-center">Cadastro de Doador</h1>
-                        <h6 class="text-center mb-4">
-                            Faça o Cadastro para poder doar
-                        </h6>
+                        <h1 class="card-title text-center">Cadastro</h1>
+                        <h6 class="text-center mb-4">Cadastre sua organização ou para doar</h6>
 
-                        <EditForm Model="@doador" OnValidSubmit="HandleValidSubmit">
+                        <EditForm Model="@entidade" OnValidSubmit="HandleValidSubmit">
                             <DataAnnotationsValidator />
                             <hr />
 
                             <div class="mb-3">
-                                <label for="nome" class="form-label">Nome Completo *</label>
-                                <InputText @bind-Value="doador.RazaoSocial"
-                                class="form-control"
-                                id="nome"
-                                placeholder="Nome" />
-                                <ValidationMessage For="@(() => doador.RazaoSocial)" class="text-danger" />
+                                <label class="form-label">Tipo de Entidade *</label>
+                                <InputRadioGroup @bind-Value="entidade.Tipo" class="form-check">
+                                    <div class="form-check form-check-inline">
+                                        <InputRadio Value="@Entidade.TipoEntidade.O"
+                                                    class="form-check-input"
+                                                    id="ong" />
+                                        <label class="form-check-label" for="ong">ONG</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <InputRadio Value="@Entidade.TipoEntidade.F"
+                                                    class="form-check-input"
+                                                    id="doador" />
+                                        <label class="form-check-label" for="doador">Doador</label>
+                                    </div>
+                                </InputRadioGroup>
+                                <ValidationMessage For="@(() => entidade.Tipo)" class="text-danger" />
                             </div>
 
+                            <!-- Campos comuns a ambos -->
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome Completo *</label>
+                                <InputText @bind-Value="entidade.RazaoSocial"
+                                           class="form-control"
+                                           id="nome"
+                                           placeholder="Nome da entidade" />
+                                <ValidationMessage For="@(() => entidade.RazaoSocial)" class="text-danger" />
+                            </div>
+
+                            <!-- Campos do cadastro de Senha -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Senha *</label>
                                     <div class="position-relative">
                                         <InputText type="@(_showPassword ? "text" : "password")"
-                                                   @bind-Value="doador.Senha"
+                                                   @bind-Value="entidade.Senha"
                                                    class="form-control pe-5"
                                                    placeholder="Digite sua senha"
-                                                   id="senhaDoador" />
+                                                   id="senha" />
                                         <button type="button"
                                                 class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
                                                 @onclick="ToggleAllPasswords">
                                             <i class="@(_showPassword ? "fas fa-eye-slash" : "fas fa-eye") text-success"></i>
                                         </button>
                                     </div>
-                                    <ValidationMessage For="@(() => doador.Senha)" class="text-danger" />
+                                    <ValidationMessage For="@(() => entidade.Senha)" class="text-danger" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Confirme sua senha *</label>
                                     <div class="position-relative">
                                         <InputText type="@(_showPassword ? "text" : "password")"
-                                                   @bind-Value="doador.ConfirmarSenha"
+                                                   @bind-Value="entidade.ConfirmarSenha"
                                                    class="form-control pe-5"
                                                    placeholder="Digite novamente sua senha"
-                                                   id="confirmarSenhaDoador" />
+                                                   id="confirmarSenha" />
                                         <button type="button"
                                                 class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
                                                 @onclick="ToggleAllPasswords">
                                             <i class="@(_showPassword ? "fas fa-eye-slash" : "fas fa-eye") text-success"></i>
                                         </button>
                                     </div>
-                                    <ValidationMessage For="@(() => doador.ConfirmarSenha)" class="text-danger" />
+                                    <ValidationMessage For="@(() => entidade.ConfirmarSenha)" class="text-danger" />
                                 </div>
                             </div>
 
+                            <!-- Campos específicos dependendo do tipo de Entidade -->
+                            @if (entidade.Tipo == Entidade.TipoEntidade.O)
+                            {
+                                <!-- Campos de ONG -->
+                                <div class="mb-3">
+                                    <label for="cnpj" class="form-label">CNPJ *</label>
+                                    <InputText @bind-Value="entidade.CNPJ_CPF"
+                                               class="form-control"
+                                               id="cnpj"
+                                               placeholder="00.000.000/0000-00" />
+                                    <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- Campos de Doador -->
+                                <div class="mb-3">
+                                    <label for="cpf-cnpj" class="form-label">CPF *</label>
+                                    <InputText @bind-Value="entidade.CNPJ_CPF"
+                                               class="form-control"
+                                               id="cpf-cnpj"
+                                               placeholder="000.000.000-00" />
+                                    <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
+                                </div>
+                            }
 
+                            <!-- Campos comuns -->
                             <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <label class="form-label">Tipo de Pessoa: *</label>
-                                    <InputRadioGroup @bind-Value="doador.Tipo" class="form-check">
-                                        <div class="form-check form-check-inline">
-                                            <InputRadio Value="@Entidade.TipoEntidade.F"
-                                            class="form-check-input"
-                                            id="pessoaFisica" />
-                                            <label class="form-check-label" for="pessoaFisica">Física</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <InputRadio Value="@Entidade.TipoEntidade.J"
-                                            class="form-check-input"
-                                            id="pessoaJuridica" />
-                                            <label class="form-check-label" for="pessoaJuridica">Jurídica</label>
-                                        </div>
-                                    </InputRadioGroup>
-                                    <ValidationMessage For="@(() => doador.Tipo)" class="text-danger" />
+                                <div class="col-md-6">
+                                    <label class="form-label">Telefone *</label>
+                                    <InputText @bind-Value="entidade.Telefone"
+                                               class="form-control"
+                                               id="telefone"
+                                               placeholder="(00) 00000-0000" />
+                                    <ValidationMessage For="@(() => entidade.Telefone)" class="text-danger" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">E-mail *</label>
+                                    <InputText @bind-Value="entidade.Email"
+                                               class="form-control"
+                                               id="email"
+                                               placeholder="contato@entidade.org" />
+                                    <ValidationMessage For="@(() => entidade.Email)" class="text-danger" />
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="cpf-cnpj" class="form-label">
-                                    @(doador.Tipo == Entidade.TipoEntidade.F ? "CPF *" : "CNPJ *")
-                                </label>
-                                <input type="text"
-                                @bind="doador.CNPJ_CPF"
-                                @bind:event="oninput"
-                                class="form-control"
-                                id="cpf-cnpj"
-                                placeholder="@(doador.Tipo == Entidade.TipoEntidade.F ? "000.000.000-00" : "00.000.000/0000-00")" />
-                                <ValidationMessage For="@(() => doador.CNPJ_CPF)" class="text-danger" />
+                                <label for="cep" class="form-label">CEP *</label>
+                                <InputText @bind-Value="entidade.CEP"
+                                           class="form-control"
+                                           id="cep"
+                                           placeholder="00000-000" />
+                                <ValidationMessage For="@(() => entidade.CEP)" class="text-danger" />
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Telefone: *</label>
-                                    <input type="text"
-                                    @bind="doador.Telefone"
-                                    @bind:event="oninput"
-                                    class="form-control"
-                                    id="phone"
-                                    placeholder="(00) 00000-0000" />
-                                    <ValidationMessage For="@(() => doador.Telefone)" class="text-danger" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">E-mail: *</label>
-                                    <InputText @bind-Value="doador.Email"
-                                    class="form-control"
-                                    type="email" />
-                                    <ValidationMessage For="@(() => doador.Email)" class="text-danger" />
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="cep" class="form-label">CEP *</label>
-                                    <input type="text"
-                                    @bind="doador.CEP"
-                                    @bind:event="oninput"
-                                    class="form-control"
-                                    id="cep"
-                                    placeholder="00000-000" />
-                                    <ValidationMessage For="@(() => doador.CEP)" class="text-danger" />
-                                </div>
-                                <div class="col-md-6 mb-3">
                                     <label for="cidade" class="form-label">Cidade *</label>
-                                    <InputText @bind-Value="doador.Cidade"
-                                    class="form-control"
-                                    id="cidade"
-                                    placeholder="Sua cidade" />
-                                    <ValidationMessage For="@(() => doador.Cidade)" class="text-danger" />
+                                    <InputText @bind-Value="entidade.Cidade"
+                                               class="form-control"
+                                               id="cidade"
+                                               placeholder="Sua cidade" />
+                                    <ValidationMessage For="@(() => entidade.Cidade)" class="text-danger" />
                                 </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-8">
-                                    <label class="form-label">Endereço: *</label>
-                                    <InputText @bind-Value="doador.Endereco"
-                                    class="form-control" />
-                                    <ValidationMessage For="@(() => doador.Endereco)" class="text-danger" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Bairro: *</label>
-                                    <InputText @bind-Value="doador.Bairro"
-                                    class="form-control" />
-                                    <ValidationMessage For="@(() => doador.Bairro)" class="text-danger" />
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Sexo:</label>
-                                    <InputRadioGroup @bind-Value="doador.Sexo" class="form-check">
-                                        <div class="form-check form-check-inline">
-                                            <InputRadio Value="@("Masculino")"
-                                            class="form-check-input"
-                                            id="sexoMasculino" />
-                                            <label class="form-check-label" for="sexoMasculino">Masculino</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <InputRadio Value="@("Feminino")"
-                                            class="form-check-input"
-                                            id="sexoFeminino" />
-                                            <label class="form-check-label" for="sexoFeminino">Feminino</label>
-                                        </div>
-                                    </InputRadioGroup>
-                                    <ValidationMessage For="@(() => doador.Sexo)" class="text-danger" />
+                                    <label for="bairro" class="form-label">Bairro *</label>
+                                    <InputText @bind-Value="entidade.Bairro"
+                                               class="form-control"
+                                               id="bairro"
+                                               placeholder="Bairro" />
+                                    <ValidationMessage For="@(() => entidade.Bairro)" class="text-danger" />
                                 </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="endereco" class="form-label">Endereço *</label>
+                                <InputText @bind-Value="entidade.Endereco"
+                                           class="form-control"
+                                           id="endereco"
+                                           placeholder="Endereço completo" />
+                                <ValidationMessage For="@(() => entidade.Endereco)" class="text-danger" />
                             </div>
 
                             <div class="d-grid">
@@ -182,6 +171,7 @@
                                     Enviar Cadastro
                                 </button>
                             </div>
+
                         </EditForm>
                     </div>
                 </div>
@@ -191,29 +181,26 @@
 </div>
 
 @code {
-    private Entidade doador { get; set; } = new Entidade()
-        {
-            Tipo = Entidade.TipoEntidade.F // Define Física como padrão
-        };
+    private Entidade entidade = new Entidade();
+
+    private bool _showPassword = false;
 
     private async Task HandleValidSubmit()
     {
         try
         {
-
             var dadosParaEnvio = new Entidade
                 {
-                    RazaoSocial = doador.RazaoSocial,
-                    Senha = doador.Senha,
-                    ConfirmarSenha = doador.ConfirmarSenha,
-                    Email = doador.Email,
-                    Responsavel = doador.Responsavel,
-                    Cidade = doador.Cidade,
-                    Endereco = doador.Endereco,
-                    Bairro = doador.Bairro,
-                    CNPJ_CPF = RemoveMask(doador.CNPJ_CPF),
-                    Telefone = RemoveMask(doador.Telefone),
-                    CEP = RemoveMask(doador.CEP)
+                    RazaoSocial = entidade.RazaoSocial,
+                    Senha = entidade.Senha,
+                    ConfirmarSenha = entidade.ConfirmarSenha,
+                    Email = entidade.Email,
+                    Telefone = RemoveMask(entidade.Telefone),
+                    CNPJ_CPF = RemoveMask(entidade.CNPJ_CPF),
+                    Endereco = entidade.Endereco,
+                    Bairro = entidade.Bairro,
+                    Cidade = entidade.Cidade,
+                    CEP = RemoveMask(entidade.CEP)
                 };
 
             var response = await Http.PostAsJsonAsync("https://localhost:7083/api/entidade/adicionar", dadosParaEnvio);
@@ -221,7 +208,7 @@
             if (response.IsSuccessStatusCode)
             {
                 await JSRuntime.InvokeVoidAsync("alert", "Cadastro realizado com sucesso!");
-                Navigation.NavigateTo("/"); // Redireciona para a página desejada após o cadastro
+                Navigation.NavigateTo("/");
             }
             else
             {
@@ -235,15 +222,10 @@
         }
     }
 
-
-
     private string RemoveMask(string value)
     {
-        if (string.IsNullOrEmpty(value)) return value;
-        return Regex.Replace(value, @"[^\d]", "");
+        return string.IsNullOrEmpty(value) ? value : Regex.Replace(value, @"[^\d]", "");
     }
-
-    private bool _showPassword = false;
 
     private void ToggleAllPasswords()
     {
