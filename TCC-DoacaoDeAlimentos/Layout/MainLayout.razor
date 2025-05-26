@@ -15,7 +15,7 @@
                 </NavLink>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -24,17 +24,26 @@
                         <li class="nav-item mx-2">
                             <NavLink class="nav-link" active-class="active" href="/" @onclick="FecharMenu">Início</NavLink>
                         </li>
-                        
+
                         <li class="nav-item mx-2">
-                            <NavLink class="nav-link" href="/MinhasDoacoes" @onclick="FecharMenu">Minhas Doações</NavLink>
+                            <NavLink class="nav-link" href="/MinhasDoacoes" @onclick="FecharMenu">
+                                @(TipoUsuarioLogado == "O" ? "Doações Recebidas" : "Minhas Doações")
+                            </NavLink>
+                        </li>
+
+                        @if (TipoUsuarioLogado == "O")
+                        {
+                            <li class="nav-item mx-2">
+                                <NavLink class="nav-link" href="/CadastroDeAlimentos" @onclick="FecharMenu">Cadastro de Alimentos</NavLink>
+                            </li>
+                        }
+
+                        <li class="nav-item mx-2">
+                            <NavLink class="nav-link" href="/Geolocalizacao" @onclick="FecharMenu">Geolocalização</NavLink>
                         </li>
 
                         <li class="nav-item mx-2">
-                            <NavLink class="nav-link" href="/CadastroDeAlimentos" @onclick="FecharMenu">Cadastro de Alimentos</NavLink>
-                        </li>
-                        
-                        <li class="nav-item mx-2">
-                            <NavLink class="nav-link" href="/Geolocalizacao" @onclick="FecharMenu">Geolocalização</NavLink>
+                            <NavLink class="nav-link" href="/CadastroDeEntidade" @onclick="FecharMenu">Cadastrar</NavLink>
                         </li>
                     </ul>
 
@@ -44,17 +53,11 @@
                         <a class="btn btn-success" href="/CadastroDeDoacao" @onclick="FecharMenu">
                             <i class="bi bi-gift-fill me-1"></i> Doar
                         </a>
-
-                        <button class="btn btn-outline-success"
-                                @onclick="AbrirModalCadastro">
-                            Cadastre-se
-                        </button>
                     </div>
                 </div>
             </div>
         </nav>
     </main>
-    
     <div class="main-content">
         <BlazoredToast />
         @Body
@@ -62,42 +65,11 @@
 </div>
 
 @code {
+    private string TipoUsuarioLogado = "O"; 
     private bool modalAberto = false;
 
     private async Task FecharMenu()
     {
         await JS.InvokeVoidAsync("fecharMenuNavbar");
-    }
-
-    private async Task AbrirModalCadastro()
-    {
-        if (modalAberto)
-            return;
-
-        modalAberto = true;
-
-        try
-        {
-            var modal = Modal.Show<TipoCadastroModal>("Cadastro de");
-            var result = await modal.Result;
-
-            if (!result.Cancelled)
-            {
-                var tipo = result.Data as string;
-
-                if (tipo == "doador")
-                {
-                    Navigation.NavigateTo("/CadastroDeDoador");
-                }
-                else if (tipo == "ong")
-                {
-                    Navigation.NavigateTo("/CadastroDeEntidade");
-                }
-            }
-        }
-        finally
-        {
-            modalAberto = false;
-        }
     }
 }
