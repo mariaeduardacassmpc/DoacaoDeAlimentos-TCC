@@ -1,7 +1,10 @@
 ﻿using System.Text.Json;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using Microsoft.AspNetCore.Mvc;
+using TCCDoacaoDeAlimentos.Shared;
+using TCCDoacaoDeAlimentos.Shared.Dto;
 using TCCDoacaoDeAlimentos.Shared.Models;
+
 
 namespace BackDoacaoDeAlimentos.Controllers
 {
@@ -44,17 +47,32 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
         [HttpPost("adicionar")]
-        public async Task<IActionResult> Adicionar([FromBody] Entidade entidade)
+        public async Task<IActionResult> Adicionar([FromBody] EntidadeDto entidadeDto)
         {
             try
             {
-                Console.WriteLine($"Recebendo cadastro: {JsonSerializer.Serialize(entidade)}");
+                // Aqui você cria a instância do modelo Entidade a partir do DTO
+                var entidade = new Entidade
+                {
+                    RazaoSocial = entidadeDto.RazaoSocial,
+                    Senha = entidadeDto.Senha,
+                    ConfirmarSenha = entidadeDto.ConfirmarSenha,
+                    CNPJ_CPF = entidadeDto.CNPJ_CPF,
+                    Telefone = entidadeDto.Telefone,
+                    Endereco = entidadeDto.Endereco,
+                    Bairro = entidadeDto.Bairro,
+                    CEP = entidadeDto.CEP,
+                    Cidade = entidadeDto.Cidade,
+                    Email = entidadeDto.Email,
+                    Responsavel = entidadeDto.Responsavel
+                };
 
                 if (entidade.Senha != entidade.ConfirmarSenha)
                 {
                     return BadRequest("As senhas não coincidem");
                 }
 
+                // Chama o serviço para validar e adicionar a entidade
                 var documentoExistente = await _entidadeService.VerificarCpfCnpjExistente(entidade.CNPJ_CPF);
                 if (documentoExistente)
                 {
@@ -66,7 +84,6 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro no cadastro: {ex.ToString()}"); 
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }

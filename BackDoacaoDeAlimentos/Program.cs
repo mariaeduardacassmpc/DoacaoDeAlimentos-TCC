@@ -26,7 +26,6 @@ builder.Services.AddScoped<IAlimentoDoacaoRepositorio, AlimentoDoacaoRepositorio
 builder.Services.AddScoped<IAlimentoDoacaoService, AlimentoDoacaoService>();
 
 builder.Services.AddSingleton<AuthService>();
-builder.Services.AddBlazoredToast();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -44,7 +43,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("https://localhost:7170") 
               .AllowAnyHeader()
-              .AllowAnyOrigin()
+              //.AllowAnyOrigin()
               .AllowAnyMethod();
     });
 });

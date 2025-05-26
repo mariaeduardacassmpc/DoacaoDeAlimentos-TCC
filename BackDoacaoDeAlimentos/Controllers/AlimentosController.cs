@@ -43,7 +43,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             try
             {
                 await _alimentoService.AdicionarAlimento(alimento);
-                return Ok();
+                return Ok("Alimento cadastrado com sucesso!");
             }
             catch (Exception ex)
             {
@@ -58,8 +58,15 @@ namespace BackDoacaoDeAlimentos.Controllers
             if (alimento == null)
                 return NotFound();
 
-            await _alimentoService.DeletarAlimento(id);
-            return NoContent();
+            try
+            {
+                await _alimentoService.DeletarAlimento(id);
+                return Ok("Alimento removido com sucesso!"); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Não é possível excluir este alimento pois ele está vinculado a uma doação.");
+            }
         }
 
         [HttpPut("atualizar/{id}")]
