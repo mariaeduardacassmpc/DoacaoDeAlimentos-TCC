@@ -12,9 +12,9 @@
                 <div class="card shadow">
                     <div class="card-body p-5">
                         <h1 class="card-title text-center">Cadastro</h1>
-                        <h6 class="text-center mb-4">Cadastre sua organização ou para doar</h6>
+                        <h6 class="text-center mb-4">Cadastre sua organização ou cadastre-se para doar</h6>
 
-                        <EditForm Model="@entidade" OnValidSubmit="HandleValidSubmit">
+                        <EditForm Model="@entidade" OnValidSubmit="@CadastrarEntidade">
                             <DataAnnotationsValidator />
                             <hr />
 
@@ -126,9 +126,11 @@
                             <div class="mb-3">
                                 <label for="cep" class="form-label">CEP *</label>
                                 <InputText @bind-Value="entidade.CEP"
-                                class="form-control"
-                                id="cep"
-                                placeholder="00000-000" />
+                                           class="form-control"
+                                           id="cep"
+                                           placeholder="00000-000"
+                                           @oninput="BuscarEnderecoPorCep" />
+
                                 <ValidationMessage For="@(() => entidade.CEP)" class="text-danger" />
                             </div>
 
@@ -151,13 +153,23 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="endereco" class="form-label">Endereço *</label>
-                                <InputText @bind-Value="entidade.Endereco"
-                                class="form-control"
-                                id="endereco"
-                                placeholder="Endereço completo" />
-                                <ValidationMessage For="@(() => entidade.Endereco)" class="text-danger" />
+                            <div class="row mb-3">
+                                <div class="col-md-9">
+                                    <label for="endereco" class="form-label">Endereço *</label>
+                                    <InputText @bind-Value="entidade.Endereco"
+                                               class="form-control"
+                                               id="endereco"
+                                               placeholder="Endereço completo" />
+                                    <ValidationMessage For="@(() => entidade.Endereco)" class="text-danger" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="numero" class="form-label">Número *</label>
+                                    <InputText @bind-Value="entidade.Numero"
+                                               class="form-control"
+                                               id="numero"
+                                               placeholder="Nº" />
+                                    <ValidationMessage For="@(() => entidade.Numero)" class="text-danger" />
+                                </div>
                             </div>
 
                             <div class="d-grid">
@@ -174,16 +186,24 @@
     </div>
 </div>
 
-@code {
-    private Entidade entidade = new Entidade();
 
+@code {
+
+    private Entidade entidade = new Entidade { Tipo = Entidade.TipoEntidade.F }; 
     private bool _showPassword = false;
-    private async Task HandleValidSubmit()
+
+    private async Task CadastrarEntidade()
     {
         try
         {
+            if (entidade.Senha != entidade.ConfirmarSenha)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "As senhas não coincidem.");
+                return;
+            }
+
             var dadosParaEnvio = new Entidade
-                {
+            {
                     RazaoSocial = entidade.RazaoSocial,
                     Senha = entidade.Senha,
                     ConfirmarSenha = entidade.ConfirmarSenha,
@@ -191,12 +211,14 @@
                     Telefone = RemoveMask(entidade.Telefone),
                     CNPJ_CPF = RemoveMask(entidade.CNPJ_CPF),
                     Endereco = entidade.Endereco,
+                    Numero = entidade.Numero, 
                     Bairro = entidade.Bairro,
                     Cidade = entidade.Cidade,
                     CEP = RemoveMask(entidade.CEP),
-                    Latitude = entidade.Latitude,  
+                    Latitude = entidade.Latitude,
                     Altitude = entidade.Altitude
-                };
+            };
+
 
             var response = await Http.PostAsJsonAsync("api/entidade/adicionar", dadosParaEnvio);
 
@@ -225,5 +247,31 @@
     private void ToggleAllPasswords()
     {
         _showPassword = !_showPassword;
+    }
+
+    private async Task BuscarEnderecoPorCep(ChangeEventArgs e)
+    {
+        var cep = RemoveMask(e.Value?.ToString() ?? "");
+        if (string.IsNullOrWhiteSpace(cep) || cep.Length != 8) return;
+
+        try
+        {
+            var response = await Http.GetFromJsonAsync<ViaCepResponse>($"api/viacep/{cep}");
+
+            if (response != null)
+            {
+                entidade.Bairro = response.Bairro;
+                entidade.Cidade = response.Localidade;
+                entidade.Endereco = response.Logradouro;
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "CEP não encontrado.");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao buscar CEP: {ex.Message}");
+        }
     }
 }

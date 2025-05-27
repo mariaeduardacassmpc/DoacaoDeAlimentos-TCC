@@ -24,6 +24,7 @@ builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAlimentoDoacaoRepositorio, AlimentoDoacaoRepositorio>();
 builder.Services.AddScoped<IAlimentoDoacaoService, AlimentoDoacaoService>();
+builder.Services.AddHttpClient<ViaCepService>();
 
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddControllers();

@@ -59,6 +59,7 @@ public class Entidade
 
     [Required(ErrorMessage = "Responsável é obrigatório.")]
     public string Responsavel { get; set; }
+    public string Numero { get; set; }
 
     public static ValidationResult ValidateDocumento(string documento, ValidationContext context)
     {
