@@ -1,4 +1,5 @@
-﻿using BackDoacaoDeAlimentos.Interfaces.Repositorios;
+﻿using System.Transactions;
+using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
@@ -7,33 +8,40 @@ namespace BackDoacaoDeAlimentos.Servicos
     public class EntidadeService : IEntidadeService
     {
         private readonly IEntidadeRepositorio _entidadeRepositorio;
+        private readonly IUsuarioRepositorio _usuarioRepositorio;
 
-        public EntidadeService(IEntidadeRepositorio entidadeRepositorio)
+
+        public EntidadeService(IEntidadeRepositorio entidadeRepositorio, IUsuarioRepositorio usuarioRepositorio)
         {
             _entidadeRepositorio = entidadeRepositorio;
+            _usuarioRepositorio = usuarioRepositorio;
         }
 
-        public async Task AdicionarEntidade(Entidade entidade)
+        public async Task AdicionarEntidade(Entidade entidade, Usuario usuario)
         {
             try
             {
-                Console.WriteLine($"Adicionando entidade no service: {entidade.RazaoSocial}"); // Debug
-
                 if (entidade == null)
                     throw new ArgumentNullException(nameof(entidade));
 
                 if (string.IsNullOrWhiteSpace(entidade.CNPJ_CPF))
                     throw new ArgumentException("CNPJ/CPF é obrigatório");
 
+                if (entidade.Senha != entidade.ConfirmarSenha)
+                    throw new ArgumentException("As senhas não coincidem");
+
                 var existe = await _entidadeRepositorio.VerificarCnpjExistente(entidade.CNPJ_CPF);
                 if (existe)
-                    throw new InvalidOperationException("Documento já cadastrado");
+                    throw new InvalidOperationException(entidade.Tipo == Entidade.TipoEntidade.F ? "CPF já cadastrado" : "CNPJ já cadastrado");
 
-                await _entidadeRepositorio.AdicionarEntidade(entidade);
+                var entidadeId = await _entidadeRepositorio.AdicionarEntidade(entidade);
+                entidade.Id = entidadeId;
+
+                usuario.EntidadeId = entidadeId;
+                await _usuarioRepositorio.Adicionar(usuario);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro no service: {ex.ToString()}"); // Debug
                 throw;
             }
         }
@@ -54,7 +62,7 @@ namespace BackDoacaoDeAlimentos.Servicos
         {
             try
             {
-                return await _entidadeRepositorio.ObterTodasEntidades();
+                return await _entidadeRepositorio.ObterTodasOngs();
             }
             catch (Exception ex)
             {

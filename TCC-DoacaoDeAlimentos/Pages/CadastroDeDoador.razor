@@ -23,43 +23,41 @@
                                 <InputRadioGroup @bind-Value="entidade.Tipo" class="form-check">
                                     <div class="form-check form-check-inline">
                                         <InputRadio Value="@Entidade.TipoEntidade.O"
-                                                    class="form-check-input"
-                                                    id="ong" />
+                                        class="form-check-input"
+                                        id="ong" />
                                         <label class="form-check-label" for="ong">ONG</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <InputRadio Value="@Entidade.TipoEntidade.F"
-                                                    class="form-check-input"
-                                                    id="doador" />
+                                        class="form-check-input"
+                                        id="doador" />
                                         <label class="form-check-label" for="doador">Doador</label>
                                     </div>
                                 </InputRadioGroup>
                                 <ValidationMessage For="@(() => entidade.Tipo)" class="text-danger" />
                             </div>
 
-                            <!-- Campos comuns a ambos -->
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome Completo *</label>
                                 <InputText @bind-Value="entidade.RazaoSocial"
-                                           class="form-control"
-                                           id="nome"
-                                           placeholder="Nome da entidade" />
+                                class="form-control"
+                                id="nome"
+                                placeholder="Nome da entidade" />
                                 <ValidationMessage For="@(() => entidade.RazaoSocial)" class="text-danger" />
                             </div>
 
-                            <!-- Campos do cadastro de Senha -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Senha *</label>
                                     <div class="position-relative">
                                         <InputText type="@(_showPassword ? "text" : "password")"
-                                                   @bind-Value="entidade.Senha"
-                                                   class="form-control pe-5"
-                                                   placeholder="Digite sua senha"
-                                                   id="senha" />
+                                        @bind-Value="entidade.Senha"
+                                        class="form-control pe-5"
+                                        placeholder="Digite sua senha"
+                                        id="senha" />
                                         <button type="button"
-                                                class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
-                                                @onclick="ToggleAllPasswords">
+                                        class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
+                                        @onclick="ToggleAllPasswords">
                                             <i class="@(_showPassword ? "fas fa-eye-slash" : "fas fa-eye") text-success"></i>
                                         </button>
                                     </div>
@@ -69,13 +67,13 @@
                                     <label class="form-label">Confirme sua senha *</label>
                                     <div class="position-relative">
                                         <InputText type="@(_showPassword ? "text" : "password")"
-                                                   @bind-Value="entidade.ConfirmarSenha"
-                                                   class="form-control pe-5"
-                                                   placeholder="Digite novamente sua senha"
-                                                   id="confirmarSenha" />
+                                        @bind-Value="entidade.ConfirmarSenha"
+                                        class="form-control pe-5"
+                                        placeholder="Digite novamente sua senha"
+                                        id="confirmarSenha" />
                                         <button type="button"
-                                                class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
-                                                @onclick="ToggleAllPasswords">
+                                        class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
+                                        @onclick="ToggleAllPasswords">
                                             <i class="@(_showPassword ? "fas fa-eye-slash" : "fas fa-eye") text-success"></i>
                                         </button>
                                     </div>
@@ -83,48 +81,44 @@
                                 </div>
                             </div>
 
-                            <!-- Campos específicos dependendo do tipo de Entidade -->
                             @if (entidade.Tipo == Entidade.TipoEntidade.O)
                             {
-                                <!-- Campos de ONG -->
                                 <div class="mb-3">
                                     <label for="cnpj" class="form-label">CNPJ *</label>
                                     <InputText @bind-Value="entidade.CNPJ_CPF"
-                                               class="form-control"
-                                               id="cnpj"
-                                               placeholder="00.000.000/0000-00" />
+                                    class="form-control"
+                                    id="cnpj"
+                                    placeholder="00.000.000/0000-00" />
                                     <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
                                 </div>
                             }
                             else
                             {
-                                <!-- Campos de Doador -->
                                 <div class="mb-3">
                                     <label for="cpf-cnpj" class="form-label">CPF *</label>
                                     <InputText @bind-Value="entidade.CNPJ_CPF"
-                                               class="form-control"
-                                               id="cpf-cnpj"
-                                               placeholder="000.000.000-00" />
+                                    class="form-control"
+                                    id="cpf-cnpj"
+                                    placeholder="000.000.000-00" />
                                     <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
                                 </div>
                             }
 
-                            <!-- Campos comuns -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Telefone *</label>
                                     <InputText @bind-Value="entidade.Telefone"
-                                               class="form-control"
-                                               id="telefone"
-                                               placeholder="(00) 00000-0000" />
+                                    class="form-control"
+                                    id="telefone"
+                                    placeholder="(00) 00000-0000" />
                                     <ValidationMessage For="@(() => entidade.Telefone)" class="text-danger" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">E-mail *</label>
-                                    <InputText @bind-Value="entidade.Email"
-                                               class="form-control"
-                                               id="email"
-                                               placeholder="contato@entidade.org" />
+                                        <InputText @bind-Value="entidade.Email"
+                                        class="form-control"
+                                        id="email"
+                                        placeholder="contato@entidade.org" />
                                     <ValidationMessage For="@(() => entidade.Email)" class="text-danger" />
                                 </div>
                             </div>
@@ -132,9 +126,9 @@
                             <div class="mb-3">
                                 <label for="cep" class="form-label">CEP *</label>
                                 <InputText @bind-Value="entidade.CEP"
-                                           class="form-control"
-                                           id="cep"
-                                           placeholder="00000-000" />
+                                class="form-control"
+                                id="cep"
+                                placeholder="00000-000" />
                                 <ValidationMessage For="@(() => entidade.CEP)" class="text-danger" />
                             </div>
 
@@ -142,17 +136,17 @@
                                 <div class="col-md-6">
                                     <label for="cidade" class="form-label">Cidade *</label>
                                     <InputText @bind-Value="entidade.Cidade"
-                                               class="form-control"
-                                               id="cidade"
-                                               placeholder="Sua cidade" />
+                                    class="form-control"
+                                    id="cidade"
+                                    placeholder="Sua cidade" />
                                     <ValidationMessage For="@(() => entidade.Cidade)" class="text-danger" />
                                 </div>
                                 <div class="col-md-6">
                                     <label for="bairro" class="form-label">Bairro *</label>
                                     <InputText @bind-Value="entidade.Bairro"
-                                               class="form-control"
-                                               id="bairro"
-                                               placeholder="Bairro" />
+                                    class="form-control"
+                                    id="bairro"
+                                    placeholder="Bairro" />
                                     <ValidationMessage For="@(() => entidade.Bairro)" class="text-danger" />
                                 </div>
                             </div>
@@ -160,9 +154,9 @@
                             <div class="mb-3">
                                 <label for="endereco" class="form-label">Endereço *</label>
                                 <InputText @bind-Value="entidade.Endereco"
-                                           class="form-control"
-                                           id="endereco"
-                                           placeholder="Endereço completo" />
+                                class="form-control"
+                                id="endereco"
+                                placeholder="Endereço completo" />
                                 <ValidationMessage For="@(() => entidade.Endereco)" class="text-danger" />
                             </div>
 
@@ -184,7 +178,6 @@
     private Entidade entidade = new Entidade();
 
     private bool _showPassword = false;
-
     private async Task HandleValidSubmit()
     {
         try
@@ -200,10 +193,12 @@
                     Endereco = entidade.Endereco,
                     Bairro = entidade.Bairro,
                     Cidade = entidade.Cidade,
-                    CEP = RemoveMask(entidade.CEP)
+                    CEP = RemoveMask(entidade.CEP),
+                    Latitude = entidade.Latitude,  
+                    Altitude = entidade.Altitude
                 };
 
-            var response = await Http.PostAsJsonAsync("https://localhost:7083/api/entidade/adicionar", dadosParaEnvio);
+            var response = await Http.PostAsJsonAsync("api/entidade/adicionar", dadosParaEnvio);
 
             if (response.IsSuccessStatusCode)
             {

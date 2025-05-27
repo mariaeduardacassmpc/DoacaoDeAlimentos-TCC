@@ -1,8 +1,6 @@
 ﻿@page "/MinhasDoacoes"
-@* @using Microsoft.AspNetCore.Components.Authorization *@
 @inject NavigationManager Navigation
 @inject HttpClient Http
-@* @inject AuthenticationStateProvider AuthenticationStateProvider *@
 @using TCCDoacaoDeAlimentos.Shared.Models;
 
 <div class="min-vh-100" style="background-color: #d4edda;">
@@ -143,8 +141,6 @@
     {
         try
         {
-            Console.WriteLine("⏳ Iniciando carregamento de dados...");
-
             TipoUsuario = "F";
             Filtro = new FiltroDoacaoDto
                 {
@@ -153,7 +149,6 @@
 
             var jsonEnviado = System.Text.Json.JsonSerializer.Serialize(Filtro);
             var response = await Http.PostAsJsonAsync("api/doacao/filtrarDoacao", Filtro);
-
 
             if (response.IsSuccessStatusCode)
             {

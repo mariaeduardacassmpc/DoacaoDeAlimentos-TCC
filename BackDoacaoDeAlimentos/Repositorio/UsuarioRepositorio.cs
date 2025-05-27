@@ -19,9 +19,10 @@ namespace BackDoacaoDeAlimentos.Repositorio
         public async Task<Usuario> ObterPorId(int id)
         {
             const string sql = @"
-                SELECT u., e. 
-                FROM Usuarios u
-                INNER JOIN Entidades e ON u.EntidadeId = e.Id
+                SELECT u.Id, u.EntidadeId, u.Email, u.Senha,
+                e.Id, e.RazaoSocial, e.TipoEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email, e.Responsavel, e.Altitude, e.Latitude
+                FROM Usuario u
+                INNER JOIN Entidade e ON u.EntidadeId = e.Id
                 WHERE u.Id = @Id";
 
             return await _db.QueryFirstOrDefaultAsync<Usuario>(sql, new { Id = id });
@@ -29,45 +30,43 @@ namespace BackDoacaoDeAlimentos.Repositorio
 
         public async Task<Usuario> ObterPorEmail(string email)
         {
-            const string sql = @"
+             var sql = @"
                 SELECT u., e. 
-                FROM Usuarios u
+                FROM Usuario u
                 INNER JOIN Entidades e ON u.EntidadeId = e.Id
-                WHERE u.Email = @Email";
+                WHERE u.Email = @Email
+             ";
 
             return await _db.QueryFirstOrDefaultAsync<Usuario>(sql, new { Email = email });
         }
 
         public async Task<Usuario> Adicionar(Usuario usuario)
         {
-            const string sql = @"
-                INSERT INTO Usuario 
-                (EntidadeId, Email, Senha)
-                OUTPUT INSERTED.*
-                VALUES 
-                (@EntidadeId, @Email, @Senha)";
+             var sql = @"
+                INSERT INTO Usuario (EntidadeId, Email, Senha)
+                VALUES (@EntidadeId, @Email, @Senha)
+             ";
 
-            return await _db.QuerySingleAsync<Usuario>(sql, usuario);
+            await _db.ExecuteAsync(sql, usuario);
+            return usuario;
         }
 
         public async Task Atualizar(Usuario usuario)
         {
-            const string sql = @"
-                UPDATE Usuarios SET
-                    Email = @Email,
-                    Senha = @Senha
-                WHERE Id = @Id";
+            var sql = @"
+                UPDATE Usuario SET
+                Email = @Email,
+                Senha = @Senha
+                WHERE Id = @Id
+            ";
 
-            var affectedRows = await _db.ExecuteAsync(sql, usuario);
-            if (affectedRows == 0)
-            {
-                throw new ArgumentException("Usuário não encontrado para atualização");
-            }
+         var affectedRows = await _db.ExecuteAsync(sql, usuario);
+             
         }
 
         public async Task Remover(int id)
         {
-            const string sql = "DELETE FROM Usuarios WHERE Id = @Id";
+            var sql = "DELETE FROM Usuario WHERE Id = @Id";
 
             var affectedRows = await _db.ExecuteAsync(sql, new { Id = id });
             if (affectedRows == 0)
@@ -78,7 +77,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
 
         public async Task<bool> VerificarEmailExistente(string email)
         {
-            const string sql = "SELECT 1 FROM Usuarios WHERE Email = @Email";
+            var sql = "SELECT 1 FROM Usuario WHERE Email = @Email";
             return await _db.ExecuteScalarAsync<bool>(sql, new { Email = email });
         }
     }

@@ -15,25 +15,28 @@ namespace BackDoacaoDeAlimentos.Repositorios
             _db = db;
         }
 
-        public async Task AdicionarEntidade(Entidade entidade)
+        public async Task<int> AdicionarEntidade(Entidade entidade)
         {
             try
             {
                 var sql = @"
-                    INSERT INTO Entidade
-                    (TipoEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, 
-                     Email, Sexo, Responsavel)
-                    VALUES (@Tipo, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
-                            @Email, @Sexo, @Responsavel)";
+                  INSERT INTO Entidade
+                  (TipoEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, 
+                  Email, Sexo, Responsavel)
+                  OUTPUT INSERTED.Id
+                   VALUES (@Tipo, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
+                       @Email, @Sexo, @Responsavel)";
 
-                await _db.ExecuteAsync(sql, entidade);
+                var id = await _db.ExecuteScalarAsync<int>(sql, entidade);
+                return id;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro no repositório: {ex.ToString()}"); 
+                Console.WriteLine($"Erro no repositório: {ex.ToString()}");
                 throw;
             }
         }
+
 
         public async Task<Entidade> ObterEntidadePorId(int id)
         {
@@ -41,9 +44,9 @@ namespace BackDoacaoDeAlimentos.Repositorios
             return await _db.QueryFirstOrDefaultAsync<Entidade>(sql, new { Id = id });
         }
 
-        public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
+        public async Task<IEnumerable<Entidade>> ObterTodasOngs()
         {
-            var sql = "SELECT * FROM Entidade";
+            var sql = "SELECT * FROM Entidade WHERE TipoEntidade = 'O'";
             return await _db.QueryAsync<Entidade>(sql);
         }
 

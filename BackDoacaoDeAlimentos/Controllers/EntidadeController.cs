@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using BackDoacaoDeAlimentos.Servicos;
 using Microsoft.AspNetCore.Mvc;
 using TCCDoacaoDeAlimentos.Shared;
 using TCCDoacaoDeAlimentos.Shared.Dto;
@@ -13,10 +14,14 @@ namespace BackDoacaoDeAlimentos.Controllers
     public class EntidadeController : ControllerBase
     {
         private readonly IEntidadeService _entidadeService;
+        private readonly IUsuarioService _usuarioService;
 
-        public EntidadeController(IEntidadeService entidadeService)
+
+        public EntidadeController(IEntidadeService entidadeService, IUsuarioService usuarioService)
         {
             _entidadeService = entidadeService;
+            _usuarioService = usuarioService;
+
         }
 
         [HttpGet("cidade/{cidade}")]
@@ -47,12 +52,13 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
         [HttpPost("adicionar")]
-        public async Task<IActionResult> Adicionar([FromBody] EntidadeDto entidadeDto)
+        public async Task<IActionResult> Adicionar([FromBody] Entidade entidadeDto)
         {
             try
             {
                 var entidade = new Entidade
                 {
+                    Tipo = entidadeDto.Tipo,
                     RazaoSocial = entidadeDto.RazaoSocial,
                     Senha = entidadeDto.Senha,
                     ConfirmarSenha = entidadeDto.ConfirmarSenha,
@@ -63,21 +69,20 @@ namespace BackDoacaoDeAlimentos.Controllers
                     CEP = entidadeDto.CEP,
                     Cidade = entidadeDto.Cidade,
                     Email = entidadeDto.Email,
-                    Responsavel = entidadeDto.Responsavel
+                    Responsavel = entidadeDto.Responsavel,
+                    Sexo = entidadeDto.Sexo,
+                    Latitude = entidadeDto.Latitude,
+                    Altitude = entidadeDto.Altitude
                 };
 
-                if (entidade.Senha != entidade.ConfirmarSenha)
+                var usuario = new Usuario
                 {
-                    return BadRequest("As senhas não coincidem");
-                }
+                    Email = entidadeDto.Email,
+                    Senha = entidadeDto.Senha
+                };
 
-                var documentoExistente = await _entidadeService.VerificarCpfCnpjExistente(entidade.CNPJ_CPF);
-                if (documentoExistente)
-                {
-                    return BadRequest(entidade.Tipo == Entidade.TipoEntidade.F ? "CPF já cadastrado" : "CNPJ já cadastrado");
-                }
+                await _entidadeService.AdicionarEntidade(entidade, usuario);
 
-                await _entidadeService.AdicionarEntidade(entidade);
                 return Ok(new { success = true, message = "Cadastro realizado com sucesso!" });
             }
             catch (Exception ex)
@@ -85,6 +90,7 @@ namespace BackDoacaoDeAlimentos.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
+
 
         [HttpPut("atualizar/{id}")]
         public async Task<IActionResult> Atualizar([FromBody] Entidade entidade)

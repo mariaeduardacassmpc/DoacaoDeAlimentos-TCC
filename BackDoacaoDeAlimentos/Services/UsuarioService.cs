@@ -22,7 +22,7 @@ namespace BackDoacaoDeAlimentos.Servicos
             _entidadeRepositorio = entidadeRepositorio;
         }
 
-        public async Task<Usuario> ObterUsuarioPorIdAsync(int id)
+        public async Task<Usuario> ObterUsuarioPorId(int id)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace BackDoacaoDeAlimentos.Servicos
             }
         }
 
-        public async Task<Usuario> RegistrarUsuarioAsync(Usuario usuario)
+        public async Task<Usuario> RegistrarUsuario(Usuario usuario)
         {
             try
             {
@@ -56,13 +56,8 @@ namespace BackDoacaoDeAlimentos.Servicos
 
                 if (await _usuarioRepositorio.VerificarEmailExistente(usuario.Email))
                     throw new InvalidOperationException("Email já está em uso");
-
-                var entidade = await _usuarioRepositorio.ObterPorId(usuario.EntidadeId);
-                if (entidade == null)
-                    throw new ArgumentException("Entidade não encontrada");
-
+             
                 usuario.Senha = CriptografarSenha(usuario.Senha);
-
                 return await _usuarioRepositorio.Adicionar(usuario);
             }
             catch (Exception ex)
@@ -71,7 +66,7 @@ namespace BackDoacaoDeAlimentos.Servicos
             }
         }
 
-        public async Task<Usuario> AutenticarUsuarioAsync(string email, string senha)
+        public async Task<Usuario> AutenticarUsuario(string email, string senha)
         {
             try
             {
@@ -96,7 +91,7 @@ namespace BackDoacaoDeAlimentos.Servicos
             }
         }
 
-        public async Task AtualizarUsuarioAsync(Usuario usuario)
+        public async Task AtualizarUsuario(Usuario usuario)
         {
             try
             {
@@ -124,7 +119,7 @@ namespace BackDoacaoDeAlimentos.Servicos
             }
         }
 
-        public async Task RemoverUsuarioAsync(int id)
+        public async Task RemoverUsuario(int id)
         {
             try
             {

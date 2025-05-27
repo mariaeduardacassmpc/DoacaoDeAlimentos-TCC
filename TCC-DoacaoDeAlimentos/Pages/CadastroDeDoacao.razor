@@ -1,5 +1,6 @@
 ﻿@page "/CadastroDeDoacao"
 @using TCCDoacaoDeAlimentos.Shared.Models
+@inject HttpClient Http
 @inject NavigationManager Navigation
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
@@ -137,8 +138,7 @@
 
     protected override void OnInitialized()
     {
-        // Exemplo de carregamento fake
-        Ongs = new List<Entidade>(); // Carregue com os dados reais
+        var ListaDeOngs = Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodas");
         Alimentos = new List<Alimento>();
     }
 
@@ -167,7 +167,6 @@
 
         try
         {
-            // Alimentos = await alimentoService.ObterTodosAlimentos();
             Navigation.NavigateTo("/MinhasDoacoes");
         }
         catch (Exception ex)

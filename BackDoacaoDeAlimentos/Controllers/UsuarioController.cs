@@ -19,21 +19,21 @@ namespace BackDoacaoDeAlimentos.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
-            var usuario = await _usuarioService.ObterUsuarioPorIdAsync(id);
+            var usuario = await _usuarioService.ObterUsuarioPorId(id);
             return Ok(usuario);
         }
 
         [HttpPost("registrar")]
         public async Task<IActionResult> Registrar([FromBody] Usuario usuario)
         {
-            var usuarioRegistrado = await _usuarioService.RegistrarUsuarioAsync(usuario);
+            var usuarioRegistrado = await _usuarioService.RegistrarUsuario(usuario);
             return CreatedAtAction(nameof(ObterPorId), new { id = usuarioRegistrado.Id }, usuarioRegistrado);
         }
 
         [HttpPost("autenticar")]
         public async Task<IActionResult> Autenticar([FromBody] LoginRequest loginRequest)
         {
-            var usuario = await _usuarioService.AutenticarUsuarioAsync(loginRequest.Email, loginRequest.Senha);
+            var usuario = await _usuarioService.AutenticarUsuario(loginRequest.Email, loginRequest.Senha);
             return Ok(usuario);
         }
 
@@ -43,14 +43,14 @@ namespace BackDoacaoDeAlimentos.Controllers
             if (id != usuario.Id)
                 return BadRequest("ID do usuário não corresponde");
 
-            await _usuarioService.AtualizarUsuarioAsync(usuario);
+            await _usuarioService.AtualizarUsuario(usuario);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remover(int id)
         {
-            await _usuarioService.RemoverUsuarioAsync(id);
+            await _usuarioService.RemoverUsuario(id);
             return NoContent();
         }
     }

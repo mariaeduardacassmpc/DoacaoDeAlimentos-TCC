@@ -4,7 +4,7 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
 {
     public interface IEntidadeService
     {
-        Task AdicionarEntidade(Entidade entidade);
+        Task AdicionarEntidade(Entidade entidade, Usuario usuario);
         Task<Entidade> ObterEntidadePorId(int id);
         Task<IEnumerable<Entidade>> ObterTodasEntidades();
         Task AtualizarEntidade(Entidade entidade);
