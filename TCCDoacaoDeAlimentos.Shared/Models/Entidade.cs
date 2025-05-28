@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.RegularExpressions;
+using TCCDoacaoDeAlimentos.Shared.Services;
 
 namespace TCCDoacaoDeAlimentos.Shared.Models;
 
-public class Entidade
+public class Entidade : IValidatableObject
 {
     [Key]
     public int Id { get; set; }
@@ -60,4 +62,26 @@ public class Entidade
         F, // Física
         J  // Jurídica
     }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        var documentoLimpo = Regex.Replace(CNPJ_CPF ?? "", "[^0-9]", "");
+
+        if (TpPessoa == TipoPessoa.F) 
+        {
+            if (!DocumentoValidator.ValidarCpf(documentoLimpo))
+            {
+                yield return new ValidationResult("CPF inválido.", new[] { nameof(CNPJ_CPF) });
+            }
+        }
+        else if (TpPessoa == TipoPessoa.J) 
+        {
+            if (!DocumentoValidator.ValidarCnpj(documentoLimpo))
+            {
+                yield return new ValidationResult("CNPJ inválido.", new[] { nameof(CNPJ_CPF) });
+            }
+        }
+    }
 }
+
+

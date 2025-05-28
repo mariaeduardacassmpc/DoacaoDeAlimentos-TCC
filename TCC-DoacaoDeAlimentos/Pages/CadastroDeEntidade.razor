@@ -202,6 +202,7 @@
     private Entidade entidade = new Entidade();
     private bool _showPassword = false;
     private TipoPessoa tipoPessoa = TipoPessoa.F;
+    private bool tentouEnviar = false;
 
     private async Task CadastrarEntidade()
     {
@@ -261,7 +262,7 @@
 
         try
         {
-            var response = await Http.GetFromJsonAsync<ViaCepResponse>($"api/viacep/{cep}");
+            var response = await Http.GetFromJsonAsync<ViaCep>($"api/viacep/{cep}");
             if (response != null)
             {
                 entidade.Bairro = response.Bairro;

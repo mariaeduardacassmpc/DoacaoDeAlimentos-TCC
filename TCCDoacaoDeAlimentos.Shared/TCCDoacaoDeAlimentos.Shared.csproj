@@ -10,7 +10,4 @@
     <Compile Remove="Models\Ong.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-  </ItemGroup>
-
 </Project>

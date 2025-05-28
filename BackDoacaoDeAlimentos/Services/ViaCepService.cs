@@ -9,11 +9,11 @@
             _httpClient = httpClient;
         }
 
-        public async Task<ViaCepResponse> BuscarEnderecoPorCep(string cep)
+        public async Task<ViaCep> BuscarEnderecoPorCep(string cep)
         {
             cep = cep.Replace("-", "").Trim();
 
-            var response = await _httpClient.GetFromJsonAsync<ViaCepResponse>($"https://viacep.com.br/ws/{cep}/json/");
+            var response = await _httpClient.GetFromJsonAsync<ViaCep>($"https://viacep.com.br/ws/{cep}/json/");
 
             if (response is null || response.Erro == "true")
                 throw new Exception("CEP não encontrado.");

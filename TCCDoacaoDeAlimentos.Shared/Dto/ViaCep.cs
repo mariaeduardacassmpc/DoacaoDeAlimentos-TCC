@@ -1,4 +1,4 @@
-﻿public class ViaCepResponse
+﻿public class ViaCep
 {
     public string Cep { get; set; }
     public string Logradouro { get; set; }
