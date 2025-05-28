@@ -4,14 +4,12 @@ using Microsoft.Data.SqlClient;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using BackDoacaoDeAlimentos.Repositorio;
-using Blazored.Toast;
 using BackDoacaoDeAlimentos.Servicos;
 using BackDoacaoDeAlimentos.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.AddBlazoredToast();
 builder.Services.AddScoped<IAlimentoRepositorio, AlimentoRepositorio>();
 builder.Services.AddScoped<IAlimentoService, AlimentoService>();
 builder.Services.AddScoped<IEntidadeService, EntidadeService>();

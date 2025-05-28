@@ -3,6 +3,7 @@
 @inject IJSRuntime JSRuntime
 @using System.Text.RegularExpressions
 @using TCCDoacaoDeAlimentos.Shared.Models
+@using TCCDoacaoDeAlimentos.Shared.Dto
 @inject HttpClient Http
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
@@ -202,6 +203,18 @@
                 return;
             }
 
+            // try
+            // {
+            //     var pos = await JSRuntime.InvokeAsync<Geolocalizacao>("getUserLocation");
+            //     entidade.Latitude = pos.latitude?.ToString();
+            //     entidade.Altitude = pos.longitude?.ToString(); 
+            // }
+            // catch
+            // {
+            //     entidade.Latitude = null;
+            //     entidade.Altitude = null;
+            // }
+
             var dadosParaEnvio = new Entidade
             {
                     RazaoSocial = entidade.RazaoSocial,
@@ -210,13 +223,14 @@
                     Email = entidade.Email,
                     Telefone = RemoveMask(entidade.Telefone),
                     CNPJ_CPF = RemoveMask(entidade.CNPJ_CPF),
-                    Endereco = entidade.Endereco,
-                    Numero = entidade.Numero, 
+                    Endereco = $"{entidade.Endereco}, {entidade.Numero}", 
+                    Numero = entidade.Numero,
                     Bairro = entidade.Bairro,
                     Cidade = entidade.Cidade,
                     CEP = RemoveMask(entidade.CEP),
                     Latitude = entidade.Latitude,
-                    Altitude = entidade.Altitude
+                    Altitude = entidade.Altitude,
+                    Tipo = entidade.Tipo 
             };
 
 
@@ -273,5 +287,13 @@
         {
             await JSRuntime.InvokeVoidAsync("alert", $"Erro ao buscar CEP: {ex.Message}");
         }
+
+    }
+
+    public class Geolocalizacao
+    {
+        public double? latitude { get; set; }
+        public double? longitude { get; set; }
+        public double? altitude { get; set; }
     }
 }

@@ -1,0 +1,311 @@
+﻿@page "/CadastroDeEntidade"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@inject Blazored.Toast.Services.IToastService ToastService
+@using System.Text.RegularExpressions
+@using TCCDoacaoDeAlimentos.Shared.Models
+@using TCCDoacaoDeAlimentos.Shared.Dto
+
+<div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <h1 class="card-title text-center">Cadastro</h1>
+                        <h6 class="text-center mb-4">Cadastre sua organização ou cadastre-se para doar</h6>
+
+                        <EditForm Model="@entidade" OnValidSubmit="@CadastrarEntidade">
+                            <DataAnnotationsValidator />
+                            <hr />
+
+                            <div class="mb-3">
+                                <label class="form-label">Tipo de Entidade *</label>
+                                <InputRadioGroup @bind-Value="entidade.TpEntidade" class="form-check">
+                                    <div class="form-check form-check-inline">
+                                        <InputRadio Value="@Entidade.TipoEntidade.O" class="form-check-input" id="ong" />
+                                        <label class="form-check-label" for="ong">ONG</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <InputRadio Value="@Entidade.TipoEntidade.D" class="form-check-input" id="doador" />
+                                        <label class="form-check-label" for="doador">Doador</label>
+                                    </div>
+                                </InputRadioGroup>
+                                <ValidationMessage For="@(() => entidade.TpEntidade)" class="text-danger" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">
+                                    @(entidade.TpEntidade == Entidade.TipoEntidade.O ? "Razão Social *" : "Nome Completo *")
+                                </label>
+                                <InputText @bind-Value="entidade.RazaoSocial" class="form-control" id="nome"
+                                placeholder="@(entidade.TpEntidade == Entidade.TipoEntidade.O ? "Razão Social" : "Nome Completo")" />
+                                <ValidationMessage For="@(() => entidade.RazaoSocial)" class="text-danger" />
+                            </div>
+
+                            @if (entidade.TpEntidade== Entidade.TipoEntidade.O)
+                            {
+                                <div class="mb-3">
+                                    <label for="responsavel" class="form-label">Responsável *</label>
+                                    <InputText @bind-Value="entidade.Responsavel" class="form-control" id="responsavel"
+                                    placeholder="Nome do responsável" />
+                                    <ValidationMessage For="@(() => entidade.Responsavel)" class="text-danger" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="mb-3">
+                                    <label for="sexo" class="form-label">Sexo *</label>
+                                    <InputSelect @bind-Value="entidade.Sexo" class="form-control" id="sexo">
+                                        <option value="" disabled>Selecione...</option>
+                                        <option value="F">Feminino</option>
+                                        <option value="M">Masculino</option>
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => entidade.Sexo)" class="text-danger" />
+                                </div>
+                            }
+                            @if (entidade.TpEntidade == Entidade.TipoEntidade.D)
+                            {
+                                <label class="form-label">Tipo de Pessoa *</label>
+                                     <InputRadioGroup @bind-Value="entidade.TpPessoa" class="form-check"> 
+                                         <div class="form-check form-check-inline"> 
+                                             <InputRadio Value="Entidade.TipoPessoa.F" class="form-check-input" id="pessoaFisica" /> 
+                                             <label class="form-check-label" for="pessoaFisica">Física</label> 
+                                         </div> 
+                                         <div class="form-check form-check-inline"> 
+                                             <InputRadio Value="Entidade.TipoPessoa.J" class="form-check-input" id="pessoaJuridica" /> 
+                                             <label class="form-check-label" for="pessoaJuridica">Jurídica</label> 
+                                         </div> 
+                                     </InputRadioGroup>
+                                <ValidationMessage For="@(() => entidade.TpPessoa)" class="text-danger" />
+                            }
+                            @if (entidade.TpEntidade == Entidade.TipoEntidade.O || entidade.TpPessoa == Entidade.TipoPessoa.J)
+                            {
+                                <div class="mb-3">
+                                    <label for="cnpj" class="form-label">CNPJ *</label>
+                                    <InputText @bind-Value="entidade.CNPJ_CPF" class="form-control" id="cnpj"
+                                               placeholder="00.000.000/0000-00" />
+                                    <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
+                                </div>
+                            }
+                            else if (entidade.TpEntidade == Entidade.TipoEntidade.D && entidade.TpPessoa == Entidade.TipoPessoa.F)
+                            {
+                                <div class="mb-3">
+                                    <label for="cpf" class="form-label">CPF *</label>
+                                    <InputText @bind-Value="entidade.CNPJ_CPF" class="form-control" id="cpf"
+                                               placeholder="000.000.000-00" />
+                                    <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
+                                </div>
+                            }
+
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Telefone *</label>
+                                    <InputText @bind-Value="entidade.Telefone" class="form-control" id="telefone"
+                                               placeholder="(00) 00000-0000" />
+                                    <ValidationMessage For="@(() => entidade.Telefone)" class="text-danger" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">E-mail *</label>
+                                    <InputText @bind-Value="entidade.Email" class="form-control" id="email"
+                                               placeholder="contato@entidade.org" />
+                                    <ValidationMessage For="@(() => entidade.Email)" class="text-danger" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="cep" class="form-label">CEP *</label>
+                                <InputText @bind-Value="entidade.CEP" class="form-control" id="cep"
+                                           placeholder="00000-000" @oninput="BuscarEnderecoPorCep" />
+                                <ValidationMessage For="@(() => entidade.CEP)" class="text-danger" />
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Cidade *</label>
+                                    <InputText @bind-Value="entidade.Cidade" class="form-control" id="cidade"
+                                               placeholder="Sua cidade" />
+                                    <ValidationMessage For="@(() => entidade.Cidade)" class="text-danger" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Bairro *</label>
+                                    <InputText @bind-Value="entidade.Bairro" class="form-control" id="bairro"
+                                               placeholder="Bairro" />
+                                    <ValidationMessage For="@(() => entidade.Bairro)" class="text-danger" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-10">
+                                    <label class="form-label">Endereço *</label>
+                                    <InputText @bind-Value="entidade.Endereco" class="form-control" id="endereco"
+                                               placeholder="Endereço completo" />
+                                    <ValidationMessage For="@(() => entidade.Endereco)" class="text-danger" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Número *</label>
+                                    <InputText @bind-Value="entidade.Numero" class="form-control" id="numero"
+                                               placeholder="Nº" />
+                                    <ValidationMessage For="@(() => entidade.Numero)" class="text-danger" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Senha *</label>
+                                    <div class="position-relative">
+                                        <InputText type="@(_showPassword ? "text" : "password")"
+                                                   @bind-Value="entidade.Senha"
+                                                   class="form-control pe-5"
+                                                   placeholder="Digite sua senha"
+                                                   id="senha" />
+                                        <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
+                                                @onclick="ToggleAllPasswords">
+                                            <i class="@(_showPassword ? "fas fa-eye-slash" : "fas fa-eye") text-success"></i>
+                                        </button>
+                                    </div>
+                                    <ValidationMessage For="@(() => entidade.Senha)" class="text-danger" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Confirme sua senha *</label>
+                                    <div class="position-relative">
+                                        <InputText type="@(_showPassword ? "text" : "password")"
+                                                   @bind-Value="entidade.ConfirmarSenha"
+                                                   class="form-control pe-5"
+                                                   placeholder="Digite novamente sua senha"
+                                                   id="confirmarSenha" />
+                                        <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
+                                                @onclick="ToggleAllPasswords">
+                                            <i class="@(_showPassword ? "fas fa-eye-slash" : "fas fa-eye") text-success"></i>
+                                        </button>
+                                    </div>
+                                    <ValidationMessage For="@(() => entidade.ConfirmarSenha)" class="text-danger" />
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg mt-3">Enviar Cadastro</button>
+                            </div>
+
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Entidade entidade = new Entidade();
+    private bool _showPassword = false;
+    private TipoPessoa tipoPessoa = TipoPessoa.F;
+
+    private async Task CadastrarEntidade()
+    {
+        try
+        {
+            await ObterLocalizacaoUsuario();
+           
+            var dadosParaEnvio = new Entidade
+                {
+                    RazaoSocial = entidade.RazaoSocial,
+                    Responsavel = entidade.Responsavel,
+                    Senha = entidade.Senha,
+                    ConfirmarSenha = entidade.ConfirmarSenha,
+                    Email = entidade.Email,
+                    Telefone = RemoveMask(entidade.Telefone),
+                    CNPJ_CPF = RemoveMask(entidade.CNPJ_CPF),
+                    Endereco = $"{entidade.Endereco}, {entidade.Numero}",
+                    Numero = entidade.Numero,
+                    Bairro = entidade.Bairro,
+                    Cidade = entidade.Cidade,
+                    CEP = RemoveMask(entidade.CEP),
+                    Latitude = entidade.Latitude,
+                    Altitude = entidade.Altitude,
+                    TpEntidade = entidade.TpEntidade,
+                    Sexo = entidade.Sexo
+                };
+
+            var response = await Http.PostAsJsonAsync("api/entidade/adicionar", dadosParaEnvio);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Cadastro realizado com sucesso!");
+                Navigation.NavigateTo("/");
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro: {error}");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
+        }
+    }
+
+    private string RemoveMask(string value) =>
+        string.IsNullOrEmpty(value) ? value : Regex.Replace(value, @"[^\d]", "");
+
+    private void ToggleAllPasswords() =>
+        _showPassword = !_showPassword;
+
+    private async Task BuscarEnderecoPorCep(ChangeEventArgs e)
+    {
+        var cep = RemoveMask(e.Value?.ToString() ?? "");
+        if (string.IsNullOrWhiteSpace(cep) || cep.Length != 8) return;
+
+        try
+        {
+            var response = await Http.GetFromJsonAsync<ViaCepResponse>($"api/viacep/{cep}");
+            if (response != null)
+            {
+                entidade.Bairro = response.Bairro;
+                entidade.Cidade = response.Localidade;
+                entidade.Endereco = response.Logradouro;
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "CEP não encontrado.");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao buscar CEP: {ex.Message}");
+        }
+    }
+    private double? latitude;
+    private double? longitude;
+
+    private async Task ObterLocalizacaoUsuario()
+    {
+        try
+        {
+            var location = await JSRuntime.InvokeAsync<Geolocalizacao>("getUserLocation");
+            latitude = location.lat;
+            longitude = location.lng;
+            entidade.Latitude = latitude;
+            entidade.Altitude = longitude;
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao obter localização: {ex.Message}");
+        }
+    }
+
+    public class Geolocalizacao
+    {
+        public double lat { get; set; }
+        public double lng { get; set; }
+    }
+
+    public enum TipoPessoa
+    {
+        F,
+        J
+    }
+}

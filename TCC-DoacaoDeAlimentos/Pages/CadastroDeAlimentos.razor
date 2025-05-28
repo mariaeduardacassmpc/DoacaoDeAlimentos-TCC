@@ -20,7 +20,6 @@
                         <EditForm Model="@NovoAlimento" OnValidSubmit="@CadastrarAlimento">
                             <DataAnnotationsValidator />
                             <ValidationSummary />
-
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome</label>
                                 <InputText id="nome" @bind-Value="NovoAlimento.Nome" class="form-control" placeholder="Nome do Alimento" />

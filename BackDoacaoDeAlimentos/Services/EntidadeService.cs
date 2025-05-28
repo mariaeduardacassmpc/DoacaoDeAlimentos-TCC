@@ -23,16 +23,10 @@ namespace BackDoacaoDeAlimentos.Servicos
             {
                 if (entidade == null)
                     throw new ArgumentNullException(nameof(entidade));
-
-                if (string.IsNullOrWhiteSpace(entidade.CNPJ_CPF))
-                    throw new ArgumentException("CNPJ/CPF é obrigatório");
-
-                if (entidade.Senha != entidade.ConfirmarSenha)
-                    throw new ArgumentException("As senhas não coincidem");
-
+                
                 var existe = await _entidadeRepositorio.VerificarCnpjExistente(entidade.CNPJ_CPF);
                 if (existe)
-                    throw new InvalidOperationException(entidade.Tipo == Entidade.TipoEntidade.F ? "CPF já cadastrado" : "CNPJ já cadastrado");
+                    throw new InvalidOperationException(entidade.TpEntidade == Entidade.TipoEntidade.D ? "CPF já cadastrado" : "CNPJ já cadastrado");
 
                 var entidadeId = await _entidadeRepositorio.AdicionarEntidade(entidade);
                 entidade.Id = entidadeId;
@@ -45,7 +39,6 @@ namespace BackDoacaoDeAlimentos.Servicos
                 throw;
             }
         }
-
         public async Task<Entidade> ObterEntidadePorId(int id)
         {
             try

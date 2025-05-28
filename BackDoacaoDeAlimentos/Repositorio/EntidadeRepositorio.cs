@@ -21,11 +21,11 @@ namespace BackDoacaoDeAlimentos.Repositorios
             {
                 var sql = @"
                   INSERT INTO Entidade
-                  (TipoEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, 
-                  Email, Sexo, Responsavel)
+                  (TpEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, 
+                  Email, Sexo, Responsavel, Latitude, Altitude)
                   OUTPUT INSERTED.Id
-                   VALUES (@Tipo, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
-                       @Email, @Sexo, @Responsavel)";
+                   VALUES (@TpEntidade, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
+                       @Email, @Sexo, @Responsavel, @Latitude, @Altitude)";
 
                 var id = await _db.ExecuteScalarAsync<int>(sql, entidade);
                 return id;

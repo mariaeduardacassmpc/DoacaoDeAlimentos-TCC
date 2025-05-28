@@ -58,7 +58,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             {
                 var entidade = new Entidade
                 {
-                    Tipo = entidadeDto.Tipo,
+                    TpEntidade = entidadeDto.TpEntidade,
                     RazaoSocial = entidadeDto.RazaoSocial,
                     Senha = entidadeDto.Senha,
                     ConfirmarSenha = entidadeDto.ConfirmarSenha,
