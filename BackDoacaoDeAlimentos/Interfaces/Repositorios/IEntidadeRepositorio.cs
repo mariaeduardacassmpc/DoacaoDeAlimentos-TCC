@@ -10,6 +10,6 @@ namespace BackDoacaoDeAlimentos.Interfaces.Repositorios
         Task AtualizarEntidade(Entidade entidade);
         Task DeletarEntidade(int id);
         Task<IEnumerable<Entidade>> BuscarOngsPorCidade(string cidade);
-        Task<bool> VerificarCnpjExistente(string documento);
+        Task<bool> VerificaDocumentoeEmailExistente(string documento, string email);
     }
 }

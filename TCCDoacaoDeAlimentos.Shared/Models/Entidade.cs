@@ -15,6 +15,8 @@ public class Entidade : IValidatableObject
 
     public string RazaoSocial { get; set; }
     [Required(ErrorMessage = "A senha é obrigatória.")]
+    [RegularExpression(@"^(?=.*[A-Z])(?=.*[\W_]).+$", ErrorMessage = "A senha deve conter pelo menos uma letra maiúscula e um caractere especial.")]
+
     [StringLength(30, MinimumLength = 8, ErrorMessage = "A senha deve ter no minímo 8 caracteres")]
 
     public string Senha { get; set; }
@@ -26,6 +28,8 @@ public class Entidade : IValidatableObject
     public string CNPJ_CPF { get; set; }
 
     [Required(ErrorMessage = "Telefone é obrigatório.")]
+    [RegularExpression(@"^\d{10,11}$", ErrorMessage = "Telefone inválido")]
+
     public string Telefone { get; set; }
 
     [Required(ErrorMessage = "O endereço é obrigatório.")]
@@ -37,6 +41,7 @@ public class Entidade : IValidatableObject
     public string Bairro { get; set; }
 
     [Required(ErrorMessage = "O CEP é obrigatório.")]
+    [RegularExpression(@"^\d{8}$", ErrorMessage = "CEP inválido")]
     public string CEP { get; set; }
 
     [Required(ErrorMessage = "A Cidade é obrigatório.")]

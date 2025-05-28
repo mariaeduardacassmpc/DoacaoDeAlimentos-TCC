@@ -77,18 +77,12 @@ namespace BackDoacaoDeAlimentos.Repositorios
             return await _db.QueryAsync<Entidade>(sql, new { Cidade = cidade });
         }
 
-        public async Task<bool> VerificarCnpjExistente(string documento)
+        public async Task<bool> VerificaDocumentoeEmailExistente(string documento, string email)
         {
-            try
-            {
-                var sql = "SELECT COUNT(1) FROM Entidade WHERE CNPJ_CPF = @Documento";
-                var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento });
-                return resultado > 0;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao verificar documento: {ex.Message}", ex);
-            }
+            var sql = "SELECT COUNT(1) FROM Entidade WHERE CNPJ_CPF = @Documento " +
+                "OR Email = @Email";
+            var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento, Email = email});
+            return resultado > 0;
         }
     }
 }

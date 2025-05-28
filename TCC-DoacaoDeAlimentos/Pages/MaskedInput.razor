@@ -1,0 +1,37 @@
+﻿@inject IJSRuntime JSRuntime
+
+<input id="@InputId" class="form-control"
+       value="@Value"
+       @oninput="HandleInput"
+       placeholder="@Placeholder" />
+
+@code {
+    [Parameter] public string Value { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public string Mask { get; set; }
+    [Parameter] public string Placeholder { get; set; }
+
+    private string InputId = $"input_{Guid.NewGuid():N}";
+    private IJSObjectReference? module;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !string.IsNullOrEmpty(Mask))
+        {
+            module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/mask.js");
+            await module.InvokeVoidAsync("applyMask", InputId, Mask, DotNetObjectReference.Create(this));
+        }
+    }
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        await ValueChanged.InvokeAsync(e.Value?.ToString());
+    }
+
+    [JSInvokable]
+    public async Task UpdateFromJS(string value)
+    {
+        Value = value;
+        await ValueChanged.InvokeAsync(Value);
+    }
+}

@@ -24,19 +24,18 @@ namespace BackDoacaoDeAlimentos.Servicos
                 if (entidade == null)
                     throw new ArgumentNullException(nameof(entidade));
                 
-                var existe = await _entidadeRepositorio.VerificarCnpjExistente(entidade.CNPJ_CPF);
+                var existe = await _entidadeRepositorio.VerificaDocumentoeEmailExistente(entidade.CNPJ_CPF, entidade.Email);
                 if (existe)
-                    throw new InvalidOperationException(entidade.TpEntidade == Entidade.TipoEntidade.D ? "CPF já cadastrado" : "CNPJ já cadastrado");
-
+                    throw new InvalidOperationException("Já existe um cadastro com este CPF/CNPJ ou E-mail.");
                 var entidadeId = await _entidadeRepositorio.AdicionarEntidade(entidade);
                 entidade.Id = entidadeId;
-
                 usuario.EntidadeId = entidadeId;
+
                 await _usuarioRepositorio.Adicionar(usuario);
             }
             catch (Exception ex)
             {
-                throw;
+                throw new Exception($"Erro ao Cadastrar.", ex);
             }
         }
         public async Task<Entidade> ObterEntidadePorId(int id)
@@ -89,15 +88,26 @@ namespace BackDoacaoDeAlimentos.Servicos
 
         public async Task<IEnumerable<Entidade>> BuscarOngsPorCidade(string cidade)
         {
-            if (string.IsNullOrWhiteSpace(cidade))
-                throw new ArgumentException("Cidade inválida.");
-
-            return await _entidadeRepositorio.BuscarOngsPorCidade(cidade);
+            try
+            {
+                return await _entidadeRepositorio.BuscarOngsPorCidade(cidade);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Cidade inválida. ", ex);
+            }
         }
 
-        public async Task<bool> VerificarCpfCnpjExistente(string documento)
+        public async Task<bool> VerificarDocumentoeEmailExistente(string documento, string email)
         {
-            return await _entidadeRepositorio.VerificarCnpjExistente(documento);
+            try
+            {
+                return await _entidadeRepositorio.VerificaDocumentoeEmailExistente(documento, email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao verificar CPF/CNPJ ou Email. ", ex);
+            }
         }
     }
 }

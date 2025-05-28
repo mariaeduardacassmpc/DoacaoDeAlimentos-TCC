@@ -7,6 +7,7 @@
 @using TCCDoacaoDeAlimentos.Shared.Models
 @using TCCDoacaoDeAlimentos.Shared.Dto
 
+
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
     <div class="container py-5">
         <div class="row justify-content-center">
@@ -84,8 +85,7 @@
                             {
                                 <div class="mb-3">
                                     <label for="cnpj" class="form-label">CNPJ *</label>
-                                    <InputText @bind-Value="entidade.CNPJ_CPF" class="form-control" id="cnpj"
-                                               placeholder="00.000.000/0000-00" />
+                                    <MaskedInput @bind-Value="entidade.CNPJ_CPF" Mask="00.000.000/0000-00" Placeholder="00.000.000/0000-00" />
                                     <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
                                 </div>
                             }
@@ -93,8 +93,7 @@
                             {
                                 <div class="mb-3">
                                     <label for="cpf" class="form-label">CPF *</label>
-                                    <InputText @bind-Value="entidade.CNPJ_CPF" class="form-control" id="cpf"
-                                               placeholder="000.000.000-00" />
+                                    <MaskedInput @bind-Value="entidade.CNPJ_CPF" Mask="000.000.000-00" Placeholder="000.000.000-00" />
                                     <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
                                 </div>
                             }
@@ -103,8 +102,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Telefone *</label>
-                                    <InputText @bind-Value="entidade.Telefone" class="form-control" id="telefone"
-                                               placeholder="(00) 00000-0000" />
+                                    <MaskedInput @bind-Value="entidade.Telefone" Mask="(00) 00000-0000" Placeholder="(00) 00000-0000" />
                                     <ValidationMessage For="@(() => entidade.Telefone)" class="text-danger" />
                                 </div>
                                 <div class="col-md-6">
@@ -163,7 +161,7 @@
                                                    id="senha" />
                                         <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
                                                 @onclick="ToggleAllPasswords">
-                                            <i class="@(_showPassword ? "fas fa-eye-slash" : "fas fa-eye") text-success"></i>
+                                            <i class="@(_showPassword ? "fas fa-eye" : "fas fa-eye-slash") text-success"></i>
                                         </button>
                                     </div>
                                     <ValidationMessage For="@(() => entidade.Senha)" class="text-danger" />
@@ -179,7 +177,7 @@
                                                    id="confirmarSenha" />
                                         <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
                                                 @onclick="ToggleAllPasswords">
-                                            <i class="@(_showPassword ? "fas fa-eye-slash" : "fas fa-eye") text-success"></i>
+                                            <i class="@(_showPassword ? "fas fa-eye" : "fas fa-eye-slash") text-success"></i>
                                         </button>
                                     </div>
                                     <ValidationMessage For="@(() => entidade.ConfirmarSenha)" class="text-danger" />

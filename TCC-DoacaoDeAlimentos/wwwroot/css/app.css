@@ -675,9 +675,9 @@ select.form-control option:hover {
 
 .blazored-modal {
     display: flex !important;
-    align-items: flex-end !important; /* Alinha o modal na parte inferior da tela */
-    justify-content: center !important; /* Centraliza horizontalmente */
-    padding-bottom: 2rem !important; /* Espaço do rodapé */
+    align-items: flex-end !important;
+    justify-content: center !important; 
+    padding-bottom: 2rem !important; 
 }
 
     .blazored-modal .modal-content {
@@ -685,3 +685,17 @@ select.form-control option:hover {
         margin: 0 1rem;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
+
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-inner-spin-button,
+input[type="password"]::-webkit-outer-spin-button {
+    display: none !important;
+}
+
+input[type="password"]::-webkit-input-decoration-container {
+    display: none !important;
+}
+

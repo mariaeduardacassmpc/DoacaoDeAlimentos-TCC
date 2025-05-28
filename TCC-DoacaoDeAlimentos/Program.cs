@@ -1,7 +1,6 @@
 using FrontDoacaoDeAlimentos;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using BlazorInputMask;
 using Microsoft.JSInterop;
 using TCCDoacaoDeAlimentos;
 using Blazored.Toast;

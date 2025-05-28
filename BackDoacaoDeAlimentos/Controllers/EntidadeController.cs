@@ -27,6 +27,9 @@ namespace BackDoacaoDeAlimentos.Controllers
         [HttpGet("cidade/{cidade}")]
         public async Task<IActionResult> GetOngsPorCidade(string cidade)
         {
+            if (string.IsNullOrWhiteSpace(cidade))
+                throw new ArgumentException("Cidade inválida.");
+
             var ongs = await _entidadeService.BuscarOngsPorCidade(cidade);
             return Ok(ongs);
         }
@@ -114,10 +117,10 @@ namespace BackDoacaoDeAlimentos.Controllers
             return NoContent();
         }
 
-        [HttpGet("verificar-cpf-cnpj/{documento}")]
-        public async Task<IActionResult> VerificarCpfCnpjExistente(string documento)
+        [HttpGet("verificarDocumentoeEmail/{documento}/{email}")]
+        public async Task<IActionResult> VerificarCpfCnpjExistente(string documento, string email)
         {
-            var existe = await _entidadeService.VerificarCpfCnpjExistente(documento);
+            var existe = await _entidadeService.VerificarDocumentoeEmailExistente(documento, email);
             return Ok(new { existe });
         }
     }
