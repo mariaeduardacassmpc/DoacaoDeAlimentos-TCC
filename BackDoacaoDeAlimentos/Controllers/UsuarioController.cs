@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using TCCDoacaoDeAlimentos.Shared.Models;
+using BackDoacaoDeAlimentos.Servicos;
 
 namespace BackDoacaoDeAlimentos.Controllers
 {
@@ -14,6 +15,27 @@ namespace BackDoacaoDeAlimentos.Controllers
         public UsuarioController(IUsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto login)
+        {
+            try
+            {
+                var usuarioLogado = await _usuarioService.AutenticarUsuarioLogado(login.Email, login.Senha);
+                return Ok(usuarioLogado);
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+        }
+
+        // DTO para login
+        public class LoginDto
+        {
+            public string Email { get; set; }
+            public string Senha { get; set; }
         }
 
         [HttpGet("{id}")]

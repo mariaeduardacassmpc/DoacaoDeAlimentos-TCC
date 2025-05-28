@@ -91,6 +91,20 @@ namespace BackDoacaoDeAlimentos.Servicos
             }
         }
 
+        public async Task<Usuario> AutenticarUsuarioLogado(string email, string senha)
+        {
+            var usuario = await AutenticarUsuario(email, senha); // já faz a validação e criptografia
+            if (usuario == null)
+                throw new UnauthorizedAccessException("Usuário ou senha inválidos.");
+
+            // Busca a entidade associada ao usuário
+            var entidade = await _entidadeRepositorio.ObterEntidadePorId(usuario.EntidadeId);
+
+            usuario.TipoEntidade = entidade?.TpEntidade.ToString() ?? ""; // Adiciona o tipo de entidade ao usuário
+
+            return usuario;
+        }
+
         public async Task AtualizarUsuario(Usuario usuario)
         {
             try
@@ -147,5 +161,7 @@ namespace BackDoacaoDeAlimentos.Servicos
             var senhaDigitadaCriptografada = CriptografarSenha(senhaDigitada);
             return senhaDigitadaCriptografada == senhaArmazenada;
         }
+
+
     }
 }

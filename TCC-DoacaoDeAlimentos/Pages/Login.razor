@@ -2,6 +2,7 @@
 @using Blazored.Modal
 @using Blazored.Modal.Services
 @using TCCDoacaoDeAlimentos.Shared.Models
+@inject HttpClient Http
 @inject Blazored.Modal.Services.IModalService Modal
 @inject NavigationManager Navigation
 
@@ -66,30 +67,24 @@
 
     private void IrParaCadastro()
     {
-        // Altere aqui para a página que deseja redirecionar
         Navigation.NavigateTo("/CadastroDeEntidade");
     }
-    // [Inject] private IUsuarioService UsuarioService { get; set; }
-    // [Inject] private AuthService authService { get; set; }
 
-    // private async Task HandleLogin()
-    // {
-    //     try
-    //     {
-    //         var usuarioAutenticado = await UsuarioService.AutenticarUsuarioAsync(usuario.Email, usuario.Senha);
-
-    //         if (usuarioAutenticado != null)
-    //         {
-    //             AuthService.Logar(usuarioAutenticado);
-    //             NavigationManager.NavigateTo("/");
-    //         }
-    //         else
-    //         {
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine($"Erro no login: {ex.Message}");
-        //     }
-    // }
+    private async Task RealizarLogin()
+    {
+        var response = await Http.PostAsJsonAsync("api/login", usuario);
+        if (response.IsSuccessStatusCode)
+        {
+            var usuarioLogado = await response.Content.ReadFromJsonAsync<UsuarioLogado>();
+            if (usuarioLogado != null)
+            {
+                UsuarioLogadoService.DefinirUsuario(usuarioLogado);
+                Navigation.NavigateTo("/");
+            }
+        }
+        else
+        {
+            // Trate erro de login
+        }
+    }
 }
