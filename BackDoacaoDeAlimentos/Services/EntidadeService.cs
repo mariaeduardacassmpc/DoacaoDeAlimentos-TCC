@@ -50,7 +50,7 @@ namespace BackDoacaoDeAlimentos.Servicos
             }
         }
 
-        public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
+        public async Task<IEnumerable<Entidade>> ObterTodasOngs()
         {
             try
             {
@@ -107,6 +107,18 @@ namespace BackDoacaoDeAlimentos.Servicos
             catch (Exception ex)
             {
                 throw new Exception($"Erro ao verificar CPF/CNPJ ou Email. ", ex);
+            }
+        }
+
+        public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
+        {
+            try
+            {
+                return await _entidadeRepositorio.ObterTodasEntidades();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter todas Entidades. ", ex);
             }
         }
     }

@@ -84,5 +84,11 @@ namespace BackDoacaoDeAlimentos.Repositorios
             var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento, Email = email});
             return resultado > 0;
         }
+
+        public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
+        {
+            var sql = "SELECT * FROM Entidade";
+            return await _db.QueryAsync<Entidade>(sql);
+        }
     }
 }

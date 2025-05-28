@@ -7,6 +7,7 @@ namespace BackDoacaoDeAlimentos.Interfaces.Repositorios
         Task <int> AdicionarEntidade(Entidade entidade);
         Task<Entidade> ObterEntidadePorId(int id);
         Task<IEnumerable<Entidade>> ObterTodasOngs();
+        Task<IEnumerable<Entidade>> ObterTodasEntidades();
         Task AtualizarEntidade(Entidade entidade);
         Task DeletarEntidade(int id);
         Task<IEnumerable<Entidade>> BuscarOngsPorCidade(string cidade);

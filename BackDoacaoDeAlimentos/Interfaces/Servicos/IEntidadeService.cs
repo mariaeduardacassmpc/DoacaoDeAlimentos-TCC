@@ -6,6 +6,7 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
     {
         Task AdicionarEntidade(Entidade entidade, Usuario usuario);
         Task<Entidade> ObterEntidadePorId(int id);
+        Task<IEnumerable<Entidade>> ObterTodasOngs();
         Task<IEnumerable<Entidade>> ObterTodasEntidades();
         Task AtualizarEntidade(Entidade entidade);
         Task DeletarEntidade(int id);

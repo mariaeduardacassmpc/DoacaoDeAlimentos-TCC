@@ -1,0 +1,113 @@
+﻿@page "/Usuarios"
+@inject HttpClient Http
+@using TCCDoacaoDeAlimentos.Shared.Models;
+
+<div class="d-flex justify-content-center" style="background-color: #d4edda; min-height: 100vh;">
+    <div class="col-12 col-lg-12 col-xl-11 mt-5">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-4">
+                <h3 class="text-center mb-4">Lista de Usuários</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle text-center bg-white" style="min-width: 2200px;">
+                        <thead class="table-success">
+                            <tr>
+                                <th style="width: 50px;">ID</th>
+                                <th style="width: 70px;">Tipo Entidade</th>
+                                <th style="width: 70px;">Tipo Pessoa</th>
+                                <th style="width: 300px;">Nome/Razão Social</th>
+                                <th style="width: 220px;">Responsável</th>
+                                <th style="width: 100px;">Sexo</th>
+                                <th style="width: 220px;">Documento (CNPJ/CPF)</th>
+                                <th style="width: 180px;">Telefone</th>
+                                <th style="width: 260px;">Email</th>
+                                <th style="width: 260px;">Endereço</th>
+                                <th style="width: 120px;">Número</th>
+                                <th style="width: 200px;">Bairro</th>
+                                <th style="width: 200px;">Cidade</th>
+                                <th style="width: 140px;">CEP</th>
+                                <th style="width: 140px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var usuario in usuarios)
+                            {
+                                <tr>
+                                    <td>@usuario.Id</td>
+                                    <td>@usuario.TpEntidade</td>
+                                    <td>@usuario.TpPessoa</td>
+                                    <td>@usuario.RazaoSocial</td>
+                                    <td>@usuario.Responsavel</td>
+                                    <td>@usuario.Sexo</td>
+                                    <td>@usuario.CNPJ_CPF</td>
+                                    <td>@usuario.Telefone</td>
+                                    <td>@usuario.Email</td>
+                                    <td>@usuario.Endereco</td>
+                                    <td>@usuario.Numero</td>
+                                    <td>@usuario.Bairro</td>
+                                    <td>@usuario.Cidade</td>
+                                    <td>@usuario.CEP</td>
+                                    <td>
+                                        <button @onclick="() => ConfirmarExclusao(usuario.Id)" class="btn btn-danger btn-sm ms-1">Excluir</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmação -->
+<div class="modal fade @(showModal ? "show d-block" : "")" tabindex="-1" style="background:rgba(0,0,0,0.5);" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmação</h5>
+                <button type="button" class="btn-close" @onclick="FecharModal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este usuário?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @onclick="FecharModal">Cancelar</button>
+                <button class="btn btn-danger" @onclick="ExcluirConfirmado">Excluir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Entidade> usuarios = new();
+    private bool showModal = false;
+    private int idParaExcluir;
+
+    protected override async Task OnInitializedAsync()
+    {
+        usuarios = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasEntidades");
+    }
+
+    private void ConfirmarExclusao(int id)
+    {
+        idParaExcluir = id;
+        showModal = true;
+    }
+
+    private void FecharModal()
+    {
+        showModal = false;
+        idParaExcluir = 0;
+    }
+
+    private async Task ExcluirConfirmado()
+    {
+        showModal = false;
+        if (idParaExcluir > 0)
+        {
+            await Http.DeleteAsync($"api/entidade/deletar/{idParaExcluir}");
+            usuarios = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasEntidades");
+            idParaExcluir = 0;
+        }
+    }
+}

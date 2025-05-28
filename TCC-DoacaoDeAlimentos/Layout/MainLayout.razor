@@ -45,6 +45,13 @@
                         <li class="nav-item mx-2">
                             <NavLink class="nav-link" href="/CadastroDeEntidade" @onclick="FecharMenu">Cadastrar</NavLink>
                         </li>
+
+                        @if (UsuarioEhAdmin)
+                        {
+                            <li class="nav-item mx-2">
+                                <NavLink class="nav-link" href="/Usuarios" @onclick="FecharMenu">Listar Úsuarios</NavLink>
+                            </li>
+                        }
                     </ul>
 
                     <div class="d-flex align-items-center gap-2">
@@ -64,6 +71,8 @@
 </div>
 
 @code {
+    private string EmailUsuarioLogado = "";
+    private bool UsuarioEhAdmin => EmailUsuarioLogado == "mariaedurdamma@gmail.com";
     private string TipoUsuarioLogado = "O"; 
     private bool modalAberto = false;
 

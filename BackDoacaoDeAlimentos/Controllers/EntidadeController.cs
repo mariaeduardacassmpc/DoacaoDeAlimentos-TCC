@@ -24,8 +24,8 @@ namespace BackDoacaoDeAlimentos.Controllers
 
         }
 
-        [HttpGet("cidade/{cidade}")]
-        public async Task<IActionResult> GetOngsPorCidade(string cidade)
+        [HttpGet("buscarOngsPorCidade/{cidade}")]
+        public async Task<IActionResult> BuscarOngsPorCidade(string cidade)
         {
             if (string.IsNullOrWhiteSpace(cidade))
                 throw new ArgumentException("Cidade inválida.");
@@ -34,8 +34,18 @@ namespace BackDoacaoDeAlimentos.Controllers
             return Ok(ongs);
         }
 
-        [HttpGet("obterTodas")]
-        public async Task<IActionResult> ObterTodas()
+        [HttpGet("obterTodasOngs")]
+        public async Task<IActionResult> ObterTodasOngs()
+        {
+            var entidades = await _entidadeService.ObterTodasOngs();
+            if (entidades == null)
+                return NotFound();
+
+            return Ok(entidades);
+        }
+
+        [HttpGet("obterTodasEntidades")]
+        public async Task<IActionResult> ObterTodasEntidades()
         {
             var entidades = await _entidadeService.ObterTodasEntidades();
             if (entidades == null)
@@ -106,7 +116,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             return NoContent();
         }
 
-        [HttpDelete("deletar{id}")]
+        [HttpDelete("deletar/{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
             var entidade = await _entidadeService.ObterEntidadePorId(id);
