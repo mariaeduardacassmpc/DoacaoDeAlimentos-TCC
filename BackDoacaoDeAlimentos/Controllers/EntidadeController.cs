@@ -1,11 +1,10 @@
 ﻿using System.Text.Json;
-using BackDoacaoDeAlimentos.Interfaces.Servicos;
-using BackDoacaoDeAlimentos.Servicos;
 using Microsoft.AspNetCore.Mvc;
 using TCCDoacaoDeAlimentos.Shared;
+using BackDoacaoDeAlimentos.Servicos;
 using TCCDoacaoDeAlimentos.Shared.Dto;
 using TCCDoacaoDeAlimentos.Shared.Models;
-
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
 
 namespace BackDoacaoDeAlimentos.Controllers
 {
@@ -30,7 +29,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             if (string.IsNullOrWhiteSpace(cidade))
                 throw new ArgumentException("Cidade inválida.");
 
-            var ongs = await _entidadeService.BuscarOngsPorCidade(cidade);
+            var ongs = await _entidadeService.ObterOngsPorCidade(cidade);
             return Ok(ongs);
         }
 
@@ -106,15 +105,15 @@ namespace BackDoacaoDeAlimentos.Controllers
 
 
         [HttpPut("atualizar/{id}")]
-        public async Task<IActionResult> Atualizar([FromBody] Entidade entidade)
+        public async Task<IActionResult> Atualizar([FromBody] EntidadeEdicaoDto entidade)
         {
-            var entidadeExistente = await _entidadeService.ObterEntidadePorId(entidade.Id);
-            if (entidadeExistente == null)
+            if (entidade == null)
                 return NotFound();
 
             await _entidadeService.AtualizarEntidade(entidade);
             return NoContent();
         }
+
 
         [HttpDelete("deletar/{id}")]
         public async Task<IActionResult> Deletar(int id)

@@ -137,22 +137,6 @@
                                         </div>
                                         <ValidationMessage For="@(() => entidade.Senha)" class="text-danger" />
                                     </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Confirme a nova senha</label>
-                                        <div class="position-relative">
-                                            <InputText type="@(_showPassword ? "text" : "password")"
-                                                       @bind-Value="entidade.ConfirmarSenha"
-                                                       class="form-control pe-5"
-                                                       placeholder="Digite novamente sua nova senha"
-                                                       id="confirmarSenha" />
-                                            <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
-                                                    @onclick="ToggleAllPasswords">
-                                                <i class="@(_showPassword ? "fas fa-eye" : "fas fa-eye-slash") text-success"></i>
-                                            </button>
-                                        </div>
-                                        <ValidationMessage For="@(() => entidade.ConfirmarSenha)" class="text-danger" />
-                                    </div>
                                 </div>
 
                                 <div class="d-grid">
@@ -175,7 +159,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        int id = 1;
+        int id = 7;
         entidade = await Http.GetFromJsonAsync<Entidade>($"api/entidade/obterPorId/{id}");
         carregando = false;
     }

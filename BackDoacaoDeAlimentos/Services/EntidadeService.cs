@@ -1,7 +1,8 @@
 ﻿using System.Transactions;
-using BackDoacaoDeAlimentos.Interfaces.Repositorios;
-using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using TCCDoacaoDeAlimentos.Shared.Dto;
 using TCCDoacaoDeAlimentos.Shared.Models;
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 
 namespace BackDoacaoDeAlimentos.Servicos
 {
@@ -19,108 +20,72 @@ namespace BackDoacaoDeAlimentos.Servicos
 
         public async Task AdicionarEntidade(Entidade entidade, Usuario usuario)
         {
-            try
-            {
-                if (entidade == null)
-                    throw new ArgumentNullException(nameof(entidade));
-                
-                var existe = await _entidadeRepositorio.VerificaDocumentoeEmailExistente(entidade.CNPJ_CPF, entidade.Email);
-                if (existe)
-                    throw new InvalidOperationException("Já existe um cadastro com este CPF/CNPJ ou E-mail.");
-                var entidadeId = await _entidadeRepositorio.AdicionarEntidade(entidade);
-                entidade.Id = entidadeId;
-                usuario.EntidadeId = entidadeId;
+            if (entidade == null)
+                throw new ArgumentNullException(nameof(entidade));
 
-                await _usuarioRepositorio.Adicionar(usuario);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao Cadastrar.", ex);
-            }
+            if (usuario == null)
+                throw new ArgumentNullException(nameof(usuario));
+
+            var existe = await _entidadeRepositorio.VerificaDocumentoeEmailExistente(entidade.CNPJ_CPF, entidade.Email);
+            if (existe)
+                throw new InvalidOperationException("Já existe um cadastro com este CPF/CNPJ ou E-mail.");
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            var entidadeId = await _entidadeRepositorio.AdicionarEntidade(entidade);
+            entidade.Id = entidadeId;
+            usuario.EntidadeId = entidadeId;
+
+            await _usuarioRepositorio.Adicionar(usuario);
+
+            scope.Complete();
         }
+
         public async Task<Entidade> ObterEntidadePorId(int id)
         {
-            try
-            {
-                return await _entidadeRepositorio.ObterEntidadePorId(id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao obter Entidade por Id. ", ex);
-            }
+            return await _entidadeRepositorio.ObterEntidadePorId(id)
+                ?? throw new KeyNotFoundException($"Entidade com ID {id} não encontrada.");
         }
 
         public async Task<IEnumerable<Entidade>> ObterTodasOngs()
         {
-            try
-            {
-                return await _entidadeRepositorio.ObterTodasOngs();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao obter todas Entidades. ", ex);
-            }
-        }
-
-        public async Task AtualizarEntidade(Entidade entidade)
-        {
-            try
-            {
-                await _entidadeRepositorio.AtualizarEntidade(entidade);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao atualizar Entidade. ", ex);
-            }
-        }
-
-        public async Task DeletarEntidade(int id)
-        {
-            try
-            {
-                await _usuarioRepositorio.Remover(id);
-                await _entidadeRepositorio.DeletarEntidade(id);
-            }
-            catch(Exception ex)
-            {
-                throw new Exception($"Erro ao remover Entidade. ", ex);
-            }
-        }
-
-        public async Task<IEnumerable<Entidade>> BuscarOngsPorCidade(string cidade)
-        {
-            try
-            {
-                return await _entidadeRepositorio.BuscarOngsPorCidade(cidade);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Cidade inválida. ", ex);
-            }
-        }
-
-        public async Task<bool> VerificarDocumentoeEmailExistente(string documento, string email)
-        {
-            try
-            {
-                return await _entidadeRepositorio.VerificaDocumentoeEmailExistente(documento, email);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao verificar CPF/CNPJ ou Email. ", ex);
-            }
+            return await _entidadeRepositorio.ObterTodasOngs();
         }
 
         public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
         {
-            try
-            {
-                return await _entidadeRepositorio.ObterTodasEntidades();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao obter todas Entidades. ", ex);
-            }
+            return await _entidadeRepositorio.ObterTodasEntidades();
+        }
+
+        public async Task<IEnumerable<Entidade>> ObterOngsPorCidade(string cidade)
+        {
+            if (string.IsNullOrWhiteSpace(cidade))
+                throw new ArgumentException("Cidade não pode ser vazia.", nameof(cidade));
+
+            return await _entidadeRepositorio.ObterOngsPorCidade(cidade);
+        }
+
+        public async Task AtualizarEntidade(EntidadeEdicaoDto entidade)
+        {
+            if (entidade == null)
+                throw new ArgumentNullException(nameof(entidade));
+
+            await _entidadeRepositorio.AtualizarEntidade(entidade);
+        }
+
+        public async Task DeletarEntidade(int id)
+        {
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            await _usuarioRepositorio.Remover(id);
+            await _entidadeRepositorio.DeletarEntidade(id);
+
+            scope.Complete();
+        }
+
+        public async Task<bool> VerificarDocumentoeEmailExistente(string documento, string email)
+        {
+            return await _entidadeRepositorio.VerificaDocumentoeEmailExistente(documento, email);
         }
     }
 }

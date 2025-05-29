@@ -42,14 +42,28 @@ namespace BackDoacaoDeAlimentos.Repositorio
 
         public async Task<Usuario> Adicionar(Usuario usuario)
         {
-             var sql = @"
-                INSERT INTO Usuario (EntidadeId, Email, Senha)
-                VALUES (@EntidadeId, @Email, @Senha)
-             ";
+            if (usuario == null)
+                throw new ArgumentNullException(nameof(usuario));
 
-            await _db.ExecuteAsync(sql, usuario);
-            return usuario;
+            using var transaction = _db.BeginTransaction();
+            try
+            {
+                var sql = @"
+                    INSERT INTO Usuario (EntidadeId, Email, Senha)
+                    VALUES (@EntidadeId, @Email, @Senha);
+                    SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                usuario.Id = await _db.ExecuteScalarAsync<int>(sql, usuario, transaction);
+                transaction.Commit();
+                return usuario;
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
+
 
         public async Task Atualizar(Usuario usuario)
         {
