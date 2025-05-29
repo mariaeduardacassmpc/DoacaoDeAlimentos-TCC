@@ -4,6 +4,7 @@ using TCCDoacaoDeAlimentos.Shared.Models;
 using Dapper;
 using System.Data.Common;
 using System.Text.Json;
+using Microsoft.Data.SqlClient;
 namespace BackDoacaoDeAlimentos.Repositorios
 {
     public class EntidadeRepositorio : IEntidadeRepositorio

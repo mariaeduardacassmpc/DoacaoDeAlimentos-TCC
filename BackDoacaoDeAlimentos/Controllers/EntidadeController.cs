@@ -128,7 +128,7 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
         [HttpGet("verificarDocumentoeEmail/{documento}/{email}")]
-        public async Task<IActionResult> VerificarCpfCnpjExistente(string documento, string email)
+        public async Task<IActionResult> VerificarDocumentoeEmailExistente(string documento, string email)
         {
             var existe = await _entidadeService.VerificarDocumentoeEmailExistente(documento, email);
             return Ok(new { existe });

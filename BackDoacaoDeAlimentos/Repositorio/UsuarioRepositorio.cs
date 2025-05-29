@@ -33,7 +33,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
              var sql = @"
                 SELECT u., e. 
                 FROM Usuario u
-                INNER JOIN Entidades e ON u.EntidadeId = e.Id
+                INNER JOIN Entidade e ON u.EntidadeId = e.Id
                 WHERE u.Email = @Email
              ";
 

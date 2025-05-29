@@ -16,40 +16,12 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             _usuarioService = usuarioService;
         }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto login)
-        {
-            try
-            {
-                var usuarioLogado = await _usuarioService.AutenticarUsuarioLogado(login.Email, login.Senha);
-                return Ok(usuarioLogado);
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(new { message = ex.Message });
-            }
-        }
-
-        // DTO para login
-        public class LoginDto
-        {
-            public string Email { get; set; }
-            public string Senha { get; set; }
-        }
-
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
             var usuario = await _usuarioService.ObterUsuarioPorId(id);
             return Ok(usuario);
-        }
-
-        [HttpPost("registrar")]
-        public async Task<IActionResult> Registrar([FromBody] Usuario usuario)
-        {
-            var usuarioRegistrado = await _usuarioService.RegistrarUsuario(usuario);
-            return CreatedAtAction(nameof(ObterPorId), new { id = usuarioRegistrado.Id }, usuarioRegistrado);
         }
 
         [HttpPost("autenticar")]

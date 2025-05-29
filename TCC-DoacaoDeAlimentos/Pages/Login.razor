@@ -78,7 +78,7 @@
             var usuarioLogado = await response.Content.ReadFromJsonAsync<UsuarioLogado>();
             if (usuarioLogado != null)
             {
-                UsuarioLogadoService.DefinirUsuario(usuarioLogado);
+                // UsuarioLogadoService.DefinirUsuario(usuarioLogado);
                 Navigation.NavigateTo("/");
             }
         }

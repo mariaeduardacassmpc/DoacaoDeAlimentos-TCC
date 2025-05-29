@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using Microsoft.AspNetCore.Components.Authorization;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Servicos
@@ -83,6 +85,21 @@ namespace BackDoacaoDeAlimentos.Servicos
                 if (!VerificarSenha(senha, usuario.Senha))
                     throw new UnauthorizedAccessException("Senha incorreta");
 
+                //var claims = new List<Claim>
+                //{
+                //    new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                //    new Claim(ClaimTypes.Email, usuario.Email),
+                //    new Claim(ClaimTypes.Name, usuario.Nome ?? string.Empty),
+                //};
+
+                //var identity = new ClaimsIdentity(claims, "auth");
+                //var principal = new ClaimsPrincipal(identity);
+
+                //if (_authenticationStateProvider is CustomAuthStateProvider authProvider)
+                //{
+                //    await authProvider.MarkUserAsAuthenticated(principal);
+                //}
+
                 return usuario;
             }
             catch (Exception ex)
@@ -91,19 +108,6 @@ namespace BackDoacaoDeAlimentos.Servicos
             }
         }
 
-        public async Task<Usuario> AutenticarUsuarioLogado(string email, string senha)
-        {
-            var usuario = await AutenticarUsuario(email, senha); // já faz a validação e criptografia
-            if (usuario == null)
-                throw new UnauthorizedAccessException("Usuário ou senha inválidos.");
-
-            // Busca a entidade associada ao usuário
-            var entidade = await _entidadeRepositorio.ObterEntidadePorId(usuario.EntidadeId);
-
-            usuario.TipoEntidade = entidade?.TpEntidade.ToString() ?? ""; // Adiciona o tipo de entidade ao usuário
-
-            return usuario;
-        }
 
         public async Task AtualizarUsuario(Usuario usuario)
         {

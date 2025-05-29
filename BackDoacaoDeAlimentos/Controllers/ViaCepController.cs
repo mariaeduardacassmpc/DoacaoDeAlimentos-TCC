@@ -12,7 +12,7 @@ public class ViaCepController : ControllerBase
         _viaCepService = viaCepService;
     }
 
-    [HttpGet("{cep}")]
+    [HttpGet("BuscarCep/{cep}")]
     public async Task<IActionResult> BuscarCep(string cep)
     {
         try
