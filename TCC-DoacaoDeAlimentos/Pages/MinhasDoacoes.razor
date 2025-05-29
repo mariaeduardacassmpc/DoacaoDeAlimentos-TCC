@@ -236,15 +236,19 @@
     private List<string> ListaDeStatus = new() { "Pendente", "Confirmada", "Cancelada" };
     private string TipoUsuario = "D";
     private bool MostrarModal { get; set; } = false;
-    private Doacao? DoacaoSelecionada { get; set; }
+    private Doacao DoacaoSelecionada { get; set; }
     private Entidade? OngSelecionada { get; set; }
     private bool MostrarModalMotivo { get; set; } = false;
     private string? MotivoCancelamento { get; set; }
     private string[] Motivos = new[]
     {
-        "Alimento errado",
-        "ONG errada",
-        "Data de validade errada"
+       "Alimento estragou/perdeu a validade",
+    "Problemas logísticos (transporte, horário)",
+    "Erro no cadastro da doação",
+    "ONG não respondeu/desistiu",
+    "Mudança de planejamento pessoal",
+    "Preocupação com a qualidade do alimento",
+    "Outro motivo"
     };
 
     private void NavigateToCadastro()
@@ -254,30 +258,49 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        // var user = authState.User;
+       TipoUsuario = "F";
+       Filtro = new FiltroDoacaoDto
+       {
+          IdDoador = 1
+       };
 
-        // if (user.Identity.IsAuthenticated)
-        // {
-        //     TipoUsuario = user.FindFirst("tipo")?.Value;
-        // }
-
-        await CarregarDadosIniciais();
+        await ObterAlimentos();
+        await ObterOngs();
+        await ObterDoacoes();
     }
 
-    private async Task CarregarDadosIniciais()
+    private async Task ObterOngs()
     {
         try
         {
-            TipoUsuario = "F";
-            Filtro = new FiltroDoacaoDto
-                {
-                    IdDoador = 1
-                };
+            ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasOngs");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao carregar ONGs: {ex.Message}");
+            ListaDeOngs = new List<Entidade>(); 
+        }
+    }
 
-            var jsonEnviado = System.Text.Json.JsonSerializer.Serialize(Filtro);
+    private async Task ObterAlimentos()
+    {
+        try
+        {
+            ListaDeAlimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimento/obterTodosAlimentos");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao carregar alimentos: {ex.Message}");
+            ListaDeAlimentos = new List<Alimento>();
+        }
+    }
+
+    private async Task ObterDoacoes()
+    {
+        try
+        {
             var response = await Http.PostAsJsonAsync("api/doacao/filtrarDoacao", Filtro);
-
+        
             if (response.IsSuccessStatusCode)
             {
                 DoacoesSalvas = await response.Content.ReadFromJsonAsync<List<Doacao>>();
@@ -285,12 +308,12 @@
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Erro ao carregar doações: {errorContent}");
             }
-
-            ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasOngs");
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Erro crítico ao carregar doações: {ex.Message}");
         }
     }
 
@@ -340,6 +363,7 @@
             MostrarModal = true;
             StateHasChanged(); 
         }
+  
     }
     
     private void FecharModal()
@@ -354,13 +378,23 @@
         MotivoCancelamento = null;
     }
 
-    private void ConfirmarCancelamento()
+    private async void ConfirmarCancelamento()
     {
-        // Aqui você pode chamar a API para cancelar a doação, passando o motivo
-        // Exemplo: await CancelarDoacaoAsync(DoacaoSelecionada.IdDoacao, MotivoCancelamento);
+        if (DoacaoSelecionada == null || string.IsNullOrEmpty(MotivoCancelamento))
+            return;
+
+        var response = await Http.PutAsJsonAsync($"api/doacao/CancelarDoacao/{DoacaoSelecionada.IdDoacao}", MotivoCancelamento);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var doacao = DoacoesSalvas.FirstOrDefault(d => d.IdDoacao == DoacaoSelecionada.IdDoacao);
+            if (doacao != null)
+                doacao.Status = StatusDoacao.Cancelada;
+        }
 
         MostrarModalMotivo = false;
         MostrarModal = false;
         MotivoCancelamento = null;
+        StateHasChanged();
     }
 }

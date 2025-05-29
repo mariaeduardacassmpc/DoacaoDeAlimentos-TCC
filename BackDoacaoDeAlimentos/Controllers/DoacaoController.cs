@@ -76,7 +76,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("CancelarDoacao/{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
             var doacao = await _doacaoService.ObterDoacaoPorId(id);

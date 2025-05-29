@@ -54,7 +54,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             return Ok(entidades);
         }
 
-        [HttpGet("obterTodasPorId/{id}")]
+        [HttpGet("obterPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
             var entidade = await _entidadeService.ObterEntidadePorId(id);
