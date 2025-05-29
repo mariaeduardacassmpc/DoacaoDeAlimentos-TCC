@@ -66,7 +66,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
 
         public async Task Remover(int id)
         {
-            var sql = "DELETE FROM Usuario WHERE Id = @Id";
+            var sql = "DELETE FROM Usuario WHERE EntidadeId = @Id";
 
             var affectedRows = await _db.ExecuteAsync(sql, new { Id = id });
             if (affectedRows == 0)

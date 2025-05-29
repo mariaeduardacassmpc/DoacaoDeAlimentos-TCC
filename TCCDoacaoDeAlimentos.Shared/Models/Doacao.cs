@@ -27,7 +27,7 @@ namespace TCCDoacaoDeAlimentos.Shared.Models
         [Required(ErrorMessage = "O status é obrigatório")]
         public StatusDoacao Status { get; set; }
         public List<AlimentoDoacao> Alimentos { get; set; } = new();
-        public string Observacao { get; set; }
+        public string? Observacao { get; set; }
     }
     public enum StatusDoacao
     {

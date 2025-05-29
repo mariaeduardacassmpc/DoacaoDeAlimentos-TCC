@@ -19,11 +19,10 @@
 
                         <EditForm Model="@NovoAlimento" OnValidSubmit="@CadastrarAlimento">
                             <DataAnnotationsValidator />
-                            <ValidationSummary />
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome</label>
                                 <InputText id="nome" @bind-Value="NovoAlimento.Nome" class="form-control" placeholder="Nome do Alimento" />
-                                <ValidationMessage For="@(() => NovoAlimento.Nome)" />
+                                <ValidationMessage For="@(() => NovoAlimento.Nome)" class="text-danger" />
                             </div>
                             <div class="mb-3">
                                 <label for="categoria" class="form-label">Categoria</label>
@@ -38,7 +37,7 @@
                                     <option value="Padaria">Padaria</option>
                                     <option value="Outros">Outros</option>
                                 </InputSelect>
-                                <ValidationMessage For="@(() => NovoAlimento.Categoria)" />
+                                <ValidationMessage For="@(() => NovoAlimento.Categoria)" class="text-danger" />
                             </div>
                             @if (editando)
                             {
@@ -121,7 +120,7 @@
     {
         try
         {
-            var response = await Http.GetAsync("api/alimento/obterAlimentos");
+            var response = await Http.GetAsync("api/alimento/obterTodosAlimentos");
             if (response.IsSuccessStatusCode)
             {
                 alimentos = await response.Content.ReadFromJsonAsync<List<Alimento>>();
@@ -150,8 +149,6 @@
                 NovoAlimento = new Alimento();
                 StateHasChanged();
             }
-
-
             else
             {
                 var erro = await response.Content.ReadAsStringAsync();

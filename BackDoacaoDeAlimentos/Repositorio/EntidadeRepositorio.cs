@@ -38,7 +38,6 @@ namespace BackDoacaoDeAlimentos.Repositorios
             }
         }
 
-
         public async Task<Entidade> ObterEntidadePorId(int id)
         {
             var sql = "SELECT * FROM Entidade WHERE Id = @Id";
@@ -47,7 +46,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
 
         public async Task<IEnumerable<Entidade>> ObterTodasOngs()
         {
-            var sql = "SELECT * FROM Entidade WHERE TipoEntidade = 'O'";
+            var sql = "SELECT * FROM Entidade WHERE TpEntidade = 'O'";
             return await _db.QueryAsync<Entidade>(sql);
         }
 

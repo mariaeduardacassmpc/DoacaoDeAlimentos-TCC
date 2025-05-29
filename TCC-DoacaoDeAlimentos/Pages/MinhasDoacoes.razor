@@ -13,7 +13,7 @@
                             <h1 class="card-title mb-0">
                                 @(TipoUsuario == "O" ? "Doações Recebidas" : "Minhas Doações")
                             </h1>
-                            @if (TipoUsuario == "F" || TipoUsuario == "J")
+                            @if (TipoUsuario == "D")
                             {
                                 <button class="btn btn-success" @onclick="NavigateToCadastro">
                                     <i class="bi bi-plus-circle me-2"></i>Nova Doação
@@ -22,7 +22,7 @@
                         </div>
 
                         <div class="row">
-                            @if (TipoUsuario == "F" || TipoUsuario == "J")
+                            @if (TipoUsuario == "D")
                             {
                                 <div class="col-md-4">
                                     <label class="form-label">Filtrar por ONG</label>
@@ -59,7 +59,6 @@
                                         <th>ID</th>
                                         <th>ONG</th>
                                         <th>Data</th>
-                                        <th>Itens</th>
                                         <th>Status</th>
                                         <th>Detalhes</th>
                                     </tr>
@@ -72,25 +71,13 @@
                                             <td>@ObterNomeOng(doacao.IdOng)</td>
                                             <td>@doacao.DataDoacao.ToString("dd/MM/yyyy")</td>
                                             <td>
-                                                <ul class="list-unstyled">
-                                                    @foreach (var item in doacao.Alimentos)
-                                                    {
-                                                        <li>
-                                                            @ObterNomeAlimento(item.AlimentoId) -
-                                                            @item.Quantidade @item.UnidadeMedida
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            </td>
-                                            <td>
                                                 <span class="badge @GetStatusBadgeClass(doacao.Status)">
                                                     @doacao.Status
                                                 </span>
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-outline-info"
-                                                        @onclick="() => VerDetalhes(doacao.IdDoacao)">
-                                                    Detalhes
+                                                <button class="btn btn-sm btn-success" 
+                                                @onclick="() => VerDetalhes(doacao.IdDoacao)">Detalhes
                                                 </button>
                                             </td>
                                         </tr>
@@ -112,12 +99,153 @@
     </div>
 </div>
 
+<!-- Modal de Detalhes -->
+@if (MostrarModal)
+{
+    <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title">Detalhes da Doação #@(DoacaoSelecionada?.IdDoacao ?? 0)</h5>
+                    <button type="button" class="btn-close" @onclick="FecharModal"></button>
+                </div>
+                <div class="modal-body">
+                    @if (DoacaoSelecionada != null)
+                    {
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6>Informações da ONG</h6>
+                                <p><strong>Nome:</strong> @ObterNomeOng(DoacaoSelecionada.IdOng)</p>
+                                <p><strong>Responsável: </strong> 
+                                    @if (OngSelecionada != null && !string.IsNullOrEmpty(OngSelecionada.Responsavel))
+                                    {
+                                        @OngSelecionada.Responsavel
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Não informado</span>
+                                    }
+                                </p> 
+                              <p>
+                                <strong>Telefone: </strong>
+                                @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Telefone))
+                                {
+                                    <a href="tel:@OngSelecionada.Telefone">
+                                        @OngSelecionada.Telefone
+                                        <i class="bi bi-telephone-fill ms-1"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Não informado</span>
+                                }
+                            </p>
+                            <p>
+                                <strong>Endereço: </strong>
+                                @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Endereco))
+                                {
+                                    <a href="https://www.google.com/maps/search/@(Uri.EscapeDataString(OngSelecionada.Endereco))" target="_blank" rel="noopener">
+                                        @OngSelecionada.Endereco
+                                        <i class="bi bi-geo-alt-fill ms-1"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Não informado</span>
+                                }
+                            </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Informações da Doação</h6>
+                                <p><strong>Data:</strong> @DoacaoSelecionada.DataDoacao.ToString("dd/MM/yyyy")</p>
+                                <p><strong>Status:</strong> <span class="badge @GetStatusBadgeClass(DoacaoSelecionada.Status)">@DoacaoSelecionada.Status</span></p>
+                            </div>
+                        </div>
+
+                        <div class="border-top pt-3">
+                            <h6>Alimentos Doados</h6>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Alimento</th>
+                                        <th>Quantidade</th>
+                                        <th>Unidade</th>                                        
+                                        <th>Validade</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in DoacaoSelecionada.Alimentos)
+                                    {
+                                        <tr>
+                                            <td>@ObterNomeAlimento(item.AlimentoId)</td>
+                                            <td>@item.Quantidade</td>
+                                            <td>@item.UnidadeMedida</td>
+                                            <td>@item.Validade</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger me-2" @onclick="AbrirModalMotivo">Cancelar Doação</button>
+                    <button type="button" class="btn btn-secondary" @onclick="FecharModal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (MostrarModalMotivo)
+{
+    <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title">Motivo do Cancelamento</h5>
+                    <button type="button" class="btn-close" @onclick="FecharModalMotivo"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Selecione o motivo do cancelamento:</p>
+                    @foreach (var motivo in Motivos)
+                    {
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" id="@motivo" name="motivoCancelamento"
+                                   value="@motivo" @onchange="() => MotivoCancelamento = motivo"
+                                   checked="@(MotivoCancelamento == motivo)" />
+                            <label class="form-check-label" for="@motivo">@motivo</label>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary me-2" @onclick="FecharModalMotivo">Voltar</button>
+                    <button type="button" class="btn btn-danger" @onclick="ConfirmarCancelamento" disabled="@string.IsNullOrEmpty(MotivoCancelamento)">Confirmar Cancelamento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
 @code {
     private FiltroDoacaoDto Filtro { get; set; } = new();
     private List<Doacao> DoacoesSalvas = new();
     private List<Entidade> ListaDeOngs = new();
+    private List<Alimento> ListaDeAlimentos = new();
     private List<string> ListaDeStatus = new() { "Pendente", "Confirmada", "Cancelada" };
-    private string TipoUsuario;
+    private string TipoUsuario = "D";
+    private bool MostrarModal { get; set; } = false;
+    private Doacao? DoacaoSelecionada { get; set; }
+    private Entidade? OngSelecionada { get; set; }
+    private bool MostrarModalMotivo { get; set; } = false;
+    private string? MotivoCancelamento { get; set; }
+    private string[] Motivos = new[]
+    {
+        "Alimento errado",
+        "ONG errada",
+        "Data de validade errada"
+    };
 
     private void NavigateToCadastro()
     {
@@ -159,13 +287,12 @@
                 var errorContent = await response.Content.ReadAsStringAsync();
             }
 
-            ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodas");
+            ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasOngs");
         }
         catch (Exception ex)
         {
         }
     }
-
 
     private IEnumerable<Doacao> DoacoesFiltradas =>
      DoacoesSalvas
@@ -182,9 +309,9 @@
         return ListaDeOngs.FirstOrDefault(o => o.Id == idOng)?.RazaoSocial ?? "Desconhecida";
     }
 
-    private string ObterNomeAlimento(int alimentoId)
+  private string ObterNomeAlimento(int alimentoId)
     {
-        return $"Alimento {alimentoId}";
+        return ListaDeAlimentos.FirstOrDefault(a => a.Id == alimentoId)?.Nome ?? $"Alimento {alimentoId}";
     }
 
     private string GetStatusBadgeClass(StatusDoacao status)
@@ -198,9 +325,42 @@
         };
     }
 
-
+    private void AbrirModalMotivo()
+    {
+        MostrarModalMotivo = true;
+    }
+    
     private void VerDetalhes(int idDoacao)
     {
-        // Ação para ver detalhes
+        DoacaoSelecionada = DoacoesFiltradas.FirstOrDefault(d => d.IdDoacao == idDoacao);
+        
+        if (DoacaoSelecionada != null)
+        {
+            OngSelecionada = ListaDeOngs.FirstOrDefault(o => o.Id == DoacaoSelecionada.IdOng);
+            MostrarModal = true;
+            StateHasChanged(); 
+        }
+    }
+    
+    private void FecharModal()
+    {
+        MostrarModal = false;
+        StateHasChanged(); 
+    }
+
+    private void FecharModalMotivo()
+    {
+        MostrarModalMotivo = false;
+        MotivoCancelamento = null;
+    }
+
+    private void ConfirmarCancelamento()
+    {
+        // Aqui você pode chamar a API para cancelar a doação, passando o motivo
+        // Exemplo: await CancelarDoacaoAsync(DoacaoSelecionada.IdDoacao, MotivoCancelamento);
+
+        MostrarModalMotivo = false;
+        MostrarModal = false;
+        MotivoCancelamento = null;
     }
 }

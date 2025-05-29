@@ -11,6 +11,11 @@
     --transition-base: all 0.3s ease;
 }
 
+.link-black, .link-black:visited, .link-black:active, .link-black:hover, .link-black:focus {
+    color: #212529 !important;
+    text-decoration: none;
+}
+
 html, body {
     font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     margin: 0;
@@ -25,6 +30,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     letter-spacing: 0.5px;
+    text-decoration: none !important;
 }
 
 a, .btn-link {
@@ -77,19 +83,16 @@ a, .btn-link {
     outline: none;
 }
 
-/* Removido fechamento extra de bloco CSS incorreto que estava após a regra acima */
-
 .card,
 .card.shadow-sm,
 .card:hover,
 .card.shadow-sm:hover {
     transform: none !important;
-    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important; /* mantém a sombra padrão, sem animação extra */
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important; 
     transition: none !important;
 }
 
 
-/* Sombra comum */
 .shadow {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
@@ -668,10 +671,6 @@ select.form-control option:hover {
     outline: none !important;
     box-shadow: none !important;
 }
-
-/* ======================= */
-/* Alterações para modal Blazored posicionar embaixo */
-/* ======================= */
 
 .blazored-modal {
     display: flex !important;

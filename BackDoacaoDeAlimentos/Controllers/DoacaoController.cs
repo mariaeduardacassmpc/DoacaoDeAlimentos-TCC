@@ -37,7 +37,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             return Ok(doacoes);
         }
 
-        [HttpGet("obterTodas")]
+        [HttpGet("obterTodasDoacoes")]
         public async Task<IActionResult> ObterTodas()
         {
             var doacoes = await _doacaoService.ObterTodasDoacoes();

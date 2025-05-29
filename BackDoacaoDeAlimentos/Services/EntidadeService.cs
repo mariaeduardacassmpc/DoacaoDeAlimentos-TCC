@@ -78,6 +78,7 @@ namespace BackDoacaoDeAlimentos.Servicos
         {
             try
             {
+                await _usuarioRepositorio.Remover(id);
                 await _entidadeRepositorio.DeletarEntidade(id);
             }
             catch(Exception ex)

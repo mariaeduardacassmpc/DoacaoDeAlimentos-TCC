@@ -16,7 +16,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
             _conexao = conexao;
         }
 
-        public async Task<AlimentoDoacao> AdicionarAsync(AlimentoDoacao alimentoDoacao)
+        public async Task<AlimentoDoacao> Adicionar(AlimentoDoacao alimentoDoacao)
         {
             var sql = @"
                 INSERT INTO AlimentoDoacao (IdDoacao, AlimentoId, Validade, Quantidade, UnidadeMedida)
@@ -50,19 +50,19 @@ namespace BackDoacaoDeAlimentos.Repositorios
             await _conexao.ExecuteAsync(sql, new { Id = id });
         }
 
-        public async Task<AlimentoDoacao> ObterPorIdAsync(int id)
+        public async Task<AlimentoDoacao> ObterPorId(int id)
         {
             var sql = "SELECT * FROM AlimentoDoacao WHERE Id = @Id;";
             return await _conexao.QueryFirstOrDefaultAsync<AlimentoDoacao>(sql, new { Id = id });
         }
 
-        public async Task<IEnumerable<AlimentoDoacao>> ObterTodosAsync()
+        public async Task<IEnumerable<AlimentoDoacao>> ObterTodos()
         {
             var sql = "SELECT * FROM AlimentoDoacao;";
             return await _conexao.QueryAsync<AlimentoDoacao>(sql);
         }
 
-        public async Task<IEnumerable<AlimentoDoacao>> ObterPorDoacaoAsync(int doacaoId)
+        public async Task<IEnumerable<AlimentoDoacao>> ObterPorDoacao(int doacaoId)
         {
             var sql = "SELECT * FROM AlimentoDoacao WHERE IdDoacao = @IdDoacao;";
             return await _conexao.QueryAsync<AlimentoDoacao>(sql, new { IdDoacao = doacaoId });

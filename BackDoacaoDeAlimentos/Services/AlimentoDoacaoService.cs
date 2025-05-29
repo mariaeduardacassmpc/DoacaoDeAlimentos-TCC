@@ -20,7 +20,7 @@ namespace BackDoacaoDeAlimentos.Services
             _doacaoRepositorio = doacaoRepo;
         }
 
-        public async Task<AlimentoDoacao> AdicionarAlimentoADoacaoAsync(AlimentoDoacao alimentoDoacao)
+        public async Task<AlimentoDoacao> AdicionarAlimentoADoacao(AlimentoDoacao alimentoDoacao)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace BackDoacaoDeAlimentos.Services
                 if (doacao.Status != StatusDoacao.Pendente)
                     throw new InvalidOperationException("Só é possível adicionar alimentos a doações pendentes");
 
-                return await _alimentoDoacaoRepo.AdicionarAsync(alimentoDoacao);
+                return await _alimentoDoacaoRepo.Adicionar(alimentoDoacao);
             }
             catch (Exception ex)
             {
@@ -41,11 +41,11 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public async Task RemoverAlimentoDeDoacaoAsync(int id)
+        public async Task Remover(int id)
         {
             try
             {
-                var alimentoDoacao = await _alimentoDoacaoRepo.ObterPorIdAsync(id);
+                var alimentoDoacao = await _alimentoDoacaoRepo.ObterPorId(id);
                 if (alimentoDoacao == null)
                     throw new ArgumentException("Relação alimento-doação não encontrada");
 
@@ -61,11 +61,11 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public async Task<IEnumerable<AlimentoDoacao>> ListarAlimentosPorDoacaoAsync(int doacaoId)
+        public async Task<IEnumerable<AlimentoDoacao>> ListarAlimentosPorDoacao(int doacaoId)
         {
             try
             {
-                return await _alimentoDoacaoRepo.ObterPorDoacaoAsync(doacaoId);
+                return await _alimentoDoacaoRepo.ObterPorDoacao(doacaoId);
             }
             catch (Exception ex)
             {
@@ -73,11 +73,11 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public async Task<IEnumerable<AlimentoDoacao>> ListarAlimentosProximosVencimentoAsync(int diasAntecedencia)
+        public async Task<IEnumerable<AlimentoDoacao>> ListarAlimentosProximosVencimento(int diasAntecedencia)
         {
             try
             {
-                var todos = await _alimentoDoacaoRepo.ObterTodosAsync();
+                var todos = await _alimentoDoacaoRepo.ObterTodos();
                 var dataLimite = DateTime.Today.AddDays(diasAntecedencia);
                 return todos
                     .Where(a => a.Validade <= dataLimite && a.Validade >= DateTime.Today)
@@ -89,14 +89,14 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public async Task AtualizarQuantidadeAlimentoAsync(int id, decimal novaQuantidade)
+        public async Task AtualizarQuantidadeAlimento(int id, decimal novaQuantidade)
         {
             try
             {
                 if (novaQuantidade <= 0)
                     throw new ArgumentException("Quantidade deve ser maior que zero");
 
-                var alimentoDoacao = await _alimentoDoacaoRepo.ObterPorIdAsync(id);
+                var alimentoDoacao = await _alimentoDoacaoRepo.ObterPorId(id);
                 if (alimentoDoacao == null)
                     throw new ArgumentException("Relação alimento-doação não encontrada");
 
@@ -113,11 +113,11 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public async Task<AlimentoDoacao> ObterPorIdAsync(int id)
+        public async Task<AlimentoDoacao> ObterPorId(int id)
         {
             try
             {
-                return await _alimentoDoacaoRepo.ObterPorIdAsync(id);
+                return await _alimentoDoacaoRepo.ObterPorId(id);
             }
             catch (Exception ex)
             {

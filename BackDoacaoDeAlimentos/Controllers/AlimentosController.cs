@@ -17,7 +17,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             _alimentoService = alimentoService;
         }
 
-        [HttpGet("obterAlimentos")]
+        [HttpGet("obterTodosAlimentos")]
         public async Task<IActionResult> ObterTodos()
         {
             var alimento = await _alimentoService.ObterTodosAlimentos();
@@ -51,6 +51,17 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
         }
 
+        [HttpPut("atualizar/{id}")]
+        public async Task<IActionResult> Atualizar([FromBody] Alimento alimento)
+        {
+            var alimentoExistente = await _alimentoService.ObterAlimentoPorId(alimento.Id);
+            if (alimentoExistente == null)
+                return NotFound();
+
+            await _alimentoService.AtualizarAlimento(alimento);
+            return NoContent();
+        }
+
         [HttpDelete("deletar/{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
@@ -67,17 +78,6 @@ namespace BackDoacaoDeAlimentos.Controllers
             {
                 return BadRequest("Não é possível excluir este alimento pois ele está vinculado a uma doação.");
             }
-        }
-
-        [HttpPut("atualizar/{id}")]
-        public async Task<IActionResult> Atualizar([FromBody] Alimento alimento)
-        {
-            var alimentoExistente = await _alimentoService.ObterAlimentoPorId(alimento.Id);
-            if (alimentoExistente == null)
-                return NotFound();
-
-            await _alimentoService.AtualizarAlimento(alimento);
-            return NoContent();
         }
     } 
 }

@@ -1,5 +1,4 @@
-﻿using BackDoacaoDeAlimentos.Interfaces.Servicos;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Controllers
@@ -18,7 +17,7 @@ namespace BackDoacaoDeAlimentos.Controllers
         [HttpGet("obterTodosPorDoacao/{doacaoId}")]
         public async Task<IActionResult> ObterTodosPorDoacao(int doacaoId)
         {
-            var alimentos = await _alimentoDoacaoService.ListarAlimentosPorDoacaoAsync(doacaoId);
+            var alimentos = await _alimentoDoacaoService.ListarAlimentosPorDoacao(doacaoId);
             if (alimentos == null || !alimentos.Any())
                 return NotFound("Nenhum alimento encontrado para essa doação.");
 
@@ -28,7 +27,7 @@ namespace BackDoacaoDeAlimentos.Controllers
         [HttpGet("obterPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
-            var alimento = await _alimentoDoacaoService.ObterPorIdAsync(id);
+            var alimento = await _alimentoDoacaoService.ObterPorId(id);
             if (alimento == null)
                 return NotFound("Alimento não encontrado.");
 
@@ -38,7 +37,7 @@ namespace BackDoacaoDeAlimentos.Controllers
         [HttpGet("proximosVencimentos")]
         public async Task<IActionResult> ObterProximosVencimentos([FromQuery] int diasAntecedencia = 7)
         {
-            var alimentos = await _alimentoDoacaoService.ListarAlimentosProximosVencimentoAsync(diasAntecedencia);
+            var alimentos = await _alimentoDoacaoService.ListarAlimentosProximosVencimento(diasAntecedencia);
             return Ok(alimentos);
         }
 
@@ -48,7 +47,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             if (alimentoDoacao == null)
                 return BadRequest("O alimento da doação não pode ser nulo.");
 
-            var novoAlimento = await _alimentoDoacaoService.AdicionarAlimentoADoacaoAsync(alimentoDoacao);
+            var novoAlimento = await _alimentoDoacaoService.AdicionarAlimentoADoacao(alimentoDoacao);
             return CreatedAtAction(nameof(ObterPorId), new { id = novoAlimento.Id }, novoAlimento);
         }
 
@@ -57,7 +56,7 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             try
             {
-                await _alimentoDoacaoService.AtualizarQuantidadeAlimentoAsync(id, novaQuantidade);
+                await _alimentoDoacaoService.AtualizarQuantidadeAlimento(id, novaQuantidade);
                 return NoContent();
             }
             catch (Exception ex)
@@ -69,11 +68,11 @@ namespace BackDoacaoDeAlimentos.Controllers
         [HttpDelete("deletar/{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
-            var alimento = await _alimentoDoacaoService.ObterPorIdAsync(id);
+            var alimento = await _alimentoDoacaoService.ObterPorId(id);
             if (alimento == null)
                 return NotFound("Alimento não encontrado.");
 
-            await _alimentoDoacaoService.RemoverAlimentoDeDoacaoAsync(id);
+            await _alimentoDoacaoService.Remover(id);
             return NoContent();
         }
     }
