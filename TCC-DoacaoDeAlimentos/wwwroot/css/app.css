@@ -11,6 +11,11 @@
     --transition-base: all 0.3s ease;
 }
 
+button.page-link:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 .link-black, .link-black:visited, .link-black:active, .link-black:hover, .link-black:focus {
     color: #212529 !important;
     text-decoration: none;

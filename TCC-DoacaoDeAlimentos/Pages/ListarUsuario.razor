@@ -10,7 +10,7 @@
             <div class="card-body p-4">
                 <h3 class="text-center mb-4">Gerenciamento de Usuários</h3>
                 <hr />
-                <div class="table-responsive">
+                <div class="table-responsive mb-10">
                     <table class="table">
                         <thead>
                             <tr>
@@ -23,66 +23,83 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var usuario in usuariosPaginated)
+                            @if (usuariosPaginated != null && usuariosPaginated.Any())
+                            {
+                                @foreach (var usuario in usuariosPaginated)
+                                {
+                                    <tr>
+                                        <td>@usuario.RazaoSocial</td>
+                                        <td>@FormatarTipoEntidade(usuario.TpEntidade.ToString())</td>
+                                        <td>@usuario.Telefone</td>
+                                        <td>@usuario.Email</td>
+                                        <td>@(usuario.Ativo == true ? "Ativo" : "Inativo")</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-danger"
+                                                    @onclick="() => AbrirModalInativar(usuario.Id)"
+                                                    disabled="@(usuario.Ativo == false)">
+                                                <i class="bi bi-slash-circle"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success" @onclick="() => ObterUsuario(usuario)">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
                             {
                                 <tr>
-                                    <td>@usuario.RazaoSocial</td>
-                                    <td>@FormatarTipoEntidade(usuario.TpEntidade.ToString())</td>
-                                    <td>@usuario.Telefone</td>
-                                    <td>@usuario.Email</td>
-                                    <td>@(usuario.Ativo == true ? "Ativo" : "Inativo")</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-danger"
-                                                @onclick="() => AbrirModalInativar(usuario.Id)"
-                                                disabled="@(usuario.Ativo == false)">
-                                            <i class="bi bi-slash-circle"></i>
-                                        </button>
-
-                                        <button class="btn btn-sm btn-outline-success" @onclick="() => ObterUsuario(usuario)">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                    </td>
+                                    <td colspan="6" class="text-center">Nenhum usuário encontrado</td>
                                 </tr>
                             }
                         </tbody>
                     </table>
 
-                    <nav aria-label="Navegação de páginas" style="text-align: left;">
-                        <ul style="list-style: none; padding-left: 0; display: flex;">
-                            <li>
-                                <a href="#" aria-label="Anterior"
-                                   @onclick="() => ChangePage(currentPage - 1)"
-                                   style="text-decoration: none; padding: 4px 10px; border: 1px solid #ccc; border-radius: 3px;@(currentPage == 1 ? " opacity:0.5;pointer-events:none;" : "")">
-                                    &laquo;
-                                </a>
-                            </li>
-                            @for (int i = 1; i <= totalPages; i++)
-                            {
-                                <li>
-                                    <a href="#"
-                                       @onclick="() => ChangePage(i)"
-                                       style="text-decoration: none; padding: 4px 10px; border: 1px solid #ccc; border-radius: 3px;@(i == currentPage ? " background:#eee;" : "")">
-                                        @i
-                                    </a>
+                    @if (totalPages > 1)
+                    {
+                        <div style="margin-top: 60px;"></div> 
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                    <button class="page-link text-success" @onclick="() => ChangePage(1)" aria-label="Primeira">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </button>
                                 </li>
-                            }
-                            <li>
-                                <a href="#" aria-label="Próximo"
-                                   @onclick="() => ChangePage(currentPage + 1)"
-                                   style="text-decoration: none; padding: 4px 10px; border: 1px solid #ccc; border-radius: 3px;@(currentPage == totalPages ? " opacity:0.5;pointer-events:none;" : "")">
-                                    &raquo;
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                    <button class="page-link text-success" @onclick="() => ChangePage(currentPage - 1)" aria-label="Anterior">
+                                        <span aria-hidden="true">&lsaquo;</span>
+                                    </button>
+                                </li>
 
-
+                                @for (int i = startPage; i <= endPage; i++)
+                                {
+                                    <li class="page-item @(i == currentPage ? "active" : "")">
+                                        <button class="page-link @(i == currentPage ? "bg-success border-success" : "text-success")"
+                                                @onclick="() => ChangePage(i)"
+                                                style="outline: none; box-shadow: none;">
+                                            @i
+                                        </button>
+                                    </li>
+                                }
+                                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                    <button class="page-link text-success" @onclick="() => ChangePage(currentPage + 1)" aria-label="Próxima">
+                                        <span aria-hidden="true">&rsaquo;</span>
+                                    </button>
+                                </li>
+                                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                    <button class="page-link text-success" @onclick="() => ChangePage(totalPages)" aria-label="Última">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
-<br />
+<div style="height: 100px; background-color: #d4edda"></div>
 
 @if (showEditModal && usuarioEditando != null)
 {
@@ -161,19 +178,19 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-6">
+                            <div class="col-md-9">
                                 <label class="form-label">Senha</label>
-                                <input class="form-control" @bind="usuarioEditando.Senha" type="password" />
+                                <input class="form-control" style="min-width:200px;" @bind="usuarioEditando.Senha" type="password" />
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Ativo</label>
-                                <select class="form-select" @bind="usuarioEditando.Ativo">
-                                    <option value="false">Ativo</option>
-                                    <option value="true">Inativo</option>
-                                </select>
+                            <div class="col-md-3 d-flex align-items-center justify-content-center">
+                                <div>
+                                    <div>
+                                        <InputCheckbox class="form-check-input me-2" @bind-Value="usuarioEditando.Ativo" />
+                                        <span>@(usuarioEditando.Ativo ? "Ativo" : "Inativo")</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -205,7 +222,6 @@
     </div>
 }
 
-
 @code {
     private List<Entidade> usuarios = new();
     private List<Entidade> usuariosPaginated = new();
@@ -214,6 +230,10 @@
     private int currentPage = 1;
     private int pageSize = 10;
     private int totalPages = 1;
+    private int totalItems = 0;
+    private int startPage = 1;
+    private int endPage = 1;
+    private const int maxVisiblePages = 5;
     private bool showEditModal = false;
     private Entidade? usuarioEditando;
     bool ExibirModalInativar = false;
@@ -222,6 +242,7 @@
     protected override async Task OnInitializedAsync()
     {
         usuarios = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasEntidades");
+        totalItems = usuarios?.Count ?? 0;
         UpdatePagination();
     }
 
@@ -229,20 +250,20 @@
     {
         usuarioEditando = new Entidade
         {
-                Id = usuario.Id,
-                RazaoSocial = usuario.RazaoSocial,
-                CNPJ_CPF = usuario.CNPJ_CPF,
-                TpEntidade = usuario.TpEntidade,
-                Telefone = usuario.Telefone,
-                Email = usuario.Email,
-                Ativo = usuario.Ativo,
-                Endereco = usuario.Endereco,
-                Bairro = usuario.Bairro,
-                CEP = usuario.CEP,
-                Sexo = usuario.Sexo,
-                Responsavel = usuario.Responsavel,
-                Senha = usuario.Senha,
-                Cidade = usuario.Cidade,
+            Id = usuario.Id,
+            RazaoSocial = usuario.RazaoSocial,
+            CNPJ_CPF = usuario.CNPJ_CPF,
+            TpEntidade = usuario.TpEntidade,
+            Telefone = usuario.Telefone,
+            Email = usuario.Email,
+            Ativo = usuario.Ativo,
+            Endereco = usuario.Endereco,
+            Bairro = usuario.Bairro,
+            CEP = usuario.CEP,
+            Sexo = usuario.Sexo,
+            Responsavel = usuario.Responsavel,
+            Senha = usuario.Senha,
+            Cidade = usuario.Cidade,
         };
         showEditModal = true;
     }
@@ -252,40 +273,41 @@
         showEditModal = false;
         usuarioEditando = null;
     }
+    private async Task OnParametersSetAsync()
+    {
+        UpdatePagination();
+    }
 
     private async Task SalvarEdicao()
     {
         if (usuarioEditando != null)
         {
             var entidadeEdicao = new EntidadeEdicaoDto
-                {
-                    Id = usuarioEditando.Id,
-                    TpEntidade = usuarioEditando.TpEntidade.ToString(),
-                    RazaoSocial = usuarioEditando.RazaoSocial,
-                    CNPJ_CPF = usuarioEditando.CNPJ_CPF,
-                    Telefone = usuarioEditando.Telefone,
-                    Endereco = usuarioEditando.Endereco,
-                    Bairro = usuarioEditando.Bairro,
-                    CEP = usuarioEditando.CEP,
-                    Cidade = usuarioEditando.Cidade,
-                    Email = usuarioEditando.Email,
-                    Sexo = usuarioEditando.Sexo,
-                    Responsavel = usuarioEditando.Responsavel,
-                    Latitude = usuarioEditando.Latitude?.ToString(),
-                    Altitude = usuarioEditando.Altitude?.ToString(),
-                    Numero = usuarioEditando.Numero,
-                    TpPessoa = usuarioEditando.TpPessoa.ToString(),
-                    Ativo = usuarioEditando.Ativo
-                };
+            {
+                Id = usuarioEditando.Id,
+                TpEntidade = usuarioEditando.TpEntidade.ToString(),
+                RazaoSocial = usuarioEditando.RazaoSocial,
+                CNPJ_CPF = usuarioEditando.CNPJ_CPF,
+                Telefone = usuarioEditando.Telefone,
+                Endereco = usuarioEditando.Endereco,
+                Bairro = usuarioEditando.Bairro,
+                CEP = usuarioEditando.CEP,
+                Cidade = usuarioEditando.Cidade,
+                Email = usuarioEditando.Email,
+                Sexo = usuarioEditando.Sexo,
+                Responsavel = usuarioEditando.Responsavel,
+                TpPessoa = usuarioEditando.TpPessoa.ToString(),
+                Ativo = usuarioEditando.Ativo
+            };
 
-          eawait Http.PutAsJsonAsync($"api/entidade/atualizar/{usuarioEditando.Id}", entidadeEdicao);
+            await Http.PutAsJsonAsync($"api/entidade/atualizar/{usuarioEditando.Id}", entidadeEdicao);
             usuarios = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasEntidades");
+            totalItems = usuarios?.Count ?? 0;
             UpdatePagination();
             showEditModal = false;
             usuarioEditando = null;
         }
     }
-
 
     private string FormatarTipoEntidade(string tipo)
     {
@@ -299,17 +321,40 @@
 
     private void UpdatePagination()
     {
+        usuarios ??= new List<Entidade>();
+
         totalPages = (int)Math.Ceiling((double)usuarios.Count / pageSize);
-        usuariosPaginated = usuarios.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+        if (totalPages < 1) totalPages = 1;
+
+        currentPage = Math.Max(1, Math.Min(currentPage, totalPages));
+
+        startPage = Math.Max(1, currentPage - (maxVisiblePages / 2));
+        endPage = Math.Min(totalPages, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage + 1 < maxVisiblePages)
+        {
+            startPage = Math.Max(1, endPage - maxVisiblePages + 1);
+        }
+
+        usuariosPaginated = usuarios
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
     }
 
     private void ChangePage(int page)
     {
-        if (page >= 1 && page <= totalPages)
+        if (page >= 1 && page <= totalPages && page != currentPage)
         {
             currentPage = page;
             UpdatePagination();
         }
+    }
+
+    private async Task OnPageSizeChanged()
+    {
+        currentPage = 1;
+        UpdatePagination();
     }
 
     private async Task InativarConfirmado(int idUsuarioParaExcluir)
@@ -321,6 +366,7 @@
             {
                 await Http.PutAsync($"api/entidade/inativar/{idUsuarioParaExcluir}", null);
                 usuarios = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasEntidades");
+                totalItems = usuarios?.Count ?? 0;
                 UpdatePagination();
                 StateHasChanged(); 
             }

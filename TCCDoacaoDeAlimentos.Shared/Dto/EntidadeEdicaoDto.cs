@@ -14,9 +14,6 @@
         public string Email { get; set; } = string.Empty;
         public string Sexo { get; set; } = string.Empty;         // M, F ou outro
         public string Responsavel { get; set; } = string.Empty;
-        public string Latitude { get; set; } = string.Empty;
-        public string Altitude { get; set; } = string.Empty;
-        public string Numero { get; set; } = string.Empty;
         public string TpPessoa { get; set; } = string.Empty;     // F ou J
         public bool Ativo;
     }
