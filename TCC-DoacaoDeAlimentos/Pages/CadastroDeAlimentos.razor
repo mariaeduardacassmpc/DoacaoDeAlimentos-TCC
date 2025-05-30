@@ -70,9 +70,9 @@
                         else
                         {
                             <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                                <table class="table table-bordered table-striped">
-                                    <thead class="table-success">
-                                        <tr>
+                                <table class="table">
+                                    <thead>
+                                        <tr class="table-success">
                                             <th>Nome</th>
                                             <th>Categoria</th>
                                             <th>Ações</th>
@@ -85,7 +85,7 @@
                                                 <td>@alimento.Nome</td>
                                                 <td>@alimento.Categoria</td>
                                                 <td class="d-flex align-items-center gap-2">
-                                                    <button @onclick="@(() => EditarAlimento(alimento))" class="btn btn-sm btn-warning">Editar</button>
+                                                    <button @onclick="@(() => EditarAlimento(alimento))" class="btn btn-sm btn-outline-success">Editar</button>
                                                     <button @onclick="@(() => RemoverAlimento(alimento))"
                                                             class="p-0 m-0 bg-transparent border-0 text-danger"
                                                             style="font-size: 2.25rem; line-height: 1;"
@@ -98,7 +98,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                        }
+                            }
                     </div>
                 </div>
             </div>
@@ -144,7 +144,7 @@
 
             if (response.IsSuccessStatusCode)
             {
-                ToastService.ShowSuccess("Alimento cadastrado com sucesso!");
+                await JSRuntime.InvokeVoidAsync("alert", "Alimento cadastrado com sucesso!");
                 await ObterAlimentos(); 
                 NovoAlimento = new Alimento();
                 StateHasChanged();
@@ -152,12 +152,13 @@
             else
             {
                 var erro = await response.Content.ReadAsStringAsync();
-                ToastService.ShowError($"Erro ao cadastrar alimento: {erro}");
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro ao cadastrar alimento.");
             }
         }
         catch (Exception ex)
         {
-            ToastService.ShowError($"Erro inesperado: {ex.Message}");
+         
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro inesperado.");
         }
     }
 
@@ -166,20 +167,22 @@
     {
         try
         {
-            var response = await Http.DeleteAsync($"api/alimento/deletar/{alimento.Id}");
+            var response = await Http.PutAsync($"api/alimento/inativar/{alimento.Id}", null);
             if (response.IsSuccessStatusCode)
             {
-                ToastService.ShowSuccess("Alimento removido com sucesso!");
+                await JSRuntime.InvokeVoidAsync("alert", "Alimento removido com sucesso!");
+                await ObterAlimentos(); 
             }
             else
             {
-                ToastService.ShowWarning("Alimento removido da lista de cadastro, mas ainda está vinculado a uma doação.");
+                await JSRuntime.InvokeVoidAsync("alert", "Alimento não pode ser removido  com sucesso!");
             }
             StateHasChanged();
         }
         catch (Exception ex)
         {
             ToastService.ShowError("Erro inesperado: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao remover alimento.");
         }
     }
 
@@ -201,7 +204,7 @@
             var response = await Http.PutAsJsonAsync($"api/alimento/atualizar/{NovoAlimento.Id}", NovoAlimento);
             if (response.IsSuccessStatusCode)
             {
-                ToastService.ShowSuccess("Alimento atualizado com sucesso!");
+                await JSRuntime.InvokeVoidAsync("alert", "Alimento atualizado com sucesso!");
                 await ObterAlimentos();
                 NovoAlimento = new Alimento();
                 editando = false;
@@ -210,12 +213,12 @@
             else
             {
                 var erro = await response.Content.ReadAsStringAsync();
-                ToastService.ShowError($"Erro ao atualizar alimento: {erro}");
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro ao atualizar alimento.");
             }
         }
         catch (Exception ex)
         {
-            ToastService.ShowError($"Erro inesperado: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro inesperado: {ex.Message}");
         }
     }
 }

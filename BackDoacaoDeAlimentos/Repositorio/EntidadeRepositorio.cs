@@ -81,28 +81,31 @@ namespace BackDoacaoDeAlimentos.Repositorios
             }
         }
 
-        public async Task AdicionarEntidade(Entidade entidade)
+        public async Task<int> AdicionarEntidade(Entidade entidade)
         {
             if (entidade == null)
                 throw new ArgumentNullException(nameof(entidade));
 
+            entidade.Id = 0;
+
+            if (_db.State != ConnectionState.Open)
+                _db.Open();
             using var transaction = _db.BeginTransaction();
 
             try
             {
-                var existeUsuario = await VerificaDocumentoeEmailExistente(entidade.CNPJ_CPF, entidade.Email);
-
                 const string sql = @"
                     INSERT INTO Entidade (
-                            TpEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel, Latitude, Altitude, Numero, TpPessoa
+                        TpEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel, Latitude, Altitude
                     ) VALUES (
-                            @TpEntidade, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel, @Latitude, @Altitude, @Numero, @TpPessoa
-                        );
+                        @TpEntidade, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel, @Latitude, @Altitude
+                    );
                     SELECT CAST(SCOPE_IDENTITY() AS int);
                 ";
 
                 var entidadeId = await _db.ExecuteScalarAsync<int>(sql, entidade, transaction);
                 transaction.Commit();
+                return entidadeId;
             }
             catch (Exception ex)
             {
@@ -110,6 +113,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
                 throw new Exception("Erro ao adicionar entidade: " + ex.Message, ex);
             }
         }
+
 
         public async Task AtualizarEntidade(EntidadeEdicaoDto entidade)
         {

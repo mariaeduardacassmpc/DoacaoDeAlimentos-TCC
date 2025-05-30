@@ -32,9 +32,8 @@ namespace BackDoacaoDeAlimentos.Servicos
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            await _entidadeRepositorio.AdicionarEntidade(entidade); 
-            usuario.EntidadeId = entidade.Id;
-
+            var entidadeId = await _entidadeRepositorio.AdicionarEntidade(entidade);
+            usuario.EntidadeId = entidadeId;
             await _usuarioRepositorio.Adicionar(usuario);
 
             scope.Complete();

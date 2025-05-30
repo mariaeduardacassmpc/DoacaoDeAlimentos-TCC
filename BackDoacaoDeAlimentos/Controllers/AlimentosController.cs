@@ -62,8 +62,8 @@ namespace BackDoacaoDeAlimentos.Controllers
             return NoContent();
         }
 
-        [HttpDelete("deletar/{id}")]
-        public async Task<IActionResult> Deletar(int id)
+        [HttpPut("inativar/{id}")]
+        public async Task<IActionResult> Inativar(int id)
         {
             var alimento = await _alimentoService.ObterAlimentoPorId(id);
             if (alimento == null)
@@ -71,7 +71,7 @@ namespace BackDoacaoDeAlimentos.Controllers
 
             try
             {
-                await _alimentoService.DeletarAlimento(id);
+                await _alimentoService.InativarAlimento(id);
                 return Ok("Alimento removido com sucesso!"); 
             }
             catch (Exception ex)

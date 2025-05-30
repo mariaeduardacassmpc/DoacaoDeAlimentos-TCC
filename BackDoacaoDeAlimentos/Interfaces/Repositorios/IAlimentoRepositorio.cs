@@ -9,5 +9,5 @@ public interface IAlimentoRepositorio
     Task<Alimento> ObterAlimentoPorId(int id);
     Task<IEnumerable<Alimento>> ObterTodosAlimentos();
     Task AtualizarAlimentos(Alimento alimento);
-    Task DeletarAlimento(int id);
+    Task InativarAlimento(int id);
 }

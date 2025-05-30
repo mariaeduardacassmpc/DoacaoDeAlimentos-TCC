@@ -54,11 +54,11 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public async Task DeletarAlimento(int id)
+        public async Task InativarAlimento(int id)
         {
             try
             {
-                await _alimentoRepositorio.DeletarAlimento(id);
+                await _alimentoRepositorio.InativarAlimento(id);
             }
             catch (Exception ex)
             {

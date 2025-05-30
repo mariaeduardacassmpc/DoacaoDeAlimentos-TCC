@@ -22,7 +22,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
 
         public async Task<IEnumerable<Alimento>> ObterTodosAlimentos()
         {
-            var sql = @"SELECT * FROM Alimento";
+            var sql = @"SELECT * FROM Alimento WHERE Ativo = 1";
             return await _db.QueryAsync<Alimento>(sql);
         }
 
@@ -39,14 +39,12 @@ namespace BackDoacaoDeAlimentos.Repositorio
             await _db.ExecuteAsync(sql, alimento);
         }
 
-        public async Task DeletarAlimento(int id)
+        public async Task InativarAlimento(int id)
         {
-            var sql = @"DELETE FROM Alimento
-                             WHERE Id = @Id    
-            ";
-
+            var sql = @"UPDATE Alimento SET Ativo = 0 WHERE Id = @Id";
             await _db.ExecuteAsync(sql, new { Id = id });
         }
+
 
         public async Task AtualizarAlimentos(Alimento alimento)
         {

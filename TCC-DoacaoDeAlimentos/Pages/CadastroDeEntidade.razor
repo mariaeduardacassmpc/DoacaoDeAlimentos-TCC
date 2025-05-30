@@ -231,18 +231,19 @@
 
             if (response.IsSuccessStatusCode)
             {
-                ToastService.ShowSuccess("Cadastro realizado com sucesso!");
+                await JSRuntime.InvokeVoidAsync("alert", "Cadastro realizado com sucesso!");
                 Navigation.NavigateTo("/");
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                ToastService.ShowError($"Erro: {error}");
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro no cadastro: {error}");
             }
         }
         catch (Exception ex)
         {
             ToastService.ShowError($"Erro crítico: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
         }
     }
 

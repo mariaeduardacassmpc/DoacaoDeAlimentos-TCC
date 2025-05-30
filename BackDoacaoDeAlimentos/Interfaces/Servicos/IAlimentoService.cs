@@ -10,6 +10,6 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
         Task<Alimento> ObterAlimentoPorId(int id);
         Task<IEnumerable<Alimento>> ObterTodosAlimentos();
         Task AtualizarAlimento(Alimento alimento);
-        Task DeletarAlimento(int id);
+        Task InativarAlimento(int id);
     }
 }

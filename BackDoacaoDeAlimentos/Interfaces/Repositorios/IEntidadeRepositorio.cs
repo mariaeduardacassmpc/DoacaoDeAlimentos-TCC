@@ -10,7 +10,7 @@ namespace BackDoacaoDeAlimentos.Interfaces.Repositorios
         Task<IEnumerable<Entidade>> ObterTodasOngs();
         Task<IEnumerable<Entidade>> ObterTodasEntidades();
         Task<Entidade> ObterEntidadePorId(int id);
-        Task AdicionarEntidade(Entidade entidade);
+        Task<int> AdicionarEntidade(Entidade entidade);
         Task AtualizarEntidade(EntidadeEdicaoDto entidade);
         Task InativarEntidade(int id);
         Task<bool> VerificaDocumentoeEmailExistente(string documento, string email);
