@@ -55,6 +55,7 @@ public class Entidade : IValidatableObject
 
     [Required(ErrorMessage = "O Número é obrigatório.")]
     public string Numero { get; set; }
+    public bool Ativo { get; set; }
 
     public enum TipoEntidade
     {

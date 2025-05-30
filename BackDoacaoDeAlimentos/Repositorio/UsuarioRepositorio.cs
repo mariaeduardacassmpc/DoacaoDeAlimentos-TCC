@@ -19,13 +19,14 @@ namespace BackDoacaoDeAlimentos.Repositorio
         public async Task<Usuario> ObterPorId(int id)
         {
             const string sql = @"
-                SELECT u.Id, u.EntidadeId, u.Email, u.Senha,
-                e.Id, e.RazaoSocial, e.TipoEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email, e.Responsavel, e.Altitude, e.Latitude
+                SELECT 
+                    u.Id, u.EntidadeId, u.Email, u.Senha,
+                    e.Id AS Entidade_Id, e.RazaoSocial, e.TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Altitude, e.Latitude
                 FROM Usuario u
                 INNER JOIN Entidade e ON u.EntidadeId = e.Id
-                WHERE u.Id = @Id";
+                WHERE u.EntidadeId = @EntidadeId";
 
-            return await _db.QueryFirstOrDefaultAsync<Usuario>(sql, new { Id = id });
+            return await _db.QueryFirstOrDefaultAsync<Usuario>(sql, new { EntidadeId = id });
         }
 
         public async Task<Usuario> ObterPorEmail(string email)
@@ -76,17 +77,6 @@ namespace BackDoacaoDeAlimentos.Repositorio
 
          var affectedRows = await _db.ExecuteAsync(sql, usuario);
              
-        }
-
-        public async Task Remover(int id)
-        {
-            var sql = "DELETE FROM Usuario WHERE EntidadeId = @Id";
-
-            var affectedRows = await _db.ExecuteAsync(sql, new { Id = id });
-            if (affectedRows == 0)
-            {
-                throw new ArgumentException("Usuário não encontrado para remoção");
-            }
         }
 
         public async Task<bool> VerificarEmailExistente(string email)

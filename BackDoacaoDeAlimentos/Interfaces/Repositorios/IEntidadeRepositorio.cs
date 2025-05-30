@@ -12,7 +12,7 @@ namespace BackDoacaoDeAlimentos.Interfaces.Repositorios
         Task<Entidade> ObterEntidadePorId(int id);
         Task AdicionarEntidade(Entidade entidade);
         Task AtualizarEntidade(EntidadeEdicaoDto entidade);
-        Task DeletarEntidade(int id);
+        Task InativarEntidade(int id);
         Task<bool> VerificaDocumentoeEmailExistente(string documento, string email);
     }
 }

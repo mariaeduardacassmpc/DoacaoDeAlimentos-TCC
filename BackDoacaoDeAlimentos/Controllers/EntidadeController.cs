@@ -105,24 +105,26 @@ namespace BackDoacaoDeAlimentos.Controllers
 
 
         [HttpPut("atualizar/{id}")]
-        public async Task<IActionResult> Atualizar([FromBody] EntidadeEdicaoDto entidade)
+        public async Task<IActionResult> Atualizar(int id, [FromBody] EntidadeEdicaoDto entidade)
         {
-            if (entidade == null)
-                return NotFound();
+            if (entidade == null || entidade.Id != id)
+                return BadRequest();
 
             await _entidadeService.AtualizarEntidade(entidade);
             return NoContent();
         }
 
 
-        [HttpDelete("deletar/{id}")]
-        public async Task<IActionResult> Deletar(int id)
+
+        [HttpPut("inativar/{id}")]
+        public async Task<IActionResult> Inativar(int id)
         {
             var entidade = await _entidadeService.ObterEntidadePorId(id);
             if (entidade == null)
                 return NotFound();
 
-            await _entidadeService.DeletarEntidade(id);
+            await _entidadeService.InativarEntidade(id);
+
             return NoContent();
         }
 

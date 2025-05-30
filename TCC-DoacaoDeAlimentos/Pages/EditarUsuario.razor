@@ -4,6 +4,7 @@
 @inject IJSRuntime JSRuntime
 @using System.Text.RegularExpressions
 @using TCCDoacaoDeAlimentos.Shared.Models
+@using TCCDoacaoDeAlimentos.Shared.Dto
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
     <div class="container py-5">
@@ -121,24 +122,6 @@
                                     </div>
                                 </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Nova Senha</label>
-                                        <div class="position-relative">
-                                            <InputText type="@(_showPassword ? "text" : "password")"
-                                                       @bind-Value="entidade.Senha"
-                                                       class="form-control pe-5"
-                                                       placeholder="Digite sua nova senha"
-                                                       id="senha" />
-                                            <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
-                                                    @onclick="ToggleAllPasswords">
-                                                <i class="@(_showPassword ? "fas fa-eye" : "fas fa-eye-slash") text-success"></i>
-                                            </button>
-                                        </div>
-                                        <ValidationMessage For="@(() => entidade.Senha)" class="text-danger" />
-                                    </div>
-                                </div>
-
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-success btn-lg mt-3">Salvar Alterações</button>
                                     <button type="button" class="btn btn-secondary btn-lg mt-2" @onclick="Voltar">Cancelar</button>
@@ -168,13 +151,11 @@
     {
         try
         {
-            var dadosParaEnvio = new Entidade
+            var dadosParaEnvio = new EntidadeEdicaoDto
                 {
                     Id = entidade.Id,
                     RazaoSocial = entidade.RazaoSocial,
                     Responsavel = entidade.Responsavel,
-                    Senha = entidade.Senha,
-                    ConfirmarSenha = entidade.ConfirmarSenha,
                     Email = entidade.Email,
                     Telefone = RemoveMask(entidade.Telefone),
                     CNPJ_CPF = RemoveMask(entidade.CNPJ_CPF),
@@ -183,10 +164,6 @@
                     Bairro = entidade.Bairro,
                     Cidade = entidade.Cidade,
                     CEP = RemoveMask(entidade.CEP),
-                    Latitude = entidade.Latitude,
-                    Altitude = entidade.Altitude,
-                    TpEntidade = entidade.TpEntidade,
-                    TpPessoa = entidade.TpPessoa,
                     Sexo = entidade.Sexo
                 };
 

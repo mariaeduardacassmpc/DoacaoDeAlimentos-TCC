@@ -18,5 +18,6 @@
         public string Altitude { get; set; } = string.Empty;
         public string Numero { get; set; } = string.Empty;
         public string TpPessoa { get; set; } = string.Empty;     // F ou J
+        public bool Ativo;
     }
 }

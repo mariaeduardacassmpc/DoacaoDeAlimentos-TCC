@@ -149,19 +149,19 @@ namespace BackDoacaoDeAlimentos.Repositorios
             }
         }
 
-        public async Task DeletarEntidade(int id)
+        public async Task InativarEntidade(int id)
         {
             if (id <= 0)
                 throw new ArgumentException("Id inválido.", nameof(id));
 
             try
             {
-                const string sql = "DELETE FROM Entidade WHERE Id = @Id";
+                const string sql = "UPDATE Entidade SET Ativo = 0 WHERE Id = @Id";
                 await _db.ExecuteAsync(sql, new { Id = id });
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro ao deletar entidade: " + ex.Message, ex);
+                throw new Exception("Erro ao inativar entidade: " + ex.Message, ex);
             }
         }
 

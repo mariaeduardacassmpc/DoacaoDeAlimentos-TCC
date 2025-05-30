@@ -40,13 +40,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             await _usuarioService.AtualizarUsuario(usuario);
             return NoContent();
         }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Remover(int id)
-        {
-            await _usuarioService.RemoverUsuario(id);
-            return NoContent();
-        }
+        
     }
 
     public class LoginRequest

@@ -9,7 +9,6 @@ namespace BackDoacaoDeAlimentos.Interfaces.Repositorios
         Task<Usuario> ObterPorEmail(string email);
         Task<Usuario> Adicionar(Usuario usuario);
         Task Atualizar(Usuario usuario);
-        Task Remover(int id);
         Task<bool> VerificarEmailExistente(string email);
     }
 }

@@ -32,9 +32,8 @@ namespace BackDoacaoDeAlimentos.Servicos
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            var entidadeId = await _entidadeRepositorio.AdicionarEntidade(entidade);
-            entidade.Id = entidadeId;
-            usuario.EntidadeId = entidadeId;
+            await _entidadeRepositorio.AdicionarEntidade(entidade); 
+            usuario.EntidadeId = entidade.Id;
 
             await _usuarioRepositorio.Adicionar(usuario);
 
@@ -73,12 +72,11 @@ namespace BackDoacaoDeAlimentos.Servicos
             await _entidadeRepositorio.AtualizarEntidade(entidade);
         }
 
-        public async Task DeletarEntidade(int id)
+        public async Task InativarEntidade(int id)
         {
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            await _usuarioRepositorio.Remover(id);
-            await _entidadeRepositorio.DeletarEntidade(id);
+            await _entidadeRepositorio.InativarEntidade(id);
 
             scope.Complete();
         }

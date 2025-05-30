@@ -136,22 +136,7 @@ namespace BackDoacaoDeAlimentos.Servicos
                 throw new Exception("Erro ao atualizar usuário.", ex);
             }
         }
-
-        public async Task RemoverUsuario(int id)
-        {
-            try
-            {
-                var usuario = await _usuarioRepositorio.ObterPorId(id);
-                if (usuario == null)
-                    throw new ArgumentException("Usuário não encontrado");
-
-                await _usuarioRepositorio.Remover(id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Erro ao remover usuário.", ex);
-            }
-        }
+     
 
         private string CriptografarSenha(string senha)
         {
