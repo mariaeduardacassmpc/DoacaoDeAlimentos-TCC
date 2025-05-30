@@ -2,6 +2,7 @@
 @using TCCDoacaoDeAlimentos.Shared.Models
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@inject Blazored.Toast.Services.IToastService ToastService
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
     <div class="container py-5">
@@ -21,6 +22,7 @@
                                 <button type="button" class="btn-close float-end" @onclick="() => erroSalvar = false"></button>
                             </div>
                         }
+
                         <EditForm Model="@NovaDoacao" OnValidSubmit="@SalvarDoacao">
                             <DataAnnotationsValidator />
                             <hr />
@@ -41,9 +43,8 @@
                                 <div class="col-md-4 mb-3">
                                     <label for="dataDoacao" class="form-label">Data da Doação</label>
                                     <InputDate @bind-Value="NovaDoacao.DataDoacao" class="form-control" id="dataDoacao"
-                                     @attributes="@(new Dictionary<string, object> { ["min"] = DateTime.Today.ToString("yyyy-MM-dd") })" />
+                                               @attributes="@(new Dictionary<string, object> { ["min"] = DateTime.Today.ToString("yyyy-MM-dd") })" />
                                     <ValidationMessage For="@(() => NovaDoacao.DataDoacao)" class="text-danger" />
-
                                 </div>
                             </div>
 
@@ -108,7 +109,6 @@
                                                 <div class="text-danger">A validade deve estar entre 10/04/2025 e 31/12/2030.</div>
                                             }
                                         </div>
-
                                     </div>
                                 </div>
                             }
@@ -142,19 +142,30 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Ongs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasOngs");
-        Alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimento/obterTodosAlimentos");
-    }
+        try
+        {
+            Ongs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasOngs");
+            Alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimento/obterTodosAlimentos");
 
+            if (Ongs == null || !Ongs.Any())
+            {
+                ToastService.ShowInfo("Nenhuma ONG cadastrada ainda");
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Erro ao carregar dados: {ex.Message}");
+        }
+    }
 
     private void AdicionarItem()
     {
         Itens.Add(new AlimentoDoacao
-        {
-           Validade = DateTime.Today,
-           AlimentoId = -1,
-           Quantidade = 1
-        });
+            {
+                Validade = DateTime.Today,
+                AlimentoId = -1,
+                Quantidade = 1
+            });
     }
 
     private void RemoverItem(AlimentoDoacao item)
@@ -168,11 +179,11 @@
         if (NovaDoacao.IdOng == 0 ||
             NovaDoacao.DataDoacao == default ||
             Itens.Count == 0 ||
-
             Itens.Any(i => i.AlimentoId == 0 || i.Quantidade <= 0 || string.IsNullOrWhiteSpace(i.UnidadeMedida)))
         {
             erroSalvar = true;
             mensagemErro = "Preencha todos os campos obrigatórios da doação e dos itens.";
+            ToastService.ShowError(mensagemErro);
             return;
         }
 
@@ -183,19 +194,18 @@
 
             if (response.IsSuccessStatusCode)
             {
+                ToastService.ShowSuccess("Doação cadastrada com sucesso!");
                 Navigation.NavigateTo("/MinhasDoacoes");
             }
             else
             {
                 var erro = await response.Content.ReadAsStringAsync();
-                erroSalvar = true;
-                mensagemErro = $"Erro ao salvar a doação: {erro}";
+                ToastService.ShowError($"Erro ao salvar: {erro}");
             }
         }
         catch (Exception ex)
         {
-            erroSalvar = true;
-            mensagemErro = "Erro ao salvar a doação: " + ex.Message;
+            ToastService.ShowError($"Erro inesperado: {ex.Message}");
         }
     }
 }
