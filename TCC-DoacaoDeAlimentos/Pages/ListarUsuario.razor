@@ -296,8 +296,8 @@
                 Email = usuarioEditando.Email,
                 Sexo = usuarioEditando.Sexo,
                 Responsavel = usuarioEditando.Responsavel,
-                TpPessoa = usuarioEditando.TpPessoa.ToString(),
-                Ativo = usuarioEditando.Ativo
+                Ativo = usuarioEditando.Ativo,
+                Senha = usuarioEditando.Senha
             };
 
             await Http.PutAsJsonAsync($"api/entidade/atualizar/{usuarioEditando.Id}", entidadeEdicao);

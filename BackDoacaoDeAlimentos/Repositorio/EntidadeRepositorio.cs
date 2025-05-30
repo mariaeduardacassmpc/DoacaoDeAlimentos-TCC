@@ -116,6 +116,8 @@ namespace BackDoacaoDeAlimentos.Repositorios
             if (entidade == null)
                 throw new ArgumentNullException(nameof(entidade));
 
+            if (_db.State != ConnectionState.Open)
+                _db.Open();
             using var transaction = _db.BeginTransaction();
 
             try
@@ -133,13 +135,19 @@ namespace BackDoacaoDeAlimentos.Repositorios
                     Email = @Email,
                     Sexo = @Sexo,
                     Responsavel = @Responsavel,
-                    Latitude = @Latitude,
-                    Altitude = @Altitude,
-                    Numero = @Numero,
-                    TpPessoa = @TpPessoa
+                    Ativo = @Ativo
                 WHERE Id = @Id";
 
                 await _db.ExecuteAsync(sql, entidade, transaction);
+
+                const string sqlUsuario = @"
+                    UPDATE Usuario SET 
+                        Email = @Email,
+                        Senha = @Senha
+                    WHERE EntidadeId = @Id";
+
+                await _db.ExecuteAsync(sqlUsuario, new { Email = entidade.Email, Senha = entidade.Senha, Id = entidade.Id }, transaction);
+
                 transaction.Commit();
             }
             catch (Exception ex)
