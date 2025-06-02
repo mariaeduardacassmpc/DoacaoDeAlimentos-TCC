@@ -96,14 +96,32 @@ namespace BackDoacaoDeAlimentos.Repositorios
             {
                 const string sql = @"
                     INSERT INTO Entidade (
-                        TpEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel, Latitude, Altitude
+                        TpEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel, Latitude, Altitude, NomeFantasia
                     ) VALUES (
-                        @TpEntidade, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel, @Latitude, @Altitude
+                        @TpEntidade, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel, @Latitude, @Altitude, @NomeFantasia
                     );
                     SELECT CAST(SCOPE_IDENTITY() AS int);
                 ";
 
-                var entidadeId = await _db.ExecuteScalarAsync<int>(sql, entidade, transaction);
+                var parametros = new
+                {
+                    TpEntidade = entidade.TpEntidade.ToString(),
+                    RazaoSocial = entidade.RazaoSocial,
+                    CNPJ_CPF = entidade.CNPJ_CPF,
+                    Telefone = entidade.Telefone,
+                    Endereco = entidade.Endereco,
+                    Bairro = entidade.Bairro,
+                    CEP = entidade.CEP,
+                    Cidade = entidade.Cidade,
+                    Email = entidade.Email,
+                    Sexo = entidade.Sexo,
+                    Responsavel = entidade.Responsavel,
+                    Latitude = entidade.Latitude,
+                    Altitude = entidade.Altitude,
+                    NomeFantasia = entidade.NomeFantasia
+                };
+
+                var entidadeId = await _db.ExecuteScalarAsync<int>(sql, parametros, transaction);
                 transaction.Commit();
                 return entidadeId;
             }
@@ -113,7 +131,6 @@ namespace BackDoacaoDeAlimentos.Repositorios
                 throw new Exception("Erro ao adicionar entidade: " + ex.Message, ex);
             }
         }
-
 
         public async Task AtualizarEntidade(EntidadeEdicaoDto entidade)
         {
@@ -188,6 +205,34 @@ namespace BackDoacaoDeAlimentos.Repositorios
             catch (Exception ex)
             {
                 throw new Exception("Erro ao verificar documento ou email existente: " + ex.Message, ex);
+            }
+        }
+
+        // Novo método para buscar ONGs próximas por latitude/longitude
+        public async Task<IEnumerable<Entidade>> ObterOngsProximas(double latitude, double longitude, double raioKm = 20)
+        {
+            try
+            {
+                // Haversine formula para calcular distância em km
+                var sql = @"
+                    SELECT *, 
+                        (6371 * acos(
+                            cos(radians(@Latitude)) * cos(radians(Latitude)) *
+                            cos(radians(Altitude) - radians(@Longitude)) +
+                            sin(radians(@Latitude)) * sin(radians(Latitude))
+                        )) AS Distancia
+                    FROM Entidade
+                    WHERE TpEntidade = 'O'
+                    AND Latitude IS NOT NULL AND Altitude IS NOT NULL
+                    HAVING Distancia <= @RaioKm
+                    ORDER BY Distancia
+                ";
+
+                return await _db.QueryAsync<Entidade>(sql, new { Latitude = latitude, Longitude = longitude, RaioKm = raioKm });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao obter ONGs próximas: " + ex.Message, ex);
             }
         }
     }

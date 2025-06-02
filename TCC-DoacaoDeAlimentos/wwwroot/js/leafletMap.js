@@ -1,6 +1,5 @@
 ﻿function initializeMap(lat, lng) {
-    try
-    {
+    try {
         const container = document.getElementById('map');
         if (!container) {
             throw new Error("Map container not found");
@@ -10,17 +9,14 @@
             throw new Error("Leaflet library not loaded");
         }
 
-        // Garante que o container esteja visível
         container.style.display = 'block';
-
-        // Limpa o conteúdo anterior do mapa (se precisar reinicializar)
         container.innerHTML = "";
 
-        const options = {
-            preferCanvas: true 
-        };
+        const options = { preferCanvas: true };
 
+        // 🟢 Salva o mapa no escopo global
         const map = L.map('map', options).setView([lat, lng], 13);
+        window.leafletMap = map;
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -38,3 +34,25 @@
         throw error;
     }
 }
+window.addMarkers = function (ongs) {
+    if (!window.leafletMap) {
+        console.error("Mapa não inicializado.");
+        return;
+    }
+
+    if (window.ongMarkers) {
+        window.ongMarkers.forEach(m => window.leafletMap.removeLayer(m));
+    }
+    window.ongMarkers = [];
+
+    if (!ongs || !Array.isArray(ongs)) return;
+
+    ongs.forEach(ong => {
+        if (ong.latitude && ong.longitude) {
+            const marker = L.marker([ong.latitude, ong.longitude])
+                .addTo(window.leafletMap)
+                .bindPopup(`<b>${ong.razaoSocial || ong.nome || "ONG"}</b><br>${ong.endereco || ""}`);
+            window.ongMarkers.push(marker);
+        }
+    });
+};

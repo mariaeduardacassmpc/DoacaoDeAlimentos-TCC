@@ -14,24 +14,18 @@ namespace BackDoacaoDeAlimentos.Controllers
     {
         private readonly IEntidadeService _entidadeService;
         private readonly IUsuarioService _usuarioService;
+        private readonly IGeocodingService _geocodingService;
 
-
-        public EntidadeController(IEntidadeService entidadeService, IUsuarioService usuarioService)
+        public EntidadeController(
+            IEntidadeService entidadeService,
+            IUsuarioService usuarioService,
+            IGeocodingService geocodingService)
         {
             _entidadeService = entidadeService;
             _usuarioService = usuarioService;
-
+            _geocodingService = geocodingService;
         }
 
-        [HttpGet("buscarOngsPorCidade/{cidade}")]
-        public async Task<IActionResult> BuscarOngsPorCidade(string cidade)
-        {
-            if (string.IsNullOrWhiteSpace(cidade))
-                throw new ArgumentException("Cidade inválida.");
-
-            var ongs = await _entidadeService.ObterOngsPorCidade(cidade);
-            return Ok(ongs);
-        }
 
         [HttpGet("obterTodasOngs")]
         public async Task<IActionResult> ObterTodasOngs()
@@ -64,33 +58,14 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
         [HttpPost("adicionar")]
-        public async Task<IActionResult> Adicionar([FromBody] Entidade entidadeDto)
+        public async Task<IActionResult> Adicionar([FromBody] Entidade entidade)
         {
             try
             {
-                var entidade = new Entidade
-                {
-                    TpEntidade = entidadeDto.TpEntidade,
-                    RazaoSocial = entidadeDto.RazaoSocial,
-                    Senha = entidadeDto.Senha,
-                    ConfirmarSenha = entidadeDto.ConfirmarSenha,
-                    CNPJ_CPF = entidadeDto.CNPJ_CPF,
-                    Telefone = entidadeDto.Telefone,
-                    Endereco = entidadeDto.Endereco,
-                    Bairro = entidadeDto.Bairro,
-                    CEP = entidadeDto.CEP,
-                    Cidade = entidadeDto.Cidade,
-                    Email = entidadeDto.Email,
-                    Responsavel = entidadeDto.Responsavel,
-                    Sexo = entidadeDto.Sexo,
-                    Latitude = entidadeDto.Latitude,
-                    Altitude = entidadeDto.Altitude
-                };
-
                 var usuario = new Usuario
                 {
-                    Email = entidadeDto.Email,
-                    Senha = entidadeDto.Senha
+                    Email = entidade.Email,
+                    Senha = entidade.Senha
                 };
 
                 await _entidadeService.AdicionarEntidade(entidade, usuario);
@@ -103,7 +78,6 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
         }
 
-
         [HttpPut("atualizar/{id}")]
         public async Task<IActionResult> Atualizar(int id, [FromBody] EntidadeEdicaoDto entidade)
         {
@@ -113,8 +87,6 @@ namespace BackDoacaoDeAlimentos.Controllers
             await _entidadeService.AtualizarEntidade(entidade);
             return NoContent();
         }
-
-
 
         [HttpPut("inativar/{id}")]
         public async Task<IActionResult> Inativar(int id)
@@ -133,6 +105,17 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             var existe = await _entidadeService.VerificarDocumentoeEmailExistente(documento, email);
             return Ok(new { existe });
+        }       
+
+        [HttpGet("buscarOngsPorCoordenadas")]
+        public async Task<IActionResult> BuscarOngsPorCoordenadas([FromQuery] double latitude, [FromQuery] double longitude)
+        {
+            var cidade = await _geocodingService.ObterCidadePorCoordenadas(latitude, longitude);
+            if (string.IsNullOrWhiteSpace(cidade))
+                return NotFound("Cidade não encontrada para as coordenadas informadas.");
+
+            var ongs = await _entidadeService.ObterOngsPorCidade(cidade);
+            return Ok(ongs);
         }
     }
 }

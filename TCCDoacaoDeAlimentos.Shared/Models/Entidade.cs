@@ -9,27 +9,34 @@ public class Entidade : IValidatableObject
 {
     [Key]
     public int Id { get; set; }
-    public TipoEntidade TpEntidade { get; set; }
-    public TipoPessoa TpPessoa { get; set; }
-    [Required(ErrorMessage = "Nome é obrigatório.")]
 
+    // Permitir nulo para forçar seleção do usuário
+    [Required(ErrorMessage = "Selecione o tipo de entidade.")]
+    public TipoEntidade? TpEntidade { get; set; }
+
+    [Required(ErrorMessage = "Selecione o tipo de pessoa.")]
+    public TipoPessoa? TpPessoa { get; set; }
+
+    [Required(ErrorMessage = "Nome é obrigatório.")]
     public string RazaoSocial { get; set; }
+
+    [Required(ErrorMessage = "Nome é obrigatório.")]
+    public string NomeFantasia { get; set; }
+
     [Required(ErrorMessage = "A senha é obrigatória.")]
     [RegularExpression(@"^(?=.*[A-Z])(?=.*[\W_]).+$", ErrorMessage = "A senha deve conter pelo menos uma letra maiúscula e um caractere especial.")]
-
     [StringLength(30, MinimumLength = 8, ErrorMessage = "A senha deve ter no minímo 8 caracteres")]
-
     public string Senha { get; set; }
+
     [Required(ErrorMessage = "Confirme sua senha.")]
     [Compare("Senha", ErrorMessage = "As senhas não coincidem.")]
-
     public string ConfirmarSenha { get; set; }
+
     [Required(ErrorMessage = "Documento é obrigatório.")]
     public string CNPJ_CPF { get; set; }
 
     [Required(ErrorMessage = "Telefone é obrigatório.")]
     [RegularExpression(@"^\d{10,11}$", ErrorMessage = "Telefone inválido")]
-
     public string Telefone { get; set; }
 
     [Required(ErrorMessage = "O endereço é obrigatório.")]
@@ -73,20 +80,21 @@ public class Entidade : IValidatableObject
     {
         var documentoLimpo = Regex.Replace(CNPJ_CPF ?? "", "[^0-9]", "");
 
-        if (TpPessoa == TipoPessoa.F) 
+        if ((TpEntidade == TipoEntidade.D && TpPessoa == TipoPessoa.F))
         {
             if (!DocumentoValidator.ValidarCpf(documentoLimpo))
             {
                 yield return new ValidationResult("CPF inválido.", new[] { nameof(CNPJ_CPF) });
             }
         }
-        else if (TpPessoa == TipoPessoa.J) 
+        else if ((TpEntidade == TipoEntidade.O) || (TpEntidade == TipoEntidade.D && TpPessoa == TipoPessoa.J))
         {
             if (!DocumentoValidator.ValidarCnpj(documentoLimpo))
             {
                 yield return new ValidationResult("CNPJ inválido.", new[] { nameof(CNPJ_CPF) });
             }
         }
+
     }
 }
 

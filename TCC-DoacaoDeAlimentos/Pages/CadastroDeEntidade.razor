@@ -35,14 +35,28 @@
                                 <ValidationMessage For="@(() => entidade.TpEntidade)" class="text-danger" />
                             </div>
 
-                            <div class="mb-3">
-                                <label for="nome" class="form-label">
-                                    @(entidade.TpEntidade == Entidade.TipoEntidade.O ? "Razão Social *" : "Nome Completo *")
-                                </label>
-                                <InputText @bind-Value="entidade.RazaoSocial" class="form-control" id="nome"
-                                           placeholder="@(entidade.TpEntidade == Entidade.TipoEntidade.O ? "Razão Social" : "Nome Completo")" />
-                                <ValidationMessage For="@(() => entidade.RazaoSocial)" class="text-danger" />
-                            </div>
+                            @if (entidade.TpEntidade == Entidade.TipoEntidade.O || entidade.TpPessoa == Entidade.TipoPessoa.J)
+                            {
+                                <div class="mb-3">
+                                    <label for="razaoSocial" class="form-label">Razão Social *</label>
+                                    <InputText @bind-Value="entidade.RazaoSocial" class="form-control" id="razaoSocial" placeholder="Razão Social" />
+                                    <ValidationMessage For="@(() => entidade.RazaoSocial)" class="text-danger" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="nomeFantasia" class="form-label">Nome Fantasia *</label>
+                                    <InputText @bind-Value="entidade.NomeFantasia" class="form-control" id="nomeFantasia" placeholder="Nome Fantasia" />
+                                    <ValidationMessage For="@(() => entidade.NomeFantasia)" class="text-danger" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="mb-3">
+                                    <label for="nome" class="form-label">Nome Completo *</label>
+                                    <InputText @bind-Value="entidade.RazaoSocial" class="form-control" id="nome" placeholder="Nome Completo" />
+                                    <ValidationMessage For="@(() => entidade.RazaoSocial)" class="text-danger" />
+                                </div>
+                            }
+
 
                             @if (entidade.TpEntidade == Entidade.TipoEntidade.O)
                             {
@@ -53,18 +67,19 @@
                                     <ValidationMessage For="@(() => entidade.Responsavel)" class="text-danger" />
                                 </div>
                             }
-                            else
+                            @if (entidade.TpEntidade == Entidade.TipoEntidade.D && entidade.TpPessoa == Entidade.TipoPessoa.F)
                             {
-                                <div class="mb-3">
-                                    <label for="sexo" class="form-label">Sexo *</label>
-                                    <InputSelect @bind-Value="entidade.Sexo" class="form-control" id="sexo">
-                                        <option value="" selected disabled>Selecione...</option>
-                                        <option value="F">Feminino</option>
-                                        <option value="M">Masculino</option>
-                                    </InputSelect>
-                                    <ValidationMessage For="@(() => entidade.Sexo)" class="text-danger" />
-                                </div>
+                            <div class="mb-3">
+                                <label for="sexo" class="form-label">Sexo *</label>
+                                <InputSelect @bind-Value="entidade.Sexo" class="form-control" id="sexo">
+                                    <option value="" selected disabled>Selecione...</option>
+                                    <option value="F">Feminino</option>
+                                    <option value="M">Masculino</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => entidade.Sexo)" class="text-danger" />
+                            </div>
                             }
+
                             @if (entidade.TpEntidade == Entidade.TipoEntidade.D)
                             {
                                 <label class="form-label">Tipo de Pessoa *</label>
@@ -78,6 +93,7 @@
                                         <label class="form-check-label" for="pessoaJuridica">Jurídica</label>
                                     </div>
                                 </InputRadioGroup>
+
                                 <ValidationMessage For="@(() => entidade.TpPessoa)" class="text-danger" />
                             }
                             @if (entidade.TpEntidade == Entidade.TipoEntidade.O || entidade.TpPessoa == Entidade.TipoPessoa.J)
@@ -194,9 +210,13 @@
 </div>
 
 @code {
-    private Entidade entidade = new Entidade();
+    // Inicialize sem valores padrão para forçar o usuário a escolher
+    private Entidade entidade = new Entidade
+    {
+        TpEntidade = null, // Remover valor padrão
+        TpPessoa = null    // Remover valor padrão
+    };
     private bool _showPassword = false;
-    private TipoPessoa tipoPessoa = TipoPessoa.F;
     private bool tentouEnviar = false;
     private double? latitude;
     private double? longitude;
@@ -224,7 +244,9 @@
                     Latitude = entidade.Latitude,
                     Altitude = entidade.Altitude,
                     TpEntidade = entidade.TpEntidade,
-                    Sexo = entidade.Sexo
+                    Sexo = entidade.Sexo,
+                    NomeFantasia = entidade.NomeFantasia,
+                    TpPessoa = entidade.TpPessoa
                 };
 
             var response = await Http.PostAsJsonAsync("api/entidade/adicionar", dadosParaEnvio);
