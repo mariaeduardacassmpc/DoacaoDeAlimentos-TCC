@@ -14,12 +14,12 @@ namespace BackDoacaoDeAlimentos.Controllers
     {
         private readonly IEntidadeService _entidadeService;
         private readonly IUsuarioService _usuarioService;
-        private readonly IGeocodingService _geocodingService;
+        private readonly IGeolocalizacaoService _geocodingService;
 
         public EntidadeController(
             IEntidadeService entidadeService,
             IUsuarioService usuarioService,
-            IGeocodingService geocodingService)
+            IGeolocalizacaoService geocodingService)
         {
             _entidadeService = entidadeService;
             _usuarioService = usuarioService;
@@ -105,16 +105,25 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             var existe = await _entidadeService.VerificarDocumentoeEmailExistente(documento, email);
             return Ok(new { existe });
-        }       
+        }
 
-        [HttpGet("buscarOngsPorCoordenadas")]
-        public async Task<IActionResult> BuscarOngsPorCoordenadas([FromQuery] double latitude, [FromQuery] double longitude)
+
+        [HttpGet("buscarOngsPorCoordenadas/{latitude}/{longitude}")]
+        public async Task<IActionResult> BuscarOngsPorCoordenadas(string latitude, string longitude)
         {
-            var cidade = await _geocodingService.ObterCidadePorCoordenadas(latitude, longitude);
+            if (!double.TryParse(latitude, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var lat) ||
+                !double.TryParse(longitude, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var lon))
+            {
+                return BadRequest("Latitude ou longitude em formato inválido.");
+            }
+
+            var cidade = await _geocodingService.ObterCidadePorCoordenadas(lat, lon);
+
             if (string.IsNullOrWhiteSpace(cidade))
                 return NotFound("Cidade não encontrada para as coordenadas informadas.");
 
             var ongs = await _entidadeService.ObterOngsPorCidade(cidade);
+
             return Ok(ongs);
         }
     }

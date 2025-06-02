@@ -6,9 +6,14 @@ using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using BackDoacaoDeAlimentos.Repositorio;
 using BackDoacaoDeAlimentos.Servicos;
 using BackDoacaoDeAlimentos.Repositorios;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+
+var cultureInfo = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 builder.Services.AddScoped<IAlimentoRepositorio, AlimentoRepositorio>();
 builder.Services.AddScoped<IAlimentoService, AlimentoService>();
@@ -23,9 +28,15 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAlimentoDoacaoRepositorio, AlimentoDoacaoRepositorio>();
 builder.Services.AddScoped<IAlimentoDoacaoService, AlimentoDoacaoService>();
 builder.Services.AddHttpClient<ViaCepService>();
+builder.Services.AddHttpClient<IGeolocalizacaoService, GeolocalizacaoService>();
+
 
 builder.Services.AddSingleton<AuthService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

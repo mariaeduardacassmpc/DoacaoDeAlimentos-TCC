@@ -2,41 +2,41 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using TCCDoacaoDeAlimentos.Shared.Dto;
 
-namespace BackDoacaoDeAlimentos.Servicos
+public class GeolocalizacaoService : IGeolocalizacaoService
 {
-    public class GeocodingService : IGeocodingService
+    private readonly HttpClient _httpClient;
+
+    public GeolocalizacaoService(HttpClient httpClient)
     {
-        private readonly HttpClient _httpClient;
+        _httpClient = httpClient;
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", "SeuAppDeDoacao/1.0 (seuemail@seudominio.com)");
+    }
 
-        public GeocodingService(HttpClient httpClient)
+    public async Task<string?> ObterCidadePorCoordenadas(double latitude, double longitude)
+    {
+        var url = $"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}&lon={longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}";
+
+        var response = await _httpClient.GetAsync(url);
+
+        if (!response.IsSuccessStatusCode)
         {
-            _httpClient = httpClient;
-        }
-
-        public async Task<string?> ObterCidadePorCoordenadas(double latitude, double longitude)
-        {
-            // Usando Nominatim (OpenStreetMap) para geocodificação reversa
-            var url = $"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={latitude}&lon={longitude}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return null;
-
-            using var stream = await response.Content.ReadAsStreamAsync();
-            using var doc = await JsonDocument.ParseAsync(stream);
-
-            if (doc.RootElement.TryGetProperty("address", out var address))
-            {
-                if (address.TryGetProperty("city", out var cityProp))
-                    return cityProp.GetString();
-                if (address.TryGetProperty("town", out var townProp))
-                    return townProp.GetString();
-                if (address.TryGetProperty("village", out var villageProp))
-                    return villageProp.GetString();
-            }
-
+            Console.WriteLine($"Erro na chamada Nominatim: {response.StatusCode}");
             return null;
         }
+
+        var json = await response.Content.ReadAsStringAsync();
+
+        var data = JsonSerializer.Deserialize<NominatimResponse>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        return data?.Address?.City
+            ?? data?.Address?.Town
+            ?? data?.Address?.Village
+            ?? data?.Address?.Municipality;
     }
+
 }

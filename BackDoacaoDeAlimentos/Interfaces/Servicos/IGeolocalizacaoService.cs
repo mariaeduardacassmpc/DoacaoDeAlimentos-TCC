@@ -1,8 +1,8 @@
-﻿
-
-namespace BackDoacaoDeAlimentos.Interfaces.Servicos
+﻿namespace BackDoacaoDeAlimentos.Interfaces.Servicos
 {
-    public class IGeolocalizacaoService
+    public interface IGeolocalizacaoService
     {
+        Task<string?> ObterCidadePorCoordenadas(double latitude, double longitude);
     }
+
 }

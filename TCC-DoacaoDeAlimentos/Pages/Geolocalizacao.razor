@@ -56,7 +56,7 @@
             }
             catch (Exception ex)
             {
-                errorMessage = $"Erro ao obter localização: {ex.Message}";
+                errorMessage = $"Erro ao obter localização. {ex}";
                 isLoading = false;
                 StateHasChanged();
             }
@@ -67,12 +67,14 @@
     {
         try
         {
-            ongs = await Http.GetFromJsonAsync<List<OngDto>>($"api/entidade/buscarOngsPorCoordenadas?latitude={latitude}&longitude={longitude}")
-                   ?? new List<OngDto>();
+            ongs = await Http.GetFromJsonAsync<List<OngDto>>(
+                $"api/entidade/buscarOngsPorCoordenadas/{latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}/{longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}"
+            ) ?? new List<OngDto>();
+
         }
         catch (Exception ex)
         {
-            errorMessage = $"Erro ao carregar ONGs: {ex.Message}";
+            errorMessage = $"Erro ao carregar ONGs.";
         }
     }
 
