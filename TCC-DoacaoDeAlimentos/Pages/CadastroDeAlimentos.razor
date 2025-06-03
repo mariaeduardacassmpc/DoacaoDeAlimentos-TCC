@@ -132,7 +132,7 @@
         }
         catch(Exception ex)
         {
-            ToastService.ShowError("Erro inesperado: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao obter alimentos.");
         }
     }
 

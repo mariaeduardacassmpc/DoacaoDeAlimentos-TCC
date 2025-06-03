@@ -1,6 +1,7 @@
 ﻿@page "/CadastroDeDoacao"
 @page "/CadastroDeDoacao/{Id:int}"
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime
 @inject NavigationManager Navigation
 @inject Blazored.Toast.Services.IToastService ToastService
 @using TCCDoacaoDeAlimentos.Shared.Dto
@@ -154,7 +155,7 @@
 
             if (Ongs == null || !Ongs.Any())
             {
-                ToastService.ShowInfo("Nenhuma ONG cadastrada ainda");
+                await JSRuntime.InvokeVoidAsync("alert", $"Nenhuma ONG cadastrada ainda.");
             }
 
             if (Id.HasValue)
@@ -169,13 +170,13 @@
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Erro ao carregar a ONG: " + ex.Message);
+                    await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar a ONG.");
                 }
             }
          }
         catch (Exception ex)
         {
-            Console.WriteLine("Erro ao carregar a ONG: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar a ONG.");
         }
     }
     

@@ -1,26 +1,90 @@
 ﻿using System.Data;
-using System.Security.Cryptography;
 using System.Text;
-using BackDoacaoDeAlimentos.Interfaces.Repositorios;
-using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using Blazored.LocalStorage; 
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using BackDoacaoDeAlimentos.Repositorios;
 using TCCDoacaoDeAlimentos.Shared.Models;
+using static System.Net.WebRequestMethods;
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using BackDoacaoDeAlimentos.Interfaces.Repositorios;
+using Microsoft.AspNetCore.Identity;
 
 namespace BackDoacaoDeAlimentos.Services
 {
     public class AutenticacaoService : IAutenticacaoService
     {
         private IEntidadeRepositorio _entidadeRepositorio;
-        private IUsuarioRepositorio _usuarioRepositorio;
+        private readonly HttpClient _http;
         private IMailService _mailServico;
+        private IUsuarioRepositorio _usuarioRepositorio;
+        private readonly PasswordHasher<object> _hasher = new();
 
         public AutenticacaoService(IEntidadeRepositorio entidadeRepositorio, 
-            IMailService mailServico, 
+            HttpClient http,
+            IMailService mailServico,
             IUsuarioRepositorio usuarioRepositorio) 
         {
             _entidadeRepositorio = entidadeRepositorio;
+            _http = http;
             _mailServico = mailServico;
             _usuarioRepositorio = usuarioRepositorio;
+        }
+
+        public string GerarHashSenha(string senha)
+        {
+            return _hasher.HashPassword(null, senha);
+        }
+
+        public bool VerificarSenha(string senhaDigitada, string senhaHash)
+        {
+            var resultado = _hasher.VerifyHashedPassword(null, senhaHash, senhaDigitada);
+            return resultado == PasswordVerificationResult.Success;
+        }
+
+        public RespostaAutenticacao Login(string login, string senha)
+        {
+            var usuario = _context.Usuarios.FirstOrDefault(u => u.Login == login);
+
+            if (usuario == null)
+                throw new Exception("Usuário não encontrado.");
+
+            if (!VerificarSenha(senha, usuario.SenhaHash))
+                throw new Exception("Senha inválida.");
+
+            var token = _jwtService.GerarToken(usuario);
+
+            return new RespostaAutenticacao
+            {
+                Token = token,
+                Nome = usuario.Nome,
+                Email = usuario.Login
+            };
+
+        }
+        public void Registrar(string nome, string login, string senha)
+        {
+            var existe = _context.Usuarios.Any(u => u.Login == login);
+            if (existe)
+                throw new Exception("Usuário já cadastrado.");
+
+            var senhaHash = GerarHashSenha(senha);
+
+            var usuario = new Usuario
+            {
+                Nome = nome,
+                Login = login,
+                SenhaHash = senhaHash
+            };
+
+            _context.Usuarios.Add(usuario);
+            _context.SaveChanges();
+        }
+
+        public async Task Logout()
+        {
+            await _localStorage.RemoveItemAsync("authToken");
+            _http.DefaultRequestHeaders.Authorization = null;
         }
 
         public async Task<bool> EnviarRecuperacaoSenha(string email)

@@ -31,8 +31,8 @@ public class DoacaoRepositorio : IDoacaoRepositorio
     public async Task AdicionarDoacao(Doacao doacao)
     {
         var sql = @"INSERT INTO Doacao 
-                        (NomeAlimento, Quantidade, Data)
-                    VALUES (@NomeAlimento, @Quantidade, @Data);
+                        (IdOng, IdDoador, DataDoacao, Observacao, Status)
+                    VALUES (@IdOng, @IdDoador, @DataDoacao, @Observacao, @Status);
                         SELECT CAST(SCOPE_IDENTITY() as int);
         ";
 
