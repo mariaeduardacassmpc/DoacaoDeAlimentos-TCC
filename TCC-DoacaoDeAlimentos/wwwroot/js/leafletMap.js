@@ -46,25 +46,75 @@ window.addMarkers = function (ongs) {
         }
     });
 
-    // Use for...of que é mais amigável para depuração
+    const greenIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+
     for (const [index, ong] of ongs.entries()) {
-        console.log(`Processando ONG ${index + 1}/${ongs.length}`, ong);
+        if (typeof ong.latitude !== "number" || typeof ong.longitude !== "number" || ong.latitude === 0 || ong.longitude === 0) {
+            continue;
+        }
 
         try {
-            // Crie o marcador
             const marker = L.marker([ong.latitude, ong.longitude], {
-                title: ong.nome
-            }).addTo(map);
+                title: ong.razaoSocial,
+                icon: greenIcon 
+            }).addTo(window.leafletMap);
 
-            console.log(`Marcador criado para ${ong.nome}`, marker);
-
-            // Adicione o popup
-            marker.bindPopup(`<b>${ong.nome}</b><br>${ong.endereco}`);
-            console.log(`Popup adicionado para ${ong.nome}`);
+            const popupHtml = `
+            <div style="
+                background: #fff;
+                color: #333;
+                border-radius: 10px;
+                padding: 10px 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                max-width: 220px;
+                font-size: 0.85rem;
+            ">
+                <div style="font-weight: 700; margin-bottom: 6px; color: #28a745; font-size: 0.95rem;">
+                    ${ong.razaoSocial}
+                </div>
+                <div style="line-height: 1.4;">
+                    <i class="fas fa-map-marker-alt" style="color:#28a745; margin-right:4px;"></i> ${ong.endereco || 'Não informado'}<br>
+                    <i class="fas fa-phone" style="color:#28a745; margin-right:4px;"></i> ${ong.telefone || 'Não informado'}<br>
+                    <i class="fas fa-user" style="color:#28a745; margin-right:4px;"></i> ${ong.responsavel || 'Não informado'}
+                </div>
+                <div style="text-align: center; margin-top: 10px;">
+                    <button 
+                        onclick="window.location.href='/CadastroDeDoacao/${ong.id}'" 
+                        style="
+                            background: linear-gradient(90deg, #28a745 0%, #218838 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 20px;
+                            padding: 6px 16px;
+                            font-weight: 600;
+                            font-size: 0.85rem;
+                            box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+                            cursor: pointer;
+                            letter-spacing: 0.5px;
+                            transition: all 0.2s ease;
+                        "
+                        onmouseover="this.style.background='linear-gradient(90deg, #218838 0%, #28a745 100%)'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(40, 167, 69, 0.4)'"
+                        onmouseout="this.style.background='linear-gradient(90deg, #28a745 0%, #218838 100%)'; this.style.transform='scale(1)'; this.style.boxShadow='0 2px 6px rgba(40, 167, 69, 0.3)'"
+                    >
+                        Doar
+                    </button>
+                </div>
+            </div>
+        `;
+            marker.bindPopup(popupHtml, {
+                className: 'popup-ong'
+            });
 
         } catch (error) {
-            console.error(`Erro na ONG ${ong.nome}:`, error);
-            continue; // Pula para a próxima ONG se houver erro
+            continue;
         }
     }
 };

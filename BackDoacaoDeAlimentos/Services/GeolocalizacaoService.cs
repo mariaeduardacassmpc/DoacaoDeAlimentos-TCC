@@ -3,10 +3,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using TCCDoacaoDeAlimentos.Shared.Dto;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using System.Globalization;
 
 public class GeocodingService : IGeolocalizacaoService
 {
     private readonly HttpClient _httpClient;
+    private readonly string _apiKey = "fd828fd9cabc4e51bc7c6155f0588844";
 
     public GeocodingService(HttpClient httpClient)
     {
@@ -22,7 +24,7 @@ public class GeocodingService : IGeolocalizacaoService
 
         if (!response.IsSuccessStatusCode)
         {
-            Console.WriteLine($"Erro na chamada Nominatim: {response.StatusCode}");
+            await ObterCidadePorCoordenadasOpenCage(latitude, longitude);
             return null;
         }
 
@@ -33,9 +35,30 @@ public class GeocodingService : IGeolocalizacaoService
             PropertyNameCaseInsensitive = true
         });
 
-        return data?.Address?.City
-            ?? data?.Address?.Town
-            ?? data?.Address?.Village
-            ?? data?.Address?.Municipality;
+        return data?.Address?.City;
+    }
+
+    public async Task<string?> ObterCidadePorCoordenadasOpenCage(double latitude, double longitude)
+    {
+        var url = $"https://api.opencagedata.com/geocode/v1/json?q={latitude.ToString(CultureInfo.InvariantCulture)}+{longitude.ToString(CultureInfo.InvariantCulture)}&key={_apiKey}&language=pt&pretty=1";
+
+        var response = await _httpClient.GetAsync(url);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Erro na chamada OpenCage: {response.StatusCode}");
+            return null;
+        }
+
+        var json = await response.Content.ReadAsStringAsync();
+
+        var data = JsonSerializer.Deserialize<OpenCageResponse>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        var components = data?.Results?.FirstOrDefault()?.Components;
+
+        return components?.City;
     }
 }

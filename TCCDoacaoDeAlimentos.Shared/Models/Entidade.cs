@@ -41,7 +41,7 @@ public class Entidade : IValidatableObject
 
     [Required(ErrorMessage = "O endereço é obrigatório.")]
     public string Endereco { get; set; }
-    public double? Altitude { get; set; }
+    public double? Longitude { get; set; }
     public double? Latitude { get; set; }
 
     [Required(ErrorMessage = "O bairro é obrigatório.")]

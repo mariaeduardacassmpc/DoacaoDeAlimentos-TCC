@@ -10,6 +10,5 @@ namespace TCCDoacaoDeAlimentos.Shared.Dto
     {
         public double? latitude { get; set; }
         public double? longitude { get; set; }
-        public double? altitude { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using TCCDoacaoDeAlimentos.Shared.Dto;
 public class GeolocalizacaoService : IGeolocalizacaoService
 {
     private readonly HttpClient _httpClient;
+    private readonly string _apiKey = "fd828fd9cabc4e51bc7c6155f0588844";
 
     public GeolocalizacaoService(HttpClient httpClient)
     {
@@ -16,27 +18,36 @@ public class GeolocalizacaoService : IGeolocalizacaoService
 
     public async Task<string?> ObterCidadePorCoordenadas(double latitude, double longitude)
     {
-        var url = $"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}&lon={longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}";
+        var urlOpenCage = $"https://api.opencagedata.com/geocode/v1/json?q={latitude.ToString(CultureInfo.InvariantCulture)}+{longitude.ToString(CultureInfo.InvariantCulture)}&key={_apiKey}&language=pt&pretty=1";
+        var responseOpenCage = await _httpClient.GetAsync(urlOpenCage);
 
-        var response = await _httpClient.GetAsync(url);
-
-        if (!response.IsSuccessStatusCode)
+        if (responseOpenCage.IsSuccessStatusCode)
         {
-            Console.WriteLine($"Erro na chamada Nominatim: {response.StatusCode}");
-            return null;
+            var jsonOpenCage = await responseOpenCage.Content.ReadAsStringAsync();
+            var openCage = JsonSerializer.Deserialize<OpenCageResponse>(jsonOpenCage, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            var components = openCage?.Results?.FirstOrDefault()?.Components;
+            var cidade = components?.City;
+              
+            if (!string.IsNullOrEmpty(cidade))
+                return cidade;
         }
 
-        var json = await response.Content.ReadAsStringAsync();
+        var urlNominatim = $"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={latitude.ToString(CultureInfo.InvariantCulture)}&lon={longitude.ToString(CultureInfo.InvariantCulture)}";
+        var responseNominatim = await _httpClient.GetAsync(urlNominatim);
 
-        var data = JsonSerializer.Deserialize<NominatimResponse>(json, new JsonSerializerOptions
+        if (!responseNominatim.IsSuccessStatusCode)
+            return null;
+
+        var jsonNominatim = await responseNominatim.Content.ReadAsStringAsync();
+        var data = JsonSerializer.Deserialize<NominatimResponse>(jsonNominatim, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         });
 
-        return data?.Address?.City
-            ?? data?.Address?.Town
-            ?? data?.Address?.Village
-            ?? data?.Address?.Municipality;
+        return data?.Address?.City;
     }
-
 }

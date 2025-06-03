@@ -117,7 +117,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
                     Sexo = entidade.Sexo,
                     Responsavel = entidade.Responsavel,
                     Latitude = entidade.Latitude,
-                    Altitude = entidade.Altitude,
+                    Longitude = entidade.Longitude,
                     NomeFantasia = entidade.NomeFantasia
                 };
 

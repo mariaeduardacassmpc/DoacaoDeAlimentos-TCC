@@ -1,8 +1,10 @@
 ﻿@page "/CadastroDeDoacao"
-@using TCCDoacaoDeAlimentos.Shared.Models
+@page "/CadastroDeDoacao/{Id:int}"
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject Blazored.Toast.Services.IToastService ToastService
+@using TCCDoacaoDeAlimentos.Shared.Dto
+@using TCCDoacaoDeAlimentos.Shared.Models
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
     <div class="container py-5">
@@ -136,9 +138,12 @@
     private Doacao NovaDoacao { get; set; } = new Doacao();
     private List<AlimentoDoacao> Itens { get; set; } = new();
     private List<Entidade> Ongs { get; set; } = new();
+    private OngDto? OngSelecionada { get; set; }
     private List<Alimento> Alimentos { get; set; } = new();
     private bool erroSalvar = false;
     private string mensagemErro = string.Empty;
+    [Parameter]
+    public int? Id { get; set; } 
 
     protected override async Task OnInitializedAsync()
     {
@@ -151,13 +156,29 @@
             {
                 ToastService.ShowInfo("Nenhuma ONG cadastrada ainda");
             }
-        }
+
+            if (Id.HasValue)
+            {
+                try
+                {
+                    OngSelecionada = await Http.GetFromJsonAsync<OngDto>($"api/entidade/obterPorId/{Id}");
+                    if (OngSelecionada != null)
+                    {
+                        NovaDoacao.IdOng = OngSelecionada.Id;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Erro ao carregar a ONG: " + ex.Message);
+                }
+            }
+         }
         catch (Exception ex)
         {
-            ToastService.ShowError($"Erro ao carregar dados: {ex.Message}");
+            Console.WriteLine("Erro ao carregar a ONG: " + ex.Message);
         }
     }
-
+    
     private void AdicionarItem()
     {
         Itens.Add(new AlimentoDoacao

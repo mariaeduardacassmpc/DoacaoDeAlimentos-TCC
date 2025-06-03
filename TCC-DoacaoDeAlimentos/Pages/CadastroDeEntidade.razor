@@ -242,7 +242,7 @@
                     Cidade = entidade.Cidade,
                     CEP = RemoveMask(entidade.CEP),
                     Latitude = entidade.Latitude,
-                    Altitude = entidade.Altitude,
+                    Longitude = entidade.Longitude,
                     TpEntidade = entidade.TpEntidade,
                     Sexo = entidade.Sexo,
                     NomeFantasia = entidade.NomeFantasia,
@@ -308,7 +308,7 @@
             latitude = location.lat;
             longitude = location.lng;
             entidade.Latitude = latitude;
-            entidade.Altitude = longitude;
+            entidade.Longitude = longitude;
         }
         catch (Exception ex)
         {
