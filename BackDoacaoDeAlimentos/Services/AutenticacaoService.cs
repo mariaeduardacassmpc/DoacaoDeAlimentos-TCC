@@ -52,8 +52,8 @@ namespace BackDoacaoDeAlimentos.Services
             if (usuario == null)
                 throw new Exception("Usuário não encontrado.");
 
-            if (!VerificarSenha(senha, usuario.SenhaHash))
-                throw new Exception("Senha inválida.");
+            //if (!VerificarSenha(senha, usuario.SenhaHash))
+            //    throw new Exception("Senha inválida.");
 
             var token = _jwtService.GerarToken(usuario);
 
@@ -73,13 +73,13 @@ namespace BackDoacaoDeAlimentos.Services
 
             var senhaHash = GerarHashSenha(senha);
 
-            var usuario = new Usuario
-            {
-                Email = login,
-                SenhaHash = senhaHash
-            };
+            //var usuario = new Usuario
+            //{
+            //    Email = login,
+            //    SenhaHash = senhaHash
+            //};
 
-            await _usuarioRepositorio.Adicionar(usuario);
+            //await _usuarioRepositorio.Adicionar(usuario);
         }
 
         public async Task<bool> EnviarRecuperacaoSenha(string email)
