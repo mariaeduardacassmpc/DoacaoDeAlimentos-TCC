@@ -1,39 +1,41 @@
-﻿using System.Data;
-using System.Text;
-using Blazored.LocalStorage; 
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using BackDoacaoDeAlimentos.Repositorios;
-using TCCDoacaoDeAlimentos.Shared.Models;
-using static System.Net.WebRequestMethods;
-using BackDoacaoDeAlimentos.Interfaces.Servicos;
+﻿using System.Text;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
+using BackDoacaoDeAlimentos.Repositorio;
 using Microsoft.AspNetCore.Identity;
+using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Services
 {
     public class AutenticacaoService : IAutenticacaoService
     {
-        private IEntidadeRepositorio _entidadeRepositorio;
+        private readonly IEntidadeRepositorio _entidadeRepositorio;
+        private readonly IJwtService _jwtService;
         private readonly HttpClient _http;
-        private IMailService _mailServico;
-        private IUsuarioRepositorio _usuarioRepositorio;
-        private readonly PasswordHasher<object> _hasher = new();
+        private readonly IMailService _mailServico;
+        private readonly IUsuarioRepositorio _usuarioRepositorio;
+        private readonly IPasswordHasher<object> _hasher;
 
-        public AutenticacaoService(IEntidadeRepositorio entidadeRepositorio, 
+        public AutenticacaoService(
+            IEntidadeRepositorio entidadeRepositorio,
             HttpClient http,
             IMailService mailServico,
-            IUsuarioRepositorio usuarioRepositorio) 
+            IUsuarioRepositorio usuarioRepositorio,
+            IJwtService jwtService,
+            IPasswordHasher<object> hasher)
+
         {
             _entidadeRepositorio = entidadeRepositorio;
             _http = http;
             _mailServico = mailServico;
             _usuarioRepositorio = usuarioRepositorio;
+            _jwtService = jwtService;
+            _hasher = hasher;
         }
 
         public string GerarHashSenha(string senha)
         {
-            return _hasher.HashPassword(null, senha);
+                return _hasher.HashPassword(null, senha);
         }
 
         public bool VerificarSenha(string senhaDigitada, string senhaHash)
@@ -44,7 +46,8 @@ namespace BackDoacaoDeAlimentos.Services
 
         public RespostaAutenticacao Login(string login, string senha)
         {
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.Login == login);
+            var usuarioTask = _usuarioRepositorio.ObterPorEmail(login);
+            var usuario = usuarioTask.Result; 
 
             if (usuario == null)
                 throw new Exception("Usuário não encontrado.");
@@ -57,14 +60,14 @@ namespace BackDoacaoDeAlimentos.Services
             return new RespostaAutenticacao
             {
                 Token = token,
-                Nome = usuario.Nome,
-                Email = usuario.Login
+                NomeUsuario = usuario.Entidade?.RazaoSocial ?? usuario.Email,
+                Email = usuario.Email
             };
-
         }
-        public void Registrar(string nome, string login, string senha)
+
+        public async Task Registrar(string nome, string login, string senha)
         {
-            var existe = _context.Usuarios.Any(u => u.Login == login);
+            var existe = await _usuarioRepositorio.VerificarEmailExistente(login);
             if (existe)
                 throw new Exception("Usuário já cadastrado.");
 
@@ -72,24 +75,16 @@ namespace BackDoacaoDeAlimentos.Services
 
             var usuario = new Usuario
             {
-                Nome = nome,
-                Login = login,
+                Email = login,
                 SenhaHash = senhaHash
             };
 
-            _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
-        }
-
-        public async Task Logout()
-        {
-            await _localStorage.RemoveItemAsync("authToken");
-            _http.DefaultRequestHeaders.Authorization = null;
+            await _usuarioRepositorio.Adicionar(usuario);
         }
 
         public async Task<bool> EnviarRecuperacaoSenha(string email)
         {
-            Usuario usuario = await _usuarioRepositorio.ObterPorEmail(email);
+            Usuario usuario = await _usuarioRepositorio.ObterPorEmail(email); 
             if (usuario == null)
                 throw new Exception("Usuário não encontrado.");
 
@@ -107,6 +102,7 @@ namespace BackDoacaoDeAlimentos.Services
                 link
             );
         }
+
 
         private string GerarTokenRecuperacao(string email)
         {

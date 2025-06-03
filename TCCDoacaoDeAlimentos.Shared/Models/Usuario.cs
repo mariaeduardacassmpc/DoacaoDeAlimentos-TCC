@@ -18,7 +18,7 @@ namespace TCCDoacaoDeAlimentos.Shared.Models
         [MinLength(8, ErrorMessage = "A senha deve ter no mínimo 8 caracteres")]
         [MaxLength(20, ErrorMessage = "A senha deve ter no máximo 20 caracteres")]
         public string Senha { get; set; }
-
+        public string SenhaHash { get; set; }
         [ForeignKey("EntidadeId")]
         public Entidade Entidade { get; set; }
         public string TipoEntidade { get; set; } 

@@ -2,6 +2,7 @@
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using BackDoacaoDeAlimentos.Repositorio;
 using BackDoacaoDeAlimentos.Repositorios;
+using BackDoacaoDeAlimentos.Servicos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +12,24 @@ namespace BackDoacaoDeAlimentos.Controllers
 {
     public class LoginController : Controller
     {
+        private IJwtService _jwtService;
         private IAutenticacaoService _autenticacaoService;
-        public LoginController(IAutenticacaoService autenticacaoService) 
+        private IUsuarioService _usuarioService;
+
+        public LoginController(IJwtService jwtService, 
+            IAutenticacaoService autenticacaoService,
+            IUsuarioService usuarioService
+        ) 
         {
+            _jwtService = jwtService;
             _autenticacaoService = autenticacaoService;
+            _usuarioService = usuarioService;
         }
 
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            var usuario = _context.Usuarios.FirstOrDefault(x => x.Email == request.Email);
+            var usuario = _usuarioService.AutenticarUsuario(request.Email, request.Senha).Result;
 
             if (usuario == null)
                 return Unauthorized("Usuário não encontrado.");
@@ -31,12 +40,12 @@ namespace BackDoacaoDeAlimentos.Controllers
             if (result != PasswordVerificationResult.Success)
                 return Unauthorized("Senha inválida.");
 
-            var token = GenerateToken(usuario);
+            var token = _jwtService.GerarToken(usuario);
 
             return Ok(new
             {
                 token,
-                usuario.Nome,
+                NomeUsuario = usuario.Entidade?.RazaoSocial ?? usuario.Email,
                 usuario.Email
             });
         }
