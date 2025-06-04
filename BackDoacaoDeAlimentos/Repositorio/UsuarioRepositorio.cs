@@ -1,9 +1,9 @@
 ﻿using Dapper;
+using System;
 using System.Data;
 using System.Threading.Tasks;
 using TCCDoacaoDeAlimentos.Shared.Models;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
-using System;
 
 namespace BackDoacaoDeAlimentos.Repositorio
 {
@@ -31,12 +31,15 @@ namespace BackDoacaoDeAlimentos.Repositorio
 
         public async Task<Usuario> ObterPorEmail(string email)
         {
-             var sql = @"
-                SELECT u., e. 
-                FROM Usuario u
-                INNER JOIN Entidade e ON u.EntidadeId = e.Id
-                WHERE u.Email = @Email
-             ";
+            var sql = @"
+                        SELECT 
+                            u.Id, u.EntidadeId, u.Email, u.Senha,
+                            e.Id AS Entidade_Id, e.RazaoSocial, e.TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
+                        FROM Usuario u
+                        INNER JOIN Entidade e ON u.EntidadeId = e.Id
+                        WHERE u.Email = @Email and Ativo = 1
+            ";
+
 
             return await _db.QueryFirstOrDefaultAsync<Usuario>(sql, new { Email = email });
         }

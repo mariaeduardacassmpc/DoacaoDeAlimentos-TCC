@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
@@ -85,21 +85,6 @@ namespace BackDoacaoDeAlimentos.Servicos
                 if (!VerificarSenha(senha, usuario.Senha))
                     throw new UnauthorizedAccessException("Senha incorreta");
 
-                //var claims = new List<Claim>
-                //{
-                //    new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                //    new Claim(ClaimTypes.Email, usuario.Email),
-                //    new Claim(ClaimTypes.Name, usuario.Nome ?? string.Empty),
-                //};
-
-                //var identity = new ClaimsIdentity(claims, "auth");
-                //var principal = new ClaimsPrincipal(identity);
-
-                //if (_authenticationStateProvider is CustomAuthStateProvider authProvider)
-                //{
-                //    await authProvider.MarkUserAsAuthenticated(principal);
-                //}
-
                 return usuario;
             }
             catch (Exception ex)
@@ -150,7 +135,5 @@ namespace BackDoacaoDeAlimentos.Servicos
             var senhaDigitadaCriptografada = CriptografarSenha(senhaDigitada);
             return senhaDigitadaCriptografada == senhaArmazenada;
         }
-
-
     }
 }

@@ -14,7 +14,7 @@ namespace BackDoacaoDeAlimentos.Services
         private readonly HttpClient _http;
         private readonly IMailService _mailServico;
         private readonly IUsuarioRepositorio _usuarioRepositorio;
-        private readonly IPasswordHasher<object> _hasher;
+        private readonly IPasswordHasher<Usuario> _hasher;
 
         public AutenticacaoService(
             IEntidadeRepositorio entidadeRepositorio,
@@ -22,7 +22,7 @@ namespace BackDoacaoDeAlimentos.Services
             IMailService mailServico,
             IUsuarioRepositorio usuarioRepositorio,
             IJwtService jwtService,
-            IPasswordHasher<object> hasher)
+            IPasswordHasher<Usuario> hasher)
 
         {
             _entidadeRepositorio = entidadeRepositorio;

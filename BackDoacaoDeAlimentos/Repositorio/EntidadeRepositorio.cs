@@ -96,9 +96,9 @@ namespace BackDoacaoDeAlimentos.Repositorios
             {
                 const string sql = @"
                     INSERT INTO Entidade (
-                        TpEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel, Latitude, Altitude, NomeFantasia
+                        TpEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel, Latitude, Longitude, NomeFantasia
                     ) VALUES (
-                        @TpEntidade, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel, @Latitude, @Altitude, @NomeFantasia
+                        @TpEntidade, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel, @Latitude, @Longitude, @NomeFantasia
                     );
                     SELECT CAST(SCOPE_IDENTITY() AS int);
                 ";

@@ -10,6 +10,8 @@ using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Controllers
 {
+    [ApiController]
+    [Route("api/login")]
     public class LoginController : Controller
     {
         private IJwtService _jwtService;
@@ -34,19 +36,14 @@ namespace BackDoacaoDeAlimentos.Controllers
             if (usuario == null)
                 return Unauthorized("Usuário não encontrado.");
 
-            var passwordHasher = new PasswordHasher<Usuario>();
-            var result = passwordHasher.VerifyHashedPassword(usuario, usuario.SenhaHash, request.Senha);
-
-            if (result != PasswordVerificationResult.Success)
-                return Unauthorized("Senha inválida.");
-
             var token = _jwtService.GerarToken(usuario);
 
             return Ok(new
             {
                 token,
                 NomeUsuario = usuario.Entidade?.RazaoSocial ?? usuario.Email,
-                usuario.Email
+                usuario.Email,
+                TipoEntidade = usuario.Entidade?.TpEntidade
             });
         }
 

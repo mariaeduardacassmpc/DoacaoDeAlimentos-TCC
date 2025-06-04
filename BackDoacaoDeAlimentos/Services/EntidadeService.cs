@@ -9,13 +9,13 @@ namespace BackDoacaoDeAlimentos.Servicos
     public class EntidadeService : IEntidadeService
     {
         private readonly IEntidadeRepositorio _entidadeRepositorio;
-        private readonly IUsuarioRepositorio _usuarioRepositorio;
+        private readonly IUsuarioService _usuarioService;
 
 
-        public EntidadeService(IEntidadeRepositorio entidadeRepositorio, IUsuarioRepositorio usuarioRepositorio)
+        public EntidadeService(IEntidadeRepositorio entidadeRepositorio, IUsuarioService usuarioService)
         {
             _entidadeRepositorio = entidadeRepositorio;
-            _usuarioRepositorio = usuarioRepositorio;
+            _usuarioService = usuarioService;
         }
 
         public async Task AdicionarEntidade(Entidade entidade, Usuario usuario)
@@ -34,7 +34,8 @@ namespace BackDoacaoDeAlimentos.Servicos
 
             var entidadeId = await _entidadeRepositorio.AdicionarEntidade(entidade);
             usuario.EntidadeId = entidadeId;
-            await _usuarioRepositorio.Adicionar(usuario);
+
+            await _usuarioService.RegistrarUsuario(usuario);
 
             scope.Complete();
         }
