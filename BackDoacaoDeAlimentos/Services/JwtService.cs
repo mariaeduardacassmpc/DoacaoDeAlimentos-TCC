@@ -16,14 +16,13 @@ namespace BackDoacaoDeAlimentos.Services
         {
             _config = config;
         }
-
         public string GerarToken(Usuario usuario)
         {
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim("TipoEntidade", usuario.Entidade?.TpEntidade?.ToString() ?? "")
+                new Claim("TpEntidade", usuario.TpEntidade)
             };
 
             var jwtKey = _config["Jwt:Key"];
@@ -31,15 +30,15 @@ namespace BackDoacaoDeAlimentos.Services
                 throw new InvalidOperationException("A chave JWT não está configurada. Verifique 'Jwt:Key' no arquivo de configuração.");
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2)
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: creds 
             );
-            Console.WriteLine($"Usuário logado: Id={usuario.Id}, Email={usuario.Email}, TipoEntidade={usuario.Entidade?.TpEntidade}");
-
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

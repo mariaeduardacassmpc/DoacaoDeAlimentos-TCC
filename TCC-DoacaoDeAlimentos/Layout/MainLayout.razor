@@ -1,9 +1,10 @@
 ﻿@using FrontDoacaoDeAlimentos.Pages
+@using Microsoft.AspNetCore.Components.Authorization
 @inherits LayoutComponentBase
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 @inject Blazored.Modal.Services.IModalService Modal
-
+@inject AuthenticationStateProvider AuthStateProvider
 
 <div class="page">
     <main>
@@ -27,30 +28,34 @@
 
                         <li class="nav-item mx-2">
                             <NavLink class="nav-link" href="/MinhasDoacoes" @onclick="FecharMenu">
-                                @(TipoUsuarioLogado == "O" ? "Doações Recebidas" : "Minhas Doações")
+                                @(TpEntidade == "O" ? "Doações Recebidas" : "Minhas Doações")
                             </NavLink>
                         </li>
 
-                        @if (TipoUsuarioLogado == "O")
+                        @if (TpEntidade == "O")
                         {
                             <li class="nav-item mx-2">
                                 <NavLink class="nav-link" href="/CadastroDeAlimentos" @onclick="FecharMenu">Cadastro de Alimentos</NavLink>
                             </li>
                         }
 
-                        <li class="nav-item mx-2">
-                            <NavLink class="nav-link" href="/Geolocalizacao" @onclick="FecharMenu">Geolocalização</NavLink>
-                        </li>
+                        @if (TpEntidade != "O")
+                        {
+                            <li class="nav-item mx-2">
+                                <NavLink class="nav-link" href="/Geolocalizacao" @onclick="FecharMenu">Geolocalização</NavLink>
+                            </li>
+                        }
 
                         <li class="nav-item mx-2">
                             <NavLink class="nav-link" href="/CadastroDeEntidade" @onclick="FecharMenu">Cadastrar</NavLink>
                         </li>
 
-                        @* @if (UsuarioEhAdmin) *@
-                        
+                        @if (UsuarioEhAdmin)
+                        {
                             <li class="nav-item mx-2">
                                 <NavLink class="nav-link" href="/Usuarios" @onclick="FecharMenu">Listar Úsuarios</NavLink>
                             </li>
+                        }
 
                         <li class="nav-item mx-2">
                             <NavLink class="nav-link" href="/EditarUsuario" @onclick="FecharMenu">Editar Conta</NavLink>
@@ -59,12 +64,16 @@
                     </ul>
 
                     <div class="d-flex align-items-center gap-2">
-                        <a class="btn btn-outline-success" href="/Login" @onclick="FecharMenu">Entrar</a>
+                        @if (string.IsNullOrEmpty(EmailUsuarioLogado))
+                        {
+                            <a class="btn btn-outline-success" href="/Login" @onclick="FecharMenu">Entrar</a>
+                        }
 
                         <a class="btn btn-success" href="/CadastroDeDoacao" @onclick="FecharMenu">
                             <i class="bi bi-gift-fill me-1"></i> Doar
                         </a>
                     </div>
+
                 </div>
             </div>
         </nav>
@@ -77,11 +86,20 @@
 @code {
     private string EmailUsuarioLogado = "";
     private bool UsuarioEhAdmin => EmailUsuarioLogado == "mariaedurdamma@gmail.com";
-    private string TipoUsuarioLogado = "O"; 
+    private string? EmailUsuario;
+    private string TpEntidade;
+    private bool EhAdmin = false;
     private bool modalAberto = false;
 
     private async Task FecharMenu()
     {
         await JS.InvokeVoidAsync("fecharMenuNavbar");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        TpEntidade = user.FindFirst("TpEntidade")?.Value ?? "";
     }
 }

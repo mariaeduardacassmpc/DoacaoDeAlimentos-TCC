@@ -72,7 +72,8 @@
     {
         try
         {
-            var response = await Http.PostAsJsonAsync("api/login", usuario);
+            
+            var response = await Http.PostAsJsonAsync("api/login/login", usuario);
             if (response.IsSuccessStatusCode)
             {
                 var usuarioLogado = await response.Content.ReadFromJsonAsync<UsuarioLogado>();

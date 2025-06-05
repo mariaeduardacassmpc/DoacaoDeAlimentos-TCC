@@ -21,7 +21,7 @@ namespace TCCDoacaoDeAlimentos.Shared.Models
         public string SenhaHash { get; set; }
         [ForeignKey("EntidadeId")]
         public Entidade Entidade { get; set; }
-        public string TipoEntidade { get; set; } 
+        public string TpEntidade { get; set; } 
 
     }
 }

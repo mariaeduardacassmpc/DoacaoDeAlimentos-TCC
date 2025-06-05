@@ -7,6 +7,8 @@ using BackDoacaoDeAlimentos.Repositorio;
 using BackDoacaoDeAlimentos.Servicos;
 using BackDoacaoDeAlimentos.Repositorios;
 using System.Globalization;
+using Microsoft.AspNetCore.Identity;
+using TCCDoacaoDeAlimentos.Shared.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -29,10 +31,13 @@ builder.Services.AddScoped<IAlimentoDoacaoRepositorio, AlimentoDoacaoRepositorio
 builder.Services.AddScoped<IAlimentoDoacaoService, AlimentoDoacaoService>();
 builder.Services.AddHttpClient<IGeolocalizacaoService, GeolocalizacaoService>();
 builder.Services.AddHttpClient<ViaCepService>();
-builder.Services.AddHttpClient<IJwtService, JwtService>();
-
-
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
+builder.Services.AddScoped<IAutenticacaoService, AutenticacaoService>();
+builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddSingleton<AuthService>();
+builder.Services.AddAuthorizationCore();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
