@@ -5,8 +5,8 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
 {
     public interface IEntidadeService
     {
-        Task<IEnumerable<Entidade>> ObterOngsPorCidade(string cidade);
-        Task<IEnumerable<Entidade>> ObterTodasOngs();
+        Task<IEnumerable<Entidade>> ObterInstituicaoPorCidade(string cidade);
+        Task<IEnumerable<Entidade>> ObterTodasInstituicoes();
         Task<IEnumerable<Entidade>> ObterTodasEntidades();
         Task<Entidade> ObterEntidadePorId(int id);
         Task AdicionarEntidade(Entidade entidade, Usuario usuario);

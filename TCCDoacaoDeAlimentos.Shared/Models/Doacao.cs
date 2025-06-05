@@ -25,7 +25,7 @@ namespace TCCDoacaoDeAlimentos.Shared.Models
         public DateTime DataDoacao { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "O status é obrigatório")]
-        public StatusDoacao Status { get; set; }
+        public StatusDoacao Status { get; set; } = (StatusDoacao)1;
         public List<AlimentoDoacao> Alimentos { get; set; } = new();
         public string? Observacao { get; set; }
     }

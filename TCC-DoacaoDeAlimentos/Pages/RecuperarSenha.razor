@@ -1,6 +1,9 @@
 ﻿@page "/recuperar-senha"
 @using System.ComponentModel.DataAnnotations
 @using TCCDoacaoDeAlimentos.Shared.Models
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject NavigationManager Navigation
 
 <div class="password-recovery-container" style="background-color: #d4edda; min-height: 100vh;">
     <div class="container py-5">
@@ -45,13 +48,34 @@
 
 @code {
     private RecoveryModel recoveryModel = new RecoveryModel();
+    private string mensagem = null;
+    private bool sucesso = false;
+    private bool carregando = false;
 
-    private void HandleRecovery()
+    private async Task HandleRecovery()
     {
-        // Lógica para enviar e-mail de recuperação
-        Console.WriteLine($"Solicitação de recuperação para: {recoveryModel.Email}");
-        // Mostrar mensagem de sucesso
-        // navigationManager.NavigateTo("/confirmacao-recuperacao");
+        mensagem = null;
+        sucesso = false;
+        carregando = true;
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/login/EnviarEmailRecuperarSenha", recoveryModel.Email);
+            if (response.IsSuccessStatusCode)
+            {
+                sucesso = true;
+                mensagem = "Se o e-mail informado estiver cadastrado, você receberá um link para redefinir sua senha.";
+            }
+            else
+            {
+                var erro = await response.Content.ReadAsStringAsync();
+                mensagem = $"Erro ao enviar recuperação: {erro}";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensagem = $"Erro inesperado: {ex.Message}";
+        }
+        carregando = false;
     }
 
     public class RecoveryModel

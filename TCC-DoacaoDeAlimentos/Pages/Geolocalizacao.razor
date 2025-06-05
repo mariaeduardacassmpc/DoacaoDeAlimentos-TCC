@@ -68,7 +68,7 @@
         try
         {
             ongs = await Http.GetFromJsonAsync<List<OngDto>>(
-                $"api/entidade/buscarOngsPorCoordenadas/{latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}/{longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}"
+                $"entidade/buscarInstituicoesPorCoordenadas/{latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}/{longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}"
             ) ?? new List<OngDto>();
 
         }

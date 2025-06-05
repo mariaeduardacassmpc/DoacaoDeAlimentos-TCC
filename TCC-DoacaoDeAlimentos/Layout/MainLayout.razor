@@ -57,14 +57,17 @@
                             </li>
                         }
 
-                        <li class="nav-item mx-2">
-                            <NavLink class="nav-link" href="/EditarUsuario" @onclick="FecharMenu">Editar Conta</NavLink>
-                        </li>
-                        
+                        @if (UsuarioEstaLogado)
+                        {
+                            <li class="nav-item mx-2">
+                                <NavLink class="nav-link" href="/EditarUsuario" @onclick="FecharMenu">Editar Conta</NavLink>
+                            </li>
+                        }
+
                     </ul>
 
                     <div class="d-flex align-items-center gap-2">
-                        @if (string.IsNullOrEmpty(EmailUsuarioLogado))
+                        @if (!UsuarioEstaLogado)
                         {
                             <a class="btn btn-outline-success" href="/Login" @onclick="FecharMenu">Entrar</a>
                         }
@@ -84,22 +87,45 @@
 </div>
 
 @code {
-    private string EmailUsuarioLogado = "";
+    private string EmailUsuarioLogado;
     private bool UsuarioEhAdmin => EmailUsuarioLogado == "mariaedurdamma@gmail.com";
     private string? EmailUsuario;
     private string TpEntidade;
     private bool EhAdmin = false;
     private bool modalAberto = false;
+    private bool UsuarioEstaLogado;
 
     private async Task FecharMenu()
     {
         await JS.InvokeVoidAsync("fecharMenuNavbar");
     }
 
-    protected override async Task OnInitializedAsync()
+    private async Task AtualizarUsuario()
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         TpEntidade = user.FindFirst("TpEntidade")?.Value ?? "";
+        EmailUsuarioLogado = user.Identity?.IsAuthenticated == true ? user.Identity.Name : "";
+        StateHasChanged();
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        await AtualizarUsuario();
+        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", new object[] { "authToken" }); UsuarioEstaLogado = !string.IsNullOrEmpty(token);
+    }
+
+    private async void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+    {
+        await AtualizarUsuario();
+        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", new object[] { "authToken" }); UsuarioEstaLogado = !string.IsNullOrEmpty(token);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        AuthStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+    }
+
 }

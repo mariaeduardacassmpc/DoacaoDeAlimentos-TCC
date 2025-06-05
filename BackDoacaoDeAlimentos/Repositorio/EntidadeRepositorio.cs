@@ -39,7 +39,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
             }
         }
 
-        public async Task<IEnumerable<Entidade>> ObterTodasOngs()
+        public async Task<IEnumerable<Entidade>> ObterTodasInstituicoes()
         {
             try
             {

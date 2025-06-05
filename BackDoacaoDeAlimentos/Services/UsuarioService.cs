@@ -135,5 +135,21 @@ namespace BackDoacaoDeAlimentos.Servicos
             var senhaDigitadaCriptografada = CriptografarSenha(senhaDigitada);
             return senhaDigitadaCriptografada == senhaArmazenada;
         }
+
+        public async Task<Usuario> ObterPorEmail(string email)
+        {
+            try
+            {
+                var usuario = await _usuarioRepositorio.ObterPorEmail(email);
+                if (email == null)
+                    throw new ArgumentException("Email não encontrado");
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao obter usuário por E-mail.", ex);
+            }
+        }
     }
 }

@@ -2,10 +2,13 @@
 @page "/CadastroDeDoacao/{Id:int}"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
+@using System.Security.Claims
 @inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
 @inject Blazored.Toast.Services.IToastService ToastService
 @using TCCDoacaoDeAlimentos.Shared.Dto
 @using TCCDoacaoDeAlimentos.Shared.Models
+@using Microsoft.AspNetCore.Components.Authorization
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
     <div class="container py-5">
@@ -15,7 +18,7 @@
                     <div class="card-body p-5">
                         <h1 class="card-title text-center">Cadastro de Doação</h1>
                         <h6 class="text-center mb-4">
-                            Cadastre uma nova doação para beneficiar uma ONG
+                            Cadastre uma nova doação para beneficiar uma Instituição
                         </h6>
 
                         @if (erroSalvar)
@@ -32,9 +35,9 @@
                             <h2 class="border-bottom pb-2 mb-4 mt-5">Informações da Doação</h2>
                             <div class="row">
                                 <div class="col-md-8 mb-3">
-                                    <label for="entidade" class="form-label">ONG Beneficiada</label>
+                                    <label for="entidade" class="form-label">Instituição Beneficiada</label>
                                     <InputSelect @bind-Value="NovaDoacao.IdOng" class="form-control" id="entidade">
-                                        <option value="">Selecione a ONG...</option>
+                                        <option value="">Selecione a Instituição...</option>
                                         @foreach (var ong in Ongs)
                                         {
                                             <option value="@ong.Id">@ong.RazaoSocial</option>
@@ -66,7 +69,7 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Alimento</label>
                                             <InputSelect @bind-Value="item.AlimentoId" class="form-control">
-                                                <option value="">Selecione o alimento...</option>
+                                                <option value="0">Selecione o alimento...</option>
                                                 @foreach (var alimento in Alimentos)
                                                 {
                                                     <option value="@alimento.Id">@alimento.Nome (@alimento.Categoria)</option>
@@ -123,9 +126,15 @@
                             </div>
 
                             <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-outline-success btn-lg">
+                                <button type="submit" class="btn btn-outline-success btn-lg" disabled="@(usuarioAutenticado ? null : true)">
                                     Salvar Doação
                                 </button>
+                                @if (!usuarioAutenticado)
+                                {
+                                    <div class="text-danger mt-2 text-center">
+                                        Você precisa estar logado para realizar uma doação.
+                                    </div>
+                                }
                             </div>
                         </EditForm>
                     </div>
@@ -136,6 +145,9 @@
 </div>
 
 @code {
+    private ClaimsPrincipal usuarioLogado;
+    private bool usuarioAutenticado = false;
+
     private Doacao NovaDoacao { get; set; } = new Doacao();
     private List<AlimentoDoacao> Itens { get; set; } = new();
     private List<Entidade> Ongs { get; set; } = new();
@@ -150,7 +162,23 @@
     {
         try
         {
-            Ongs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasOngs");
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            usuarioLogado = authState.User;
+            usuarioAutenticado = usuarioLogado.Identity?.IsAuthenticated == true;
+
+            var idUsuario = usuarioLogado.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(idUsuario) && int.TryParse(idUsuario, out int idDoador))
+            {
+                NovaDoacao.IdDoador = idDoador;
+            }
+
+            if (!usuarioAutenticado)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "A doação só pode ser feita por usuários logados!");
+                Navigation.NavigateTo("/login");
+            }
+
+            Ongs = await Http.GetFromJsonAsync<List<Entidade>>("entidade/obterTodasInstituicoes");
             Alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimento/obterTodosAlimentos");
 
             if (Ongs == null || !Ongs.Any())
@@ -176,7 +204,7 @@
          }
         catch (Exception ex)
         {
-            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar a ONG.");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar a Instituição.");
         }
     }
     
@@ -185,8 +213,8 @@
         Itens.Add(new AlimentoDoacao
             {
                 Validade = DateTime.Today,
-                AlimentoId = -1,
-                Quantidade = 1
+                Quantidade = 1,
+                AlimentoId = 0
             });
     }
 
@@ -197,6 +225,13 @@
 
     private async Task SalvarDoacao()
     {
+        if (!usuarioAutenticado)
+        {
+            erroSalvar = true;
+            mensagemErro = "Você precisa estar logado para realizar uma doação.";
+            return;
+        }
+
         erroSalvar = false;
         if (NovaDoacao.IdOng == 0 ||
             NovaDoacao.DataDoacao == default ||
@@ -216,18 +251,18 @@
 
             if (response.IsSuccessStatusCode)
             {
-                ToastService.ShowSuccess("Doação cadastrada com sucesso!");
+                await JSRuntime.InvokeVoidAsync("alert", "Doação cadastrada com sucesso!");
                 Navigation.NavigateTo("/MinhasDoacoes");
             }
             else
             {
                 var erro = await response.Content.ReadAsStringAsync();
-                ToastService.ShowError($"Erro ao salvar: {erro}");
+                await JSRuntime.InvokeVoidAsync("alert", "Erro ao realizar doação.");
             }
         }
         catch (Exception ex)
         {
-            ToastService.ShowError($"Erro inesperado: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", "Erro ao realizar doação.");
         }
     }
 }

@@ -7,7 +7,7 @@ namespace BackDoacaoDeAlimentos.Interfaces.Repositorios
     public interface IEntidadeRepositorio
     {
         Task<IEnumerable<Entidade>> ObterOngsPorCidade(string cidade);
-        Task<IEnumerable<Entidade>> ObterTodasOngs();
+        Task<IEnumerable<Entidade>> ObterTodasInstituicoes();
         Task<IEnumerable<Entidade>> ObterTodasEntidades();
         Task<Entidade> ObterEntidadePorId(int id);
         Task<int> AdicionarEntidade(Entidade entidade);

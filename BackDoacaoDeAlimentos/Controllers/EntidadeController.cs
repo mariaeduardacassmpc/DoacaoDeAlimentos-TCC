@@ -9,7 +9,7 @@ using BackDoacaoDeAlimentos.Interfaces.Servicos;
 namespace BackDoacaoDeAlimentos.Controllers
 {
     [ApiController]
-    [Route("api/entidade")]  
+    [Route("entidade")]  
     public class EntidadeController : ControllerBase
     {
         private readonly IEntidadeService _entidadeService;
@@ -27,10 +27,10 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
 
-        [HttpGet("obterTodasOngs")]
-        public async Task<IActionResult> ObterTodasOngs()
+        [HttpGet("obterTodasInstituicoes")]
+        public async Task<IActionResult> ObterTodasInstituicoes()
         {
-            var entidades = await _entidadeService.ObterTodasOngs();
+            var entidades = await _entidadeService.ObterTodasInstituicoes();
             if (entidades == null)
                 return NotFound();
 
@@ -51,6 +51,16 @@ namespace BackDoacaoDeAlimentos.Controllers
         public async Task<IActionResult> ObterPorId(int id)
         {
             var entidade = await _entidadeService.ObterEntidadePorId(id);
+            if (entidade == null)
+                return NotFound();
+
+            return Ok(entidade);
+        }
+
+        [HttpGet("obterPorEmail/{email}")]
+        public async Task<IActionResult> ObterPorEmail(string email)
+        {
+            var entidade = await _usuarioService.ObterPorEmail(email);
             if (entidade == null)
                 return NotFound();
 
@@ -108,8 +118,8 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
 
-        [HttpGet("buscarOngsPorCoordenadas/{latitude}/{longitude}")]
-        public async Task<IActionResult> BuscarOngsPorCoordenadas(string latitude, string longitude)
+        [HttpGet("buscarInstituicoesPorCoordenadas/{latitude}/{longitude}")]
+        public async Task<IActionResult> BuscarInstituicaoPorCoordenadas(string latitude, string longitude)
         {
             if (!double.TryParse(latitude, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var lat) ||
                 !double.TryParse(longitude, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var lon))
@@ -122,9 +132,9 @@ namespace BackDoacaoDeAlimentos.Controllers
             if (string.IsNullOrWhiteSpace(cidade))
                 return NotFound("Cidade não encontrada para as coordenadas informadas.");
 
-            var ongs = await _entidadeService.ObterOngsPorCidade(cidade);
+            var instituicao = await _entidadeService.ObterInstituicaoPorCidade(cidade);
 
-            return Ok(ongs);
+            return Ok(instituicao);
         }
     }
 }

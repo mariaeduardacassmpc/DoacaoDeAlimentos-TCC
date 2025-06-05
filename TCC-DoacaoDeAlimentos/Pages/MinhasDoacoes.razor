@@ -1,7 +1,11 @@
 ﻿@page "/MinhasDoacoes"
-@inject NavigationManager Navigation
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using System.Security.Claims
 @using TCCDoacaoDeAlimentos.Shared.Models;
+@using Microsoft.AspNetCore.Components.Authorization
 
 <div class="min-vh-100" style="background-color: #d4edda;">
     <div class="container py-5">
@@ -25,7 +29,7 @@
                             @if (TipoUsuario == "D")
                             {
                                 <div class="col-md-4">
-                                    <label class="form-label">Filtrar por ONG</label>
+                                    <label class="form-label">Filtrar por Instituição</label>
                                     <select class="form-select" @bind="Filtro.IdOng">
                                         <option value="">Todas</option>
                                         @foreach (var ong in ListaDeOngs)
@@ -242,13 +246,13 @@
     private string? MotivoCancelamento { get; set; }
     private string[] Motivos = new[]
     {
-       "Alimento estragou/perdeu a validade",
-    "Problemas logísticos (transporte, horário)",
-    "Erro no cadastro da doação",
-    "ONG não respondeu/desistiu",
-    "Mudança de planejamento pessoal",
-    "Preocupação com a qualidade do alimento",
-    "Outro motivo"
+           "Alimento estragou/perdeu a validade",
+            "Problemas logísticos (transporte, horário)",
+            "Erro no cadastro da doação",
+            "Instituição não entrou em contato/desistiu",
+            "Mudança de planejamento pessoal",
+            "Preocupação com a qualidade do alimento",
+            "Outro motivo"
     };
 
     private void NavigateToCadastro()
@@ -258,26 +262,40 @@
 
     protected override async Task OnInitializedAsync()
     {
-       TipoUsuario = "F";
-       Filtro = new FiltroDoacaoDto
-       {
-          IdDoador = 1
-       };
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            var idClaim = user.FindFirst("sub") ?? user.FindFirst("userid") ?? user.FindFirst(ClaimTypes.NameIdentifier);
+            if (idClaim != null && int.TryParse(idClaim.Value, out int idUsuario))
+            {
+                Filtro = new FiltroDoacaoDto
+                    {
+                        IdDoador = idUsuario
+                    };
+            }
+        }
+        else
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
 
         await ObterAlimentos();
-        await ObterOngs();
+        await ObterInstituicoes();
         await ObterDoacoes();
     }
 
-    private async Task ObterOngs()
+    private async Task ObterInstituicoes()
     {
         try
         {
-            ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasOngs");
+            ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("entidade/obterTodasInstituicoes");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao carregar ONGs: {ex.Message}");
+            Console.WriteLine($"Erro ao carregar Instituições: {ex.Message}");
             ListaDeOngs = new List<Entidade>(); 
         }
     }
@@ -318,14 +336,16 @@
     }
 
     private IEnumerable<Doacao> DoacoesFiltradas =>
-     DoacoesSalvas
-         .Where(d => !Filtro.IdOng.HasValue || d.IdOng == Filtro.IdOng.Value)
-         .Where(d => !Filtro.Status.HasValue || (int)d.Status == Filtro.Status.Value)
-         .Where(d => Filtro.DataDoacao.HasValue
-             ? d.DataDoacao.Date == Filtro.DataDoacao.Value.Date
-             : true)
-         .OrderByDescending(d => d.DataDoacao);
+        DoacoesSalvas
+            .Where(d => !Filtro.IdOng.HasValue || d.IdOng == Filtro.IdOng.Value)
+            .Where(d => !Filtro.Status.HasValue || (int)d.Status == Filtro.Status.Value)
+            .Where(d => Filtro.DataDoacao.HasValue
+                ? d.DataDoacao.Date == Filtro.DataDoacao.Value.Date
+                : true)
+            .Where(d => !IdDoacaoFiltro.HasValue || d.IdDoacao == IdDoacaoFiltro.Value) 
+            .OrderByDescending(d => d.DataDoacao);
 
+    private int? IdDoacaoFiltro { get; set; }
 
     private string ObterNomeOng(int idOng)
     {

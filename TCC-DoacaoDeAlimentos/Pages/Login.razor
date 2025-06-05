@@ -3,9 +3,9 @@
 @using Blazored.Modal.Services
 @using TCCDoacaoDeAlimentos.Shared.Models
 @inject HttpClient Http
-@inject Blazored.Modal.Services.IModalService Modal
 @inject NavigationManager Navigation
 @inject Blazored.Toast.Services.IToastService ToastService
+@inject IJSRuntime JSRuntime
 
 <div class="login-container" style="background-color: #d4edda; min-height: 100vh;">
     <div class="container py-5">
@@ -79,23 +79,23 @@
                 var usuarioLogado = await response.Content.ReadFromJsonAsync<UsuarioLogado>();
                 if (usuarioLogado != null)
                 {
-                    ToastService.ShowSuccess("Login realizado com sucesso!");
-                    Navigation.NavigateTo("/");
+                    await JSRuntime.InvokeVoidAsync("sessionStorage.setItem", "authToken", usuarioLogado.Token); await JSRuntime.InvokeVoidAsync("alert", $"Login realizado com sucesso!");
+                    Navigation.NavigateTo("/", true);
                 }
                 else
                 {
-                    ToastService.ShowError("Credenciais inválidas");
+                    await JSRuntime.InvokeVoidAsync("alert", $"Credenciais inválidas");
                 }
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                ToastService.ShowError($"Erro no login: {error}");
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro no login {error}");
             }
         }
         catch (Exception ex)
         {
-            ToastService.ShowError($"Erro ao conectar com o servidor: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro no login {ex}");
         }
     }
 }

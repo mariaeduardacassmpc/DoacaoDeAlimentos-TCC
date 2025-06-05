@@ -22,7 +22,7 @@ namespace BackDoacaoDeAlimentos.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim("TpEntidade", usuario.TpEntidade)
+                new Claim("TpEntidade", usuario.TpEntidade) 
             };
 
             var jwtKey = _config["Jwt:Key"];

@@ -46,9 +46,9 @@ namespace BackDoacaoDeAlimentos.Servicos
                 ?? throw new KeyNotFoundException($"Entidade com ID {id} não encontrada.");
         }
 
-        public async Task<IEnumerable<Entidade>> ObterTodasOngs()
+        public async Task<IEnumerable<Entidade>> ObterTodasInstituicoes()
         {
-            return await _entidadeRepositorio.ObterTodasOngs();
+            return await _entidadeRepositorio.ObterTodasInstituicoes();
         }
 
         public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
@@ -56,7 +56,7 @@ namespace BackDoacaoDeAlimentos.Servicos
             return await _entidadeRepositorio.ObterTodasEntidades();
         }
 
-        public async Task<IEnumerable<Entidade>> ObterOngsPorCidade(string cidade)
+        public async Task<IEnumerable<Entidade>> ObterInstituicaoPorCidade(string cidade)
         {
             if (string.IsNullOrWhiteSpace(cidade))
                 throw new ArgumentException("Cidade não pode ser vazia.", nameof(cidade));

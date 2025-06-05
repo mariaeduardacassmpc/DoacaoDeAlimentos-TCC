@@ -2,9 +2,12 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider AuthStateProvider
 @using System.Text.RegularExpressions
 @using TCCDoacaoDeAlimentos.Shared.Models
 @using TCCDoacaoDeAlimentos.Shared.Dto
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
     <div class="container py-5">
@@ -142,10 +145,23 @@
 
     protected override async Task OnInitializedAsync()
     {
-        int id = 7;
-        entidade = await Http.GetFromJsonAsync<Entidade>($"api/entidade/obterPorId/{id}");
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        var email = user.Identity?.IsAuthenticated == true ? user.Identity.Name : null;
+
+        if (!string.IsNullOrEmpty(email))
+        {
+            entidade = await Http.GetFromJsonAsync<Entidade>($"api/entidade/obterPorEmail/{email}");
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Usuário não autenticado.");
+            Navigation.NavigateTo("/login");
+        }
         carregando = false;
     }
+
 
     private async Task AtualizarEntidade()
     {
