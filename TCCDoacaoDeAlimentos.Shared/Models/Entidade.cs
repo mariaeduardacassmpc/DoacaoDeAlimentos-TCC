@@ -10,7 +10,6 @@ public class Entidade : IValidatableObject
     [Key]
     public int Id { get; set; }
 
-    // Permitir nulo para forçar seleção do usuário
     [Required(ErrorMessage = "Selecione o tipo de entidade.")]
     public TipoEntidade? TpEntidade { get; set; }
 

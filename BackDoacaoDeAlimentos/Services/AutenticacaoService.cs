@@ -122,7 +122,7 @@ namespace BackDoacaoDeAlimentos.Services
                     throw new Exception("Entidade não encontrada.");
 
                 var token = GerarTokenRecuperacao(email);
-                var link = $"https://seusite.com/alterarsenha?token={token}";
+                var link = $"https://localhost:7170/alterarsenha?token={token}";
 
                 return await _mailServico.EnviarEmailRecuperacaoSenha(
                     entidade.RazaoSocial,

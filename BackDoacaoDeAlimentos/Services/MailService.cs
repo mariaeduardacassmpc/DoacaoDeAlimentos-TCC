@@ -63,7 +63,7 @@ public class MailService : IMailService
                 <p>Para continuar, clique no link abaixo:</p>
                 <p><a href='{link}'>Redefinir minha senha</a></p>
                 <p>Se você não solicitou essa alteração, pode ignorar este e-mail com segurança.</p>
-                <p>Atenciosamente,<br/>Equipe de Suporte</p>"
+                <p>Atenciosamente,<br/>Equipe de Suporte AlimentAção</p>"
             };
 
 

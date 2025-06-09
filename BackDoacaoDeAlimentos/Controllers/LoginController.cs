@@ -6,6 +6,7 @@ using BackDoacaoDeAlimentos.Servicos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using TCCDoacaoDeAlimentos.Shared.Dto;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Controllers
@@ -48,12 +49,12 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
 
-        [HttpPost("EnviarEmailRecuperarSenha")]
-        public async Task<IActionResult> RecuperarSenha([FromBody] string email)
+        [HttpPost("EnviarEmailRecuperacaoSenha")]
+        public async Task<IActionResult> RecuperarSenha([FromBody] RecuperacaoSenha email)
         {
             try
             {
-                var resultado = await _autenticacaoService.EnviarRecuperacaoSenha(email);
+                var resultado = await _autenticacaoService.EnviarRecuperacaoSenha(email.Email);
                 if (resultado)
                     return Ok("E-mail de recuperação enviado com sucesso.");
                 else
