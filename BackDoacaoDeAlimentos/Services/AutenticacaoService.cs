@@ -23,7 +23,6 @@ namespace BackDoacaoDeAlimentos.Services
             IUsuarioRepositorio usuarioRepositorio,
             IJwtService jwtService,
             IPasswordHasher<Usuario> hasher)
-
         {
             _entidadeRepositorio = entidadeRepositorio;
             _http = http;
@@ -35,84 +34,124 @@ namespace BackDoacaoDeAlimentos.Services
 
         public string GerarHashSenha(string senha)
         {
+            try
+            {
                 return _hasher.HashPassword(null, senha);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao gerar hash da senha.");
+            }
         }
 
         public bool VerificarSenha(string senhaDigitada, string senhaHash)
         {
-            var resultado = _hasher.VerifyHashedPassword(null, senhaHash, senhaDigitada);
-            return resultado == PasswordVerificationResult.Success;
+            try
+            {
+                var resultado = _hasher.VerifyHashedPassword(null, senhaHash, senhaDigitada);
+                return resultado == PasswordVerificationResult.Success;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao verificar senha.");
+            }
         }
 
         public RespostaAutenticacao Login(string login, string senha)
         {
-            var usuarioTask = _usuarioRepositorio.ObterPorEmail(login);
-            var usuario = usuarioTask.Result; 
-
-            if (usuario == null)
-                throw new Exception("Usuário não encontrado.");
-
-            if (!VerificarSenha(senha, usuario.SenhaHash))
-                throw new Exception("Senha inválida.");
-
-            var token = _jwtService.GerarToken(usuario);
-
-            return new RespostaAutenticacao
+            try
             {
-                Token = token,
-                NomeUsuario = usuario.Entidade?.RazaoSocial ?? usuario.Email,
-                Email = usuario.Email
-            };
+                var usuarioTask = _usuarioRepositorio.ObterPorEmail(login);
+                var usuario = usuarioTask.Result;
+
+                if (usuario == null)
+                    throw new Exception("Usuário não encontrado.");
+
+                if (!VerificarSenha(senha, usuario.SenhaHash))
+                    throw new Exception("Senha inválida.");
+
+                var token = _jwtService.GerarToken(usuario);
+
+                return new RespostaAutenticacao
+                {
+                    Token = token,
+                    NomeUsuario = usuario.Entidade?.RazaoSocial ?? usuario.Email,
+                    Email = usuario.Email
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro no processo de login.");
+            }
         }
 
         public async Task Registrar(string nome, string login, string senha)
         {
-            var existe = await _usuarioRepositorio.VerificarEmailExistente(login);
-            if (existe)
-                throw new Exception("Usuário já cadastrado.");
+            try
+            {
+                var existe = await _usuarioRepositorio.VerificarEmailExistente(login);
+                if (existe)
+                    throw new Exception("Usuário já cadastrado.");
 
-            var senhaHash = GerarHashSenha(senha);
+                var senhaHash = GerarHashSenha(senha);
 
-            //var usuario = new Usuario
-            //{
-            //    Email = login,
-            //    SenhaHash = senhaHash
-            //};
-
-            //await _usuarioRepositorio.Adicionar(usuario);
+                // Descomente e complete se for adicionar o usuário
+                // var usuario = new Usuario
+                // {
+                //     Email = login,
+                //     SenhaHash = senhaHash
+                // };
+                // await _usuarioRepositorio.Adicionar(usuario);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao registrar usuário.");
+            }
         }
 
         public async Task<bool> EnviarRecuperacaoSenha(string email)
         {
-            Usuario usuario = await _usuarioRepositorio.ObterPorEmail(email);
-            if (usuario == null)
-                throw new Exception("Usuário não encontrado.");
+            try
+            {
+                Usuario usuario = await _usuarioRepositorio.ObterPorEmail(email);
+                if (usuario == null)
+                    throw new Exception("Usuário não encontrado.");
 
-            Entidade entidade = usuario.Entidade;
-            if (entidade == null)
-                throw new Exception("Entidade não encontrada.");
+                Entidade entidade = usuario.Entidade;
+                if (entidade == null)
+                    throw new Exception("Entidade não encontrada.");
 
-            var token = GerarTokenRecuperacao(email);
-            var link = $"https://seusite.com/recuperar-senha?token={token}";
+                var token = GerarTokenRecuperacao(email);
+                var link = $"https://seusite.com/alterarsenha?token={token}";
 
-            return await _mailServico.EnviarEmailRecuperacaoSenha(
-                entidade.RazaoSocial,
-                usuario.Email,
-                usuario.Email,
-                link
-            );
+                return await _mailServico.EnviarEmailRecuperacaoSenha(
+                    entidade.RazaoSocial,
+                    usuario.Email,
+                    link
+                );
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao enviar recuperação de senha.", ex);
+            }
         }
-
 
         private string GerarTokenRecuperacao(string email)
         {
-            var dataExpiracao = DateTime.UtcNow.AddMinutes(30); 
-            var payload = $"{email}|{dataExpiracao:o}";
+            try
+            {
+                var dataExpiracao = DateTime.UtcNow.AddMinutes(30);
+                var payload = $"{email}|{dataExpiracao:o}";
 
-            var bytes = Encoding.UTF8.GetBytes(payload);
-            var token = Convert.ToBase64String(bytes);
+                var bytes = Encoding.UTF8.GetBytes(payload);
+                var token = Convert.ToBase64String(bytes);
 
-            return Uri.EscapeDataString(token); 
+                return Uri.EscapeDataString(token);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao gerar token de recuperação.");
+            }
         }
 
         public (bool valido, string email) ValidarToken(string token)

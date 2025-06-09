@@ -15,7 +15,7 @@
                     <div class="card-body p-5">
                         <div class="text-center mb-4">
                             <i class="bi bi-box2-heart" style="font-size: 3rem; color: #198754;"></i>
-                            <h2 class="mt-3 fw-bold">Acesse sua conta</h2>
+                            <h2 class="mt-3 fw-bold color: #198754";>Acesse sua conta</h2>
                             <p class="text-muted">Entre para gerenciar suas doações</p>
                         </div>
 
@@ -31,7 +31,16 @@
 
                             <div class="mb-4">
                                 <label for="password" class="form-label">Senha</label>
-                                <InputText id="password" @bind-Value="usuario.Senha" type="password" class="form-control" placeholder="••••••••" />
+                                <div class="position-relative">
+                                    <InputText type="@(_showPassword ? "text" : "password")"
+                                               @bind-Value="usuario.Senha"
+                                               class="form-control pe-5"
+                                               placeholder="••••••••" id="password" />
+                                    <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
+                                            @onclick="TogglePasswordVisibility">
+                                        <i class="@(_showPassword ? "fas fa-eye" : "fas fa-eye-slash") text-success"></i>
+                                    </button>
+                                </div>
                                 <ValidationMessage For="@(() => usuario.Senha)" class="text-danger" />
                             </div>
 
@@ -63,6 +72,8 @@
     [Inject]
     private NavigationManager NavigationManager { get; set; }
 
+    private bool _showPassword = false;
+
     private void IrParaCadastro()
     {
         Navigation.NavigateTo("/CadastroDeEntidade");
@@ -72,14 +83,14 @@
     {
         try
         {
-            
-            var response = await Http.PostAsJsonAsync("api/login/login", usuario);
+            var response = await Http.PostAsJsonAsync("/login", usuario);
             if (response.IsSuccessStatusCode)
             {
                 var usuarioLogado = await response.Content.ReadFromJsonAsync<UsuarioLogado>();
                 if (usuarioLogado != null)
                 {
-                    await JSRuntime.InvokeVoidAsync("sessionStorage.setItem", "authToken", usuarioLogado.Token); await JSRuntime.InvokeVoidAsync("alert", $"Login realizado com sucesso!");
+                    await JSRuntime.InvokeVoidAsync("sessionStorage.setItem", "authToken", usuarioLogado.Token);
+                    await JSRuntime.InvokeVoidAsync("alert", $"Login realizado com sucesso!");
                     Navigation.NavigateTo("/", true);
                 }
                 else
@@ -97,5 +108,10 @@
         {
             await JSRuntime.InvokeVoidAsync("alert", $"Erro no login {ex}");
         }
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        _showPassword = !_showPassword;
     }
 }

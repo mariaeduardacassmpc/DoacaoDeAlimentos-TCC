@@ -59,7 +59,7 @@
         carregando = true;
         try
         {
-            var response = await Http.PostAsJsonAsync("api/login/EnviarEmailRecuperarSenha", recoveryModel.Email);
+            var response = await Http.PostAsJsonAsync("login/EnviarEmailRecuperarSenha", recoveryModel.Email);
             if (response.IsSuccessStatusCode)
             {
                 sucesso = true;
@@ -82,6 +82,6 @@
     {
         [Required(ErrorMessage = "O e-mail é obrigatório")]
         [EmailAddress(ErrorMessage = "Informe um e-mail válido")]
-        public string Email { get; set; }
+        public string Email {get; set; }
     }
 }
