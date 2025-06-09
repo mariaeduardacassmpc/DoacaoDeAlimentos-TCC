@@ -11,7 +11,7 @@ using TCCDoacaoDeAlimentos.Shared.Models;
 namespace BackDoacaoDeAlimentos.Controllers
 {
     [ApiController]
-    [Route("api/login")]
+    [Route("login")]
     public class LoginController : Controller
     {
         private IJwtService _jwtService;
@@ -28,7 +28,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             _usuarioService = usuarioService;
         }
 
-        [HttpPost("login")]
+        [HttpPost]
         public IActionResult Login([FromBody] LoginRequest request)
         {
             var usuario = _usuarioService.AutenticarUsuario(request.Email, request.Senha).Result;
@@ -43,16 +43,26 @@ namespace BackDoacaoDeAlimentos.Controllers
                 token,
                 NomeUsuario = usuario.Entidade?.RazaoSocial ?? usuario.Email,
                 usuario.Email,
-                TipoEntidade = usuario.Entidade?.TpEntidade
+                TpEntidade = usuario.TpEntidade
             });
         }
 
 
         [HttpPost("EnviarEmailRecuperarSenha")]
-        public IActionResult RecuperarSenha([FromBody] string email)
+        public async Task<IActionResult> RecuperarSenha([FromBody] string email)
         {
-            _autenticacaoService.EnviarRecuperacaoSenha(email);
-            return Ok();
+            try
+            {
+                var resultado = await _autenticacaoService.EnviarRecuperacaoSenha(email);
+                if (resultado)
+                    return Ok("E-mail de recuperação enviado com sucesso.");
+                else
+                    return StatusCode(500, "Falha ao enviar e-mail de recuperação.");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

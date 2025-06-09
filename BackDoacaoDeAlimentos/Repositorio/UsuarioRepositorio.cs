@@ -40,7 +40,13 @@ namespace BackDoacaoDeAlimentos.Repositorio
                         WHERE u.Email = @Email AND u.Ativo = 1
             ";
 
-            return await _db.QueryFirstOrDefaultAsync<Usuario>(sql, new { Email = email });
+            return (await _db.QueryAsync<Usuario, Entidade, Usuario>(
+     sql,
+     (usuario, entidade) => { usuario.Entidade = entidade; return usuario; },
+     new { Email = email },
+     splitOn: "Entidade_Id"
+ )).FirstOrDefault();
+
         }
 
         public async Task<Usuario> Adicionar(Usuario usuario)

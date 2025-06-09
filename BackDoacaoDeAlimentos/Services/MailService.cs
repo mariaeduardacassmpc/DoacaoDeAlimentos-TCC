@@ -3,7 +3,7 @@ using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
-using MailKit.Net.Smtp; 
+using MailKit.Net.Smtp;
 
 public class MailService : IMailService
 {
@@ -16,7 +16,7 @@ public class MailService : IMailService
         _logger = logger;
     }
 
-    public async Task<bool> EnviarEmailRecuperacaoSenha(string nome, string usuario, string emailDestino, string link)
+    public async Task<bool> EnviarEmailRecuperacaoSenha(string nome, string usuario, string link)
     {
         try
         {
@@ -26,7 +26,6 @@ public class MailService : IMailService
                 settings["Email"],
                 nome,
                 usuario,
-                emailDestino,
                 link
             );
 
@@ -42,80 +41,118 @@ public class MailService : IMailService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao enviar e-mail: " + ex.Message);
+            _logger.LogError(ex, "Erro ao enviar e-mail de recuperação de senha: " + ex.Message);
             return false;
         }
     }
 
-    public MimeMessage CriarMensagemRecuperacao(string remetente, string nome, string usuario, string destino, string link)
+    public MimeMessage CriarMensagemRecuperacao(string remetente, string nome, string usuario, string link)
     {
-        var mail = new MimeMessage();
-        mail.From.Add(new MailboxAddress("Suporte AlimentAção", remetente));
-        mail.To.Add(new MailboxAddress(nome, destino));
-        mail.Subject = "Recuperação de Senha";
-
-        var body = new BodyBuilder
+        try
         {
-            HtmlBody = $@"<p>Olá {nome},</p>
-                <p><a href='{link}'>Redefinir senha</a> para o usuário: {usuario}</p>"
-        };
+            var mail = new MimeMessage();
+            mail.From.Add(new MailboxAddress("Suporte AlimentAção", remetente));
+            mail.To.Add(new MailboxAddress(nome, usuario));
+            mail.Subject = "Recuperação de Senha";
 
-        mail.Body = body.ToMessageBody();
-        return mail;
+            var body = new BodyBuilder
+            {
+                HtmlBody = $@"
+                <p>Olá {nome},</p>
+                <p>Recebemos uma solicitação para redefinir a senha da sua conta (<strong>{usuario}</strong>).</p>
+                <p>Para continuar, clique no link abaixo:</p>
+                <p><a href='{link}'>Redefinir minha senha</a></p>
+                <p>Se você não solicitou essa alteração, pode ignorar este e-mail com segurança.</p>
+                <p>Atenciosamente,<br/>Equipe de Suporte</p>"
+            };
+
+
+            mail.Body = body.ToMessageBody();
+            return mail;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao criar mensagem de recuperação de senha.");
+            throw;
+        }
     }
 
-    public MimeMessage CriarMensagemConfirmacaoDoacao(string remetente, string nomeDoador, string emailDestino, 
+    public MimeMessage CriarMensagemConfirmacaoDoacao(string remetente, string nomeDoador, string emailDestino,
         string alimento, string nomeOng, string enderecoOng, string telefoneOng, string responsavelOng)
     {
-        var mail = new MimeMessage();
-        mail.From.Add(new MailboxAddress("Suporte AlimentAção", remetente));
-        mail.To.Add(new MailboxAddress(nomeDoador, emailDestino));
-        mail.Subject = "Confirmação de Doação Realizada";
-
-        var body = new BodyBuilder
+        try
         {
-            HtmlBody = $@"
-                <p>Olá {nomeDoador},</p>
-                <p>Parabéns! Sua doação do alimento <strong>{alimento}</strong> foi efetuada para a ONG <strong>{nomeOng}</strong>.</p>
-                <p>Endereço da ONG: <strong>{enderecoOng}</strong></p>
-                <p>Telefone de contato: <strong>{telefoneOng}</strong></p>
-                <p>Responsável: <strong>{responsavelOng}</strong></p>
-                <p>Aguarde a ONG entrar em contato para finalizar o processo.</p>
-                <p>Obrigado por sua colaboração!</p>"
-        };
+            var mail = new MimeMessage();
+            mail.From.Add(new MailboxAddress("Suporte AlimentAção", remetente));
+            mail.To.Add(new MailboxAddress(nomeDoador, emailDestino));
+            mail.Subject = "Confirmação de Doação Realizada";
 
-        mail.Body = body.ToMessageBody();
-        return mail;
+            var body = new BodyBuilder
+            {
+                HtmlBody = $@"
+                    <p>Olá {nomeDoador},</p>
+                    <p>Parabéns! Sua doação do alimento <strong>{alimento}</strong> foi efetuada para a ONG <strong>{nomeOng}</strong>.</p>
+                    <p>Endereço da ONG: <strong>{enderecoOng}</strong></p>
+                    <p>Telefone de contato: <strong>{telefoneOng}</strong></p>
+                    <p>Responsável: <strong>{responsavelOng}</strong></p>
+                    <p>Aguarde a ONG entrar em contato para finalizar o processo.</p>
+                    <p>Obrigado por sua colaboração!</p>"
+            };
+
+            mail.Body = body.ToMessageBody();
+            return mail;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao criar mensagem de confirmação de doação.");
+            throw;
+        }
     }
 
-    public MimeMessage CriarMensagemNotificacaoOng(string remetente, string nomeOng, string emailDestino, 
+    public MimeMessage CriarMensagemNotificacaoOng(string remetente, string nomeOng, string emailDestino,
         string nomeDoador, string alimento, string telefoneDoador)
     {
-        var mail = new MimeMessage();
-        mail.From.Add(new MailboxAddress("Suporte AlimentAção", remetente));
-        mail.To.Add(new MailboxAddress(nomeOng, emailDestino));
-        mail.Subject = "Nova Doação Recebida";
-
-        var body = new BodyBuilder
+        try
         {
-            HtmlBody = $@"
-                <p>Olá {nomeOng},</p>
-                <p>O doador <strong>{nomeDoador}</strong> realizou uma doação do alimento <strong>{alimento}</strong>.</p>
-                <p>Telefone para contato do doador: <strong>{telefoneDoador}</strong></p>
-                <p>Por favor, entre em contato com o doador para combinar os detalhes da entrega.</p>
-                <p>Equipe AlimentAção.</p>"
-        };
+            var mail = new MimeMessage();
+            mail.From.Add(new MailboxAddress("Suporte AlimentAção", remetente));
+            mail.To.Add(new MailboxAddress(nomeOng, emailDestino));
+            mail.Subject = "Nova Doação Recebida";
 
-        mail.Body = body.ToMessageBody();
-        return mail;
+            var body = new BodyBuilder
+            {
+                HtmlBody = $@"
+                    <p>Olá {nomeOng},</p>
+                    <p>O doador <strong>{nomeDoador}</strong> realizou uma doação do alimento <strong>{alimento}</strong>.</p>
+                    <p>Telefone para contato do doador: <strong>{telefoneDoador}</strong></p>
+                    <p>Por favor, entre em contato com o doador para combinar os detalhes da entrega.</p>
+                    <p>Equipe AlimentAção.</p>"
+            };
+
+            mail.Body = body.ToMessageBody();
+            return mail;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao criar mensagem de notificação para ONG.");
+            throw;
+        }
     }
 
     public async Task EnviarEmail(string email, string senha, string host, int port, MimeMessage mensagem)
     {
-        using var smtp = new SmtpClient();
-        await smtp.ConnectAsync(host, port, SecureSocketOptions.Auto);
-        await smtp.AuthenticateAsync(email, senha);
-        await smtp.SendAsync(mensagem);
-        await smtp.DisconnectAsync(true);
+        try
+        {
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync(host, port, SecureSocketOptions.Auto);
+            await smtp.AuthenticateAsync(email, senha);
+            await smtp.SendAsync(mensagem);
+            await smtp.DisconnectAsync(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao enviar e-mail via SMTP.");
+            throw;
+        }
     }
 }
