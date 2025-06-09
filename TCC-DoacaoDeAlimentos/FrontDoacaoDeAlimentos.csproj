@@ -50,4 +50,10 @@
     <Folder Include="wwwroot\NovaPasta1\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\js\alerts.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

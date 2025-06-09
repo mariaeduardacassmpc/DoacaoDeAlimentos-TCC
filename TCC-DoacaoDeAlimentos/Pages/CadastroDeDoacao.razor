@@ -174,7 +174,7 @@
 
             if (!usuarioAutenticado)
             {
-                await JSRuntime.InvokeVoidAsync("alert", "A doação só pode ser feita por usuários logados!");
+                await JSRuntime.InvokeVoidAsync("Alertas.mostrarAlerta", "A doação só pode ser feita por usuários logados!");
                 Navigation.NavigateTo("/login");
             }
 
@@ -183,7 +183,7 @@
 
             if (Ongs == null || !Ongs.Any())
             {
-                await JSRuntime.InvokeVoidAsync("alert", $"Nenhuma ONG cadastrada ainda.");
+                await JSRuntime.InvokeVoidAsync("alert", $"Nenhuma Instituição cadastrada ainda.");
             }
 
             if (Id.HasValue)
@@ -198,7 +198,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar a ONG.");
+                    await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar a Instituição.");
                 }
             }
          }
