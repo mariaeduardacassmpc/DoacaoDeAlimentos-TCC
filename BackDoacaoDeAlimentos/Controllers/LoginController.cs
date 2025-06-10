@@ -17,16 +17,19 @@ namespace BackDoacaoDeAlimentos.Controllers
     {
         private IJwtService _jwtService;
         private IAutenticacaoService _autenticacaoService;
-        private IUsuarioService _usuarioService;
+        private IUsuarioService _usuarioService; 
+        private INotificacaoService _notificacaoService;
 
         public LoginController(IJwtService jwtService, 
             IAutenticacaoService autenticacaoService,
-            IUsuarioService usuarioService
+            IUsuarioService usuarioService,
+            INotificacaoService notificacaoService
         ) 
         {
             _jwtService = jwtService;
             _autenticacaoService = autenticacaoService;
             _usuarioService = usuarioService;
+            _notificacaoService = notificacaoService;
         }
 
         [HttpPost]
@@ -55,7 +58,7 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             try
             {
-                var resultado = await _autenticacaoService.EnviarRecuperacaoSenha(email.Email);
+                var resultado = await _notificacaoService.EnviarRecuperacaoSenha(email.Email);
                 if (resultado)
                     return Ok("E-mail de recuperação enviado com sucesso.");
                 else

@@ -5,10 +5,14 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
     public interface IMailService
     {
         Task<bool> EnviarEmailRecuperacaoSenha(string nome, string usuario, string link);
+        Task<bool> EnviarEmailConfirmacaoDoacaoDoador(string nomeDoador, string emailDoador, string alimento, string nomeOng,
+        string enderecoOng, string telefoneOng, string responsavelOng);
+        Task<bool> EnviarEmailConfirmacaoDoacaoOng(string nomeDoador, string emailDoador, string alimento,
+        string nomeOng, string enderecoOng, string telefoneOng, string responsavelOng);
         MimeMessage CriarMensagemRecuperacao(string remetente, string nome, string usuario, string link);
-        MimeMessage CriarMensagemConfirmacaoDoacao(string remetente, string nomeDoador, string emailDestino,
+        MimeMessage CriarMensagemConfirmacaoDoacaoDoacao(string remetente, string nomeDoador, string emailDestino,
           string alimento, string nomeOng, string enderecoOng, string telefoneOng, string responsavelOng);
-        MimeMessage CriarMensagemNotificacaoOng(string remetente, string nomeOng, string emailDestino,
+        MimeMessage CriarMensagemConfirmacaoDoacaoOng(string remetente, string nomeOng, string emailDestino,
         string nomeDoador, string alimento, string telefoneDoador);
     }
 }

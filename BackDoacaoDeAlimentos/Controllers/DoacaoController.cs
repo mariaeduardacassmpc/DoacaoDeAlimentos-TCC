@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TCCDoacaoDeAlimentos.Shared.Dto;
@@ -18,73 +19,136 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
         [HttpGet("obterEstatisticas")]
-        public async Task<IActionResult> obterEstatisticas()
+        public async Task<IActionResult> ObterEstatisticas()
         {
-            var doacoes = await _doacaoService.ObterEstatisticas();
-            if (doacoes == null)
-                return Ok(new EstatisticasDto { TotalOngsAjudadas = 0, TotalKgAlimentosDoado = 0 });
+            try
+            {
+                var doacoes = await _doacaoService.ObterEstatisticas();
+                if (doacoes == null)
+                    return Ok(new EstatisticasDto { TotalOngsAjudadas = 0, TotalKgAlimentosDoado = 0 });
 
-            return Ok(doacoes);
+                return Ok(doacoes);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter estatísticas: {ex.Message}", ex);
+            }
         }
 
         [HttpPost("filtrarDoacao")]
         public async Task<IActionResult> ObterTodasPorEntidade([FromBody] FiltroDoacaoDto filtroDoacaoDto)
         {
-            var doacoes = await _doacaoService.ObterDoacoesComFiltro(filtroDoacaoDto);
-            if (doacoes == null)
-                return NotFound();
+            try
+            {
+                if (filtroDoacaoDto == null)
+                    throw new ArgumentNullException(nameof(filtroDoacaoDto));
 
-            return Ok(doacoes);
+                var doacoes = await _doacaoService.ObterDoacoesComFiltro(filtroDoacaoDto);
+                if (doacoes == null)
+                    return NotFound();
+
+                return Ok(doacoes);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao filtrar doações: {ex.Message}", ex);
+            }
         }
 
         [HttpGet("obterTodasDoacoes")]
         public async Task<IActionResult> ObterTodas()
         {
-            var doacoes = await _doacaoService.ObterTodasDoacoes();
-            if (doacoes == null)
-                return NotFound();
+            try
+            {
+                var doacoes = await _doacaoService.ObterTodasDoacoes();
+                if (doacoes == null)
+                    return NotFound();
 
-            return Ok(doacoes);
+                return Ok(doacoes);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter todas as doações: {ex.Message}", ex);
+            }
         }
 
         [HttpGet("obterTodasPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
-            var doacao = await _doacaoService.ObterDoacaoPorId(id);
-            if (doacao == null)
-                return NotFound();
+            try
+            {
+                if (id <= 0)
+                    throw new ArgumentException("ID inválido");
 
-            return Ok(doacao);
+                var doacao = await _doacaoService.ObterDoacaoPorId(id);
+                if (doacao == null)
+                    return NotFound();
+
+                return Ok(doacao);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter doação por ID: {ex.Message}", ex);
+            }
         }
 
         [HttpPost("adicionar")]
         public async Task<IActionResult> Adicionar([FromBody] Doacao doacao)
         {
-            await _doacaoService.AdicionarDoacao(doacao);
-            return CreatedAtAction(nameof(Adicionar), new { id = doacao.IdDoacao }, doacao);
+            try
+            {
+                if (doacao == null)
+                    throw new ArgumentNullException(nameof(doacao));
+
+                await _doacaoService.AdicionarDoacao(doacao);
+                return CreatedAtAction(nameof(Adicionar), new { id = doacao.IdDoacao }, doacao);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao adicionar doação: {ex.Message}", ex);
+            }
         }
 
         [HttpPut("atualizar/{id}")]
         public async Task<IActionResult> Atualizar([FromBody] Doacao doacao)
         {
+            try
+            {
+                if (doacao == null)
+                    throw new ArgumentNullException(nameof(doacao));
 
-            var doacaoExistente = await _doacaoService.ObterDoacaoPorId(doacao.IdDoacao);
-            if (doacaoExistente == null)
-                return NotFound();
+                var doacaoExistente = await _doacaoService.ObterDoacaoPorId(doacao.IdDoacao);
+                if (doacaoExistente == null)
+                    return NotFound();
 
-            await _doacaoService.AtualizarDoacao(doacao);
-            return NoContent();
+                await _doacaoService.AtualizarDoacao(doacao);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao atualizar doação: {ex.Message}", ex);
+            }
         }
 
         [HttpDelete("CancelarDoacao/{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
-            var doacao = await _doacaoService.ObterDoacaoPorId(id);
-            if (doacao == null)
-                return NotFound();
+            try
+            {
+                if (id <= 0)
+                    throw new ArgumentException("ID inválido");
 
-            await _doacaoService.DeletarDoacao(id);
-            return NoContent();
+                var doacao = await _doacaoService.ObterDoacaoPorId(id);
+                if (doacao == null)
+                    return NotFound();
+
+                await _doacaoService.DeletarDoacao(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao cancelar doação: {ex.Message}", ex);
+            }
         }
     }
 }

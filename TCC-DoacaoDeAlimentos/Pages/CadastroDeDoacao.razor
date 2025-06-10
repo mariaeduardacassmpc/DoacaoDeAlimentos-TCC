@@ -9,6 +9,8 @@
 @using TCCDoacaoDeAlimentos.Shared.Dto
 @using TCCDoacaoDeAlimentos.Shared.Models
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Text.Json
+@using System.Text.Json.Serialization
 
 <div class="min-vh-100 d-flex align-items-center" style="background-color: #d4edda;">
     <div class="container py-5">
@@ -247,7 +249,11 @@
         try
         {
             NovaDoacao.Alimentos = Itens;
-            var response = await Http.PostAsJsonAsync("api/doacao/adicionar", NovaDoacao);
+            var options = new JsonSerializerOptions
+            {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var response = await Http.PostAsJsonAsync("api/doacao/adicionar", NovaDoacao, options);
 
             if (response.IsSuccessStatusCode)
             {

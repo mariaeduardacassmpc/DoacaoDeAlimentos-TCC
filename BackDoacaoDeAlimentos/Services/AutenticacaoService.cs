@@ -3,6 +3,7 @@ using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using BackDoacaoDeAlimentos.Repositorio;
 using Microsoft.AspNetCore.Identity;
+using MimeKit;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 namespace BackDoacaoDeAlimentos.Services
@@ -108,34 +109,6 @@ namespace BackDoacaoDeAlimentos.Services
                 throw new Exception("Erro ao registrar usuário.");
             }
         }
-
-        public async Task<bool> EnviarRecuperacaoSenha(string email)
-        {
-            try
-            {
-                Usuario usuario = await _usuarioRepositorio.ObterPorEmail(email);
-                if (usuario == null)
-                    throw new Exception("Usuário não encontrado.");
-
-                Entidade entidade = usuario.Entidade;
-                if (entidade == null)
-                    throw new Exception("Entidade não encontrada.");
-
-                var token = _jwtService.GerarTokenRecuperacao(email);
-                var link = $"https://localhost:7170/alterarsenha?token={token}";
-
-                return await _mailServico.EnviarEmailRecuperacaoSenha(
-                    entidade.RazaoSocial,
-                    usuario.Email,
-                    link
-                );
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Erro ao enviar recuperação de senha.", ex);
-            }
-        }
-
         public (bool valido, string email) ValidarToken(string token)
         {
             try

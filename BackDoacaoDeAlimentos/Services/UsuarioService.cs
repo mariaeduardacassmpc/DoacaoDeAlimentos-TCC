@@ -24,11 +24,11 @@ namespace BackDoacaoDeAlimentos.Servicos
             _entidadeRepositorio = entidadeRepositorio;
         }
 
-        public async Task<Usuario> ObterUsuarioPorId(int id)
+        public async Task<Entidade> ObterUsuarioPorId(int id)
         {
             try
             {
-                var usuario = await _usuarioRepositorio.ObterPorId(id);
+                var usuario = await _usuarioRepositorio.ObterPorEntidadeId(id);
                 if (usuario == null)
                     throw new ArgumentException("Usuário não encontrado");
 
@@ -101,7 +101,7 @@ namespace BackDoacaoDeAlimentos.Servicos
                 if (usuario == null)
                     throw new ArgumentNullException(nameof(usuario));
 
-                var usuarioExistente = await _usuarioRepositorio.ObterPorId(usuario.Id);
+                var usuarioExistente = await _usuarioRepositorio.ObterPorEntidadeId(usuario.Id);
                 if (usuarioExistente == null)
                     throw new ArgumentException("Usuário não encontrado");
 

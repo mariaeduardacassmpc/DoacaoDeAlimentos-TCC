@@ -46,6 +46,77 @@ public class MailService : IMailService
         }
     }
 
+    public async Task<bool> EnviarEmailConfirmacaoDoacaoDoador(string nomeDoador, string emailDoador, string alimento,
+        string nomeOng, string enderecoOng, string telefoneOng, string responsavelOng)
+    {
+        try
+        {
+            var settings = _config.GetSection("EmailSettings");
+            var remetente = settings["Email"];
+
+            var mensagem = CriarMensagemConfirmacaoDoacaoDoacao(
+                remetente,
+                nomeDoador,
+                emailDoador,
+                alimento,
+                nomeOng,
+                enderecoOng,
+                telefoneOng,
+                responsavelOng
+            );
+
+            await EnviarEmail(
+                remetente,
+                settings["Password"],
+                settings["Host"],
+                settings.GetValue<int>("Port"),
+                mensagem
+            );
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao enviar e-mail de confirmação de doação: " + ex.Message);
+            return false;
+        }
+    }
+
+    public async Task<bool> EnviarEmailConfirmacaoDoacaoOng(string nomeDoador, string emailDoador, string alimento,
+        string nomeOng, string enderecoOng, string telefoneOng, string responsavelOng)
+    {
+        try
+        {
+            var settings = _config.GetSection("EmailSettings");
+            var remetente = settings["Email"];
+
+            var mensagem = CriarMensagemConfirmacaoDoacaoDoacao(
+                remetente,
+                nomeDoador,
+                emailDoador,
+                alimento,
+                nomeOng,
+                enderecoOng,
+                telefoneOng,
+                responsavelOng
+            );
+
+            await EnviarEmail(
+                remetente,
+                settings["Password"],
+                settings["Host"],
+                settings.GetValue<int>("Port"),
+                mensagem
+            );
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao enviar e-mail de confirmação de doação: " + ex.Message);
+            return false;
+        }
+    }
     public MimeMessage CriarMensagemRecuperacao(string remetente, string nome, string usuario, string link)
     {
         try
@@ -77,7 +148,7 @@ public class MailService : IMailService
         }
     }
 
-    public MimeMessage CriarMensagemConfirmacaoDoacao(string remetente, string nomeDoador, string emailDestino,
+    public MimeMessage CriarMensagemConfirmacaoDoacaoDoacao(string remetente, string nomeDoador, string emailDestino,
         string alimento, string nomeOng, string enderecoOng, string telefoneOng, string responsavelOng)
     {
         try
@@ -109,7 +180,7 @@ public class MailService : IMailService
         }
     }
 
-    public MimeMessage CriarMensagemNotificacaoOng(string remetente, string nomeOng, string emailDestino,
+    public MimeMessage CriarMensagemConfirmacaoDoacaoOng(string remetente, string nomeOng, string emailDestino,
         string nomeDoador, string alimento, string telefoneDoador)
     {
         try

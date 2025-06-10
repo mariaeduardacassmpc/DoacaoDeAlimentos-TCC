@@ -7,9 +7,8 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
 {
     public interface INotificacaoService
     {
-        Task<IEnumerable<Notificacao>> ObterTodasNotificacoes();
-        Task<Notificacao> ObterNotificacaoPorId(int id);
-        Task<Notificacao> AdicionarNotificacao(Notificacao notificacao);
-        Task RemoverNotificacao(int id);
+        Task EnviarEmailConfirmacaoDoacaoDoador(Doacao doacao);
+        Task EnviarEmailConfirmacaoDoacaoOng(Doacao doacao);
+        Task<bool> EnviarRecuperacaoSenha(string email);
     }
 }

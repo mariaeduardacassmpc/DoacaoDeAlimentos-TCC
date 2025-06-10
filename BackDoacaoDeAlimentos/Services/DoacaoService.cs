@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using TCCDoacaoDeAlimentos.Shared.Dto;
 using TCCDoacaoDeAlimentos.Shared.Models;
 
 public class DoacaoService : IDoacaoService
 {
     private readonly IDoacaoRepositorio _doacaoRepositorio;
+    private readonly IAutenticacaoService _autenticacaoService;
+    private readonly INotificacaoService _notificacaoService;
 
-    public DoacaoService(IDoacaoRepositorio doacaoRepositorio)
+    public DoacaoService(IDoacaoRepositorio doacaoRepositorio, IAutenticacaoService autenticacaoService, INotificacaoService notificacaoService)
     {
         _doacaoRepositorio = doacaoRepositorio;
+        _autenticacaoService = autenticacaoService;
+        _notificacaoService = notificacaoService;
     }
 
-    public async Task AdicionarDoacao(Doacao doacao)
+    public async Task<bool> AdicionarDoacao(Doacao doacao)
     {
         try
         {
@@ -22,6 +27,12 @@ public class DoacaoService : IDoacaoService
                 throw new ArgumentNullException(nameof(doacao), "A doação não pode ser nula.");
 
             await _doacaoRepositorio.AdicionarDoacao(doacao);
+            if (doacao.IdDoacao > 0)
+            {
+                await _notificacaoService.EnviarEmailConfirmacaoDoacaoDoador(doacao);
+                return true;
+            }
+            return false;
         }
         catch (Exception ex)
         {

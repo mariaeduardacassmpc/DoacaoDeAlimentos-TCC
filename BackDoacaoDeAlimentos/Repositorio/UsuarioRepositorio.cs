@@ -16,17 +16,17 @@ namespace BackDoacaoDeAlimentos.Repositorio
             _db = db;
         }
 
-        public async Task<Usuario> ObterPorId(int id)
+        public async Task<Entidade> ObterPorEntidadeId(int id)
         {
             const string sql = @"
                 SELECT 
                     u.Id, u.EntidadeId, u.Email, u.Senha,
-                    e.Id AS Entidade_Id, e.RazaoSocial, e.TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Altitude, e.Latitude
+                    e.Id AS Entidade_Id, e.RazaoSocial, e.TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
                 FROM Usuario u
                 INNER JOIN Entidade e ON u.EntidadeId = e.Id
                 WHERE u.EntidadeId = @EntidadeId";
 
-            return await _db.QueryFirstOrDefaultAsync<Usuario>(sql, new { EntidadeId = id });
+            return await _db.QueryFirstOrDefaultAsync<Entidade>(sql, new { EntidadeId = id });
         }
 
         public async Task<Usuario> ObterPorEmail(string email)
@@ -93,6 +93,19 @@ namespace BackDoacaoDeAlimentos.Repositorio
             ";
 
             var affectedRows = await _db.ExecuteAsync(sql, usuario);
+        }
+
+        public async Task<Entidade> ObterPorId(int id)
+        {
+            const string sql = @"
+                SELECT 
+                    u.Id, u.EntidadeId, u.Email, u.Senha,
+                    e.Id AS Entidade_Id, e.RazaoSocial, e.TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
+                FROM Usuario u
+                INNER JOIN Entidade e ON u.EntidadeId = e.Id
+                WHERE u.Id = @Id";
+
+            return await _db.QueryFirstOrDefaultAsync<Entidade>(sql, new { Id = id });
         }
     }
 }
