@@ -10,5 +10,6 @@ namespace BackDoacaoDeAlimentos.Interfaces.Repositorios
         Task<Usuario> Adicionar(Usuario usuario);
         Task Atualizar(Usuario usuario);
         Task<bool> VerificarEmailExistente(string email);
+        Task AtualizarSenha(Usuario usuario);
     }
 }

@@ -75,7 +75,7 @@
 
 @code {
     private AlterarSenhaDto alterarSenha = new AlterarSenhaDto();
-    private string mensagem = null;
+    private string mensagem = "";
     private bool sucesso = false;
     private bool carregando = false;
     private bool _showSenha = false; 
@@ -84,15 +84,18 @@
     [SupplyParameterFromQuery(Name = "token")]
     public string Token { get; set; }
 
+    protected override void OnParametersSet()
+    {
+        alterarSenha.Token = Token;
+    }
+
     private async Task HandleAlterarSenha()
     {
-        mensagem = null;
-        sucesso = false;
         carregando = true;
 
         try
         {
-            var response = await Http.PostAsJsonAsync($"login/AlterarSenha?token={Token}", alterarSenha);
+            var response = await Http.PostAsJsonAsync("login/RedefinirSenha", alterarSenha);
             if (response.IsSuccessStatusCode)
             {
                 sucesso = true;

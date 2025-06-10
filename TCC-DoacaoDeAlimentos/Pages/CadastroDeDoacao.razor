@@ -178,7 +178,7 @@
                 Navigation.NavigateTo("/login");
             }
 
-            Ongs = await Http.GetFromJsonAsync<List<Entidade>>("entidade/obterTodasInstituicoes");
+            Ongs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasInstituicoes");
             Alimentos = await Http.GetFromJsonAsync<List<Alimento>>("api/alimento/obterTodosAlimentos");
 
             if (Ongs == null || !Ongs.Any())

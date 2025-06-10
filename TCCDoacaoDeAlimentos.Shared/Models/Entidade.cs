@@ -11,7 +11,7 @@ public class Entidade : IValidatableObject
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Selecione o tipo de entidade.")]
-    public TipoEntidade? TpEntidade { get; set; }
+    public string TpEntidade { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Selecione o tipo de pessoa.")]
     public TipoPessoa? TpPessoa { get; set; }
@@ -63,12 +63,6 @@ public class Entidade : IValidatableObject
     public string Numero { get; set; }
     public bool Ativo { get; set; }
 
-    public enum TipoEntidade
-    {
-        D, // Doador
-        O  // ONG
-    }
-
     public enum TipoPessoa
     {
         F, // Física
@@ -79,14 +73,14 @@ public class Entidade : IValidatableObject
     {
         var documentoLimpo = Regex.Replace(CNPJ_CPF ?? "", "[^0-9]", "");
 
-        if ((TpEntidade == TipoEntidade.D && TpPessoa == TipoPessoa.F))
+        if ((TpEntidade == "D" && TpPessoa == TipoPessoa.F))
         {
             if (!DocumentoValidator.ValidarCpf(documentoLimpo))
             {
                 yield return new ValidationResult("CPF inválido.", new[] { nameof(CNPJ_CPF) });
             }
         }
-        else if ((TpEntidade == TipoEntidade.O) || (TpEntidade == TipoEntidade.D && TpPessoa == TipoPessoa.J))
+        else if ((TpEntidade == "O") || (TpEntidade == "D" && TpPessoa == TipoPessoa.J))
         {
             if (!DocumentoValidator.ValidarCnpj(documentoLimpo))
             {

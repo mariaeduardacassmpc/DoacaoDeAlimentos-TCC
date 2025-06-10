@@ -16,7 +16,7 @@
                         <h2 class="mt-2 fw-bold">Esqueceu sua senha?</h2>
                         <p class="mt-2 mb-4 text-muted">Informe o seu E-mail que consta em nosso cadastro e você receberá um link para criar uma nova senha</p>
 
-                        <EditForm Model="@email" OnValidSubmit="@HandleRecovery">
+                        <EditForm Model="@email" OnValidSubmit="@RecuperacaoDeSenha">
                             <DataAnnotationsValidator />
 
                             <div class="mb-4">
@@ -58,7 +58,7 @@
     private bool sucesso = false;
     private bool carregando = false;
 
-    private async Task HandleRecovery()
+    private async Task RecuperacaoDeSenha()
     {
         carregando = true;
 

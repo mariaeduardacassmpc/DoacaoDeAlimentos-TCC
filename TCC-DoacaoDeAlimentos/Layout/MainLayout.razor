@@ -42,7 +42,7 @@
                         @if (TpEntidade != "O")
                         {
                             <li class="nav-item mx-2">
-                                <NavLink class="nav-link" href="/alterarsenha" @onclick="FecharMenu">Geolocalização</NavLink>
+                                <NavLink class="nav-link" href="/Geolocalizacao" @onclick="FecharMenu">Geolocalização</NavLink>
                             </li>
                         }
 
@@ -113,13 +113,13 @@
     {
         AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
         await AtualizarUsuario();
-        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", new object[] { "authToken" }); UsuarioEstaLogado = !string.IsNullOrEmpty(token);
+        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", new object[] { "token" }); UsuarioEstaLogado = !string.IsNullOrEmpty(token);
     }
 
     private async void OnAuthenticationStateChanged(Task<AuthenticationState> task)
     {
         await AtualizarUsuario();
-        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", new object[] { "authToken" }); UsuarioEstaLogado = !string.IsNullOrEmpty(token);
+        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", new object[] { "token" }); UsuarioEstaLogado = !string.IsNullOrEmpty(token);
         StateHasChanged();
     }
 

@@ -41,5 +41,23 @@ namespace BackDoacaoDeAlimentos.Services
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public string GerarTokenRecuperacao(string email)
+        {
+            try
+            {
+                var dataExpiracao = DateTime.UtcNow.AddMinutes(30);
+                var payload = $"{email}|{dataExpiracao:o}";
+
+                var bytes = Encoding.UTF8.GetBytes(payload);
+                var token = Convert.ToBase64String(bytes);
+
+                return Uri.EscapeDataString(token);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao gerar token de recuperação.");
+            }
+        }
     }
 }

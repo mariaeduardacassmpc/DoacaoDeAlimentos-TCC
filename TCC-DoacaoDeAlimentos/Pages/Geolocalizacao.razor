@@ -12,15 +12,15 @@
             <span>Carregando...</span>
         </div>
     }
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <p style="color:red; align-items:center">@errorMessage</p>
+    }
 
     <div class="w-100 mt-5" style="max-width: 100%; display: flex; justify-content: center;">
         <div id="map" style="height: 450px; width: 100%; max-width: 1400px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);"></div>
     </div>
 
-    @if (!string.IsNullOrEmpty(errorMessage))
-    {
-        <p style="color:red">@errorMessage</p>
-    }
 
 </div>
 
@@ -56,7 +56,7 @@
             }
             catch (Exception ex)
             {
-                errorMessage = $"Erro ao obter localização. {ex}";
+                errorMessage = $"Para oferecer uma experiência personalizada, precisamos acessar sua localização. Sem isso, alguns recursos podem não funcionar corretamente.";
                 isLoading = false;
                 StateHasChanged();
             }
@@ -68,7 +68,7 @@
         try
         {
             ongs = await Http.GetFromJsonAsync<List<OngDto>>(
-                $"entidade/buscarInstituicoesPorCoordenadas/{latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}/{longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}"
+                $"api/entidade/buscarInstituicoesPorCoordenadas/{latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}/{longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}"
             ) ?? new List<OngDto>();
 
         }

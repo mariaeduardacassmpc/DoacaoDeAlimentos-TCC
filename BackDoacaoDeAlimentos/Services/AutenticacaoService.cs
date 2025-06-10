@@ -121,7 +121,7 @@ namespace BackDoacaoDeAlimentos.Services
                 if (entidade == null)
                     throw new Exception("Entidade não encontrada.");
 
-                var token = GerarTokenRecuperacao(email);
+                var token = _jwtService.GerarTokenRecuperacao(email);
                 var link = $"https://localhost:7170/alterarsenha?token={token}";
 
                 return await _mailServico.EnviarEmailRecuperacaoSenha(
@@ -133,24 +133,6 @@ namespace BackDoacaoDeAlimentos.Services
             catch (Exception ex)
             {
                 throw new Exception("Erro ao enviar recuperação de senha.", ex);
-            }
-        }
-
-        private string GerarTokenRecuperacao(string email)
-        {
-            try
-            {
-                var dataExpiracao = DateTime.UtcNow.AddMinutes(30);
-                var payload = $"{email}|{dataExpiracao:o}";
-
-                var bytes = Encoding.UTF8.GetBytes(payload);
-                var token = Convert.ToBase64String(bytes);
-
-                return Uri.EscapeDataString(token);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Erro ao gerar token de recuperação.");
             }
         }
 
@@ -176,6 +158,21 @@ namespace BackDoacaoDeAlimentos.Services
             {
                 return (false, null);
             }
+        }
+
+        public async Task RedefinirSenha(string token, string novaSenha)
+        {
+            var (valido, email) = ValidarToken(token); 
+            if (!valido || string.IsNullOrEmpty(email))
+                throw new Exception("Token inválido ou expirado.");
+
+            Usuario usuario = await _usuarioRepositorio.ObterPorEmail(email);
+            if (usuario == null)
+                throw new Exception("Usuário não encontrado.");
+
+            var senhaHash = GerarHashSenha(novaSenha);
+            usuario.Senha = senhaHash;
+            await _usuarioRepositorio.Atualizar(usuario);
         }
     }
 }

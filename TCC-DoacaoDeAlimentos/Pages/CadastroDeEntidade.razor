@@ -24,18 +24,18 @@
                                 <label class="form-label">Tipo de Entidade *</label>
                                 <InputRadioGroup @bind-Value="entidade.TpEntidade" class="form-check">
                                     <div class="form-check form-check-inline">
-                                        <InputRadio Value="@Entidade.TipoEntidade.O" class="form-check-input" id="ong" />
+                                        <InputRadio Value="@( "O" )" class="form-check-input" id="ong" />
                                         <label class="form-check-label" for="ong">ONG</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <InputRadio Value="@Entidade.TipoEntidade.D" class="form-check-input" id="doador" />
-                                        <label class="form-check-label" for="doador">Doador</label>
+                                        <InputRadio Value="@( "D" )" class="form-check-input" id="doador" />                                        <label class="form-check-label" for="doador">Doador</label>
                                     </div>
                                 </InputRadioGroup>
                                 <ValidationMessage For="@(() => entidade.TpEntidade)" class="text-danger" />
                             </div>
 
-                            @if (entidade.TpEntidade == Entidade.TipoEntidade.O || entidade.TpPessoa == Entidade.TipoPessoa.J)
+
+                            @if (entidade.TpEntidade == "O" || entidade.TpPessoa == Entidade.TipoPessoa.J)
                             {
                                 <div class="mb-3">
                                     <label for="razaoSocial" class="form-label">Razão Social *</label>
@@ -58,7 +58,7 @@
                             }
 
 
-                            @if (entidade.TpEntidade == Entidade.TipoEntidade.O)
+                            @if (entidade.TpEntidade == "O")
                             {
                                 <div class="mb-3">
                                     <label for="responsavel" class="form-label">Responsável *</label>
@@ -67,7 +67,7 @@
                                     <ValidationMessage For="@(() => entidade.Responsavel)" class="text-danger" />
                                 </div>
                             }
-                            @if (entidade.TpEntidade == Entidade.TipoEntidade.D && entidade.TpPessoa == Entidade.TipoPessoa.F)
+                            @if (entidade.TpEntidade == "D" && entidade.TpPessoa == Entidade.TipoPessoa.F)
                             {
                             <div class="mb-3">
                                 <label for="sexo" class="form-label">Sexo *</label>
@@ -80,7 +80,7 @@
                             </div>
                             }
 
-                            @if (entidade.TpEntidade == Entidade.TipoEntidade.D)
+                            @if (entidade.TpEntidade == "D")
                             {
                                 <label class="form-label">Tipo de Pessoa *</label>
                                 <InputRadioGroup @bind-Value="entidade.TpPessoa" class="form-check">
@@ -96,7 +96,7 @@
 
                                 <ValidationMessage For="@(() => entidade.TpPessoa)" class="text-danger" />
                             }
-                            @if (entidade.TpEntidade == Entidade.TipoEntidade.O || entidade.TpPessoa == Entidade.TipoPessoa.J)
+                            @if (entidade.TpEntidade == "O" || entidade.TpPessoa == Entidade.TipoPessoa.J)
                             {
                                 <div class="mb-3">
                                     <label for="cnpj" class="form-label">CNPJ *</label>
@@ -104,7 +104,7 @@
                                     <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
                                 </div>
                             }
-                            else if (entidade.TpEntidade == Entidade.TipoEntidade.D && entidade.TpPessoa == Entidade.TipoPessoa.F)
+                            else if (entidade.TpEntidade == "D" && entidade.TpPessoa == Entidade.TipoPessoa.F)
                             {
                                 <div class="mb-3">
                                     <label for="cpf" class="form-label">CPF *</label>
@@ -210,11 +210,10 @@
 </div>
 
 @code {
-    // Inicialize sem valores padrão para forçar o usuário a escolher
     private Entidade entidade = new Entidade
     {
-        TpEntidade = null, // Remover valor padrão
-        TpPessoa = null    // Remover valor padrão
+            TpEntidade = "",
+            TpPessoa = null
     };
     private bool _showPassword = false;
     private bool tentouEnviar = false;

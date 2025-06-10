@@ -16,7 +16,7 @@ namespace TCCDoacaoDeAlimentos.Shared.Autenticacao
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = await _localStorage.GetItemAsStringAsync("authToken");
+           var token = await _localStorage.GetItemAsStringAsync("token");
 
             if (string.IsNullOrWhiteSpace(token))
             {
@@ -28,7 +28,7 @@ namespace TCCDoacaoDeAlimentos.Shared.Autenticacao
 
             if (jwt.ValidTo < DateTime.UtcNow)
             {
-                await _localStorage.RemoveItemAsync("authToken");
+                await _localStorage.RemoveItemAsync("token");
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
 

@@ -9,7 +9,7 @@ using BackDoacaoDeAlimentos.Interfaces.Servicos;
 namespace BackDoacaoDeAlimentos.Controllers
 {
     [ApiController]
-    [Route("entidade")]  
+    [Route("api/entidade")]  
     public class EntidadeController : ControllerBase
     {
         private readonly IEntidadeService _entidadeService;

@@ -1,7 +1,16 @@
-﻿namespace BackDoacaoDeAlimentos.Interfaces.Servicos
+﻿using TCCDoacaoDeAlimentos.Shared.Dto;
+using TCCDoacaoDeAlimentos.Shared.Models;
+
+namespace BackDoacaoDeAlimentos.Interfaces.Servicos
 {
     public interface IAutenticacaoService
     {
-        Task<bool> EnviarRecuperacaoSenha(string email); 
+        string GerarHashSenha(string senha);
+        bool VerificarSenha(string senhaDigitada, string senhaHash);
+        RespostaAutenticacao Login(string login, string senha);
+        (bool valido, string email) ValidarToken(string token);
+
+        Task<bool> EnviarRecuperacaoSenha(string email);
+        Task RedefinirSenha(string token, string senha);
     }
 }

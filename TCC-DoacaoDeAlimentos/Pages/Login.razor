@@ -32,11 +32,11 @@
                                 <label for="password" class="form-label">Senha</label>
                                 <div class="position-relative">
                                     <InputText type="@(_showPassword ? "text" : "password")"
-                                               @bind-Value="usuario.Senha"
-                                               class="form-control pe-5"
-                                               placeholder="••••••••" id="password" />
+                                    @bind-Value="usuario.Senha"
+                                    class="form-control pe-5"
+                                    placeholder="••••••••" id="password" />
                                     <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0"
-                                            @onclick="TogglePasswordVisibility">
+                                    @onclick="TogglePasswordVisibility">
                                         <i class="@(_showPassword ? "fas fa-eye" : "fas fa-eye-slash") text-success"></i>
                                     </button>
                                 </div>
@@ -68,10 +68,10 @@
 
 @code {
     private Usuario usuario = new Usuario();
-    [Inject]
-    private NavigationManager NavigationManager { get; set; }
-
     private bool _showPassword = false;
+    private string mensagem = "";
+    private bool sucesso = false;
+    private bool carregando = false;
 
     private void IrParaCadastro()
     {
@@ -88,13 +88,17 @@
                 var usuarioLogado = await response.Content.ReadFromJsonAsync<UsuarioLogado>();
                 if (usuarioLogado != null)
                 {
-                    await JSRuntime.InvokeVoidAsync("sessionStorage.setItem", "authToken", usuarioLogado.Token);
+                    await JSRuntime.InvokeVoidAsync("localStorage.setItem", "token", usuarioLogado.Token);
+                    Console.WriteLine(usuarioLogado.Token);
+
+                    sucesso = true;
                     await JSRuntime.InvokeVoidAsync("alert", $"Login realizado com sucesso!");
                     Navigation.NavigateTo("/", true);
                 }
                 else
                 {
-                    await JSRuntime.InvokeVoidAsync("alert", $"Credenciais inválidas");
+                    var erro = await response.Content.ReadAsStringAsync();
+                    mensagem = "Credenciais inválidas.";
                 }
             }
             else
@@ -105,8 +109,10 @@
         }
         catch (Exception ex)
         {
-            await JSRuntime.InvokeVoidAsync("alert", $"Erro no login {ex}");
+            mensagem = "Erro inesperado.";
         }
+
+        carregando = false;
     }
 
     private void TogglePasswordVisibility()

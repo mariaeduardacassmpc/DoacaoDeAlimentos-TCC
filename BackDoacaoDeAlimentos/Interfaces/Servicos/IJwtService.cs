@@ -5,5 +5,6 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
     public interface IJwtService
     {
         public string GerarToken(Usuario usuario);
+        public string GerarTokenRecuperacao(string email);
     }
 }

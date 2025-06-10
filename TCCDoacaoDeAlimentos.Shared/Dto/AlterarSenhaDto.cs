@@ -12,5 +12,6 @@ namespace TCCDoacaoDeAlimentos.Shared.Dto
         [Required(ErrorMessage = "A confirmação é obrigatória")]
         [Compare("NovaSenha", ErrorMessage = "As senhas não coincidem")]
         public string ConfirmarSenha { get; set; }
+        public string Token { get; set; }
     }
 }

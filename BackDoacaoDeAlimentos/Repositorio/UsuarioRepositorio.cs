@@ -34,18 +34,13 @@ namespace BackDoacaoDeAlimentos.Repositorio
             var sql = @"
                         SELECT 
                                 u.Id, u.EntidadeId, u.Email, u.Senha,
-                                e.Id AS Entidade_Id, e.RazaoSocial, e.TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
+                                e.Id AS Entidade_Id, e.RazaoSocial, e.TpEntidade AS TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
                             FROM Usuario u
                             INNER JOIN Entidade e ON u.EntidadeId = e.Id
                         WHERE u.Email = @Email AND u.Ativo = 1
             ";
 
-            return (await _db.QueryAsync<Usuario, Entidade, Usuario>(
-     sql,
-     (usuario, entidade) => { usuario.Entidade = entidade; return usuario; },
-     new { Email = email },
-     splitOn: "Entidade_Id"
- )).FirstOrDefault();
+            return await _db.QueryFirstOrDefaultAsync<Usuario>(sql, new { Email = email });
 
         }
 
@@ -73,7 +68,6 @@ namespace BackDoacaoDeAlimentos.Repositorio
             }
         }
 
-
         public async Task Atualizar(Usuario usuario)
         {
             var sql = @"
@@ -83,14 +77,22 @@ namespace BackDoacaoDeAlimentos.Repositorio
                 WHERE Id = @Id
             ";
 
-         var affectedRows = await _db.ExecuteAsync(sql, usuario);
-             
+            var affectedRows = await _db.ExecuteAsync(sql, usuario);
         }
 
         public async Task<bool> VerificarEmailExistente(string email)
         {
             var sql = "SELECT 1 FROM Usuario WHERE Email = @Email";
             return await _db.ExecuteScalarAsync<bool>(sql, new { Email = email });
+        }
+
+        public async Task AtualizarSenha(Usuario usuario)
+        {
+            var sql = @"UPDATE Usuario SET Senha = @Senha
+                WHERE Email = @Email
+            ";
+
+            var affectedRows = await _db.ExecuteAsync(sql, usuario);
         }
     }
 }

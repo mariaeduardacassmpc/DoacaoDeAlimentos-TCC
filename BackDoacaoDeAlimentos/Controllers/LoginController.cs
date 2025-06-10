@@ -30,6 +30,7 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Login([FromBody] LoginRequest request)
         {
             var usuario = _usuarioService.AutenticarUsuario(request.Email, request.Senha).Result;
@@ -48,8 +49,8 @@ namespace BackDoacaoDeAlimentos.Controllers
             });
         }
 
-
         [HttpPost("EnviarEmailRecuperacaoSenha")]
+        [AllowAnonymous]
         public async Task<IActionResult> RecuperarSenha([FromBody] RecuperacaoSenha email)
         {
             try
@@ -63,6 +64,25 @@ namespace BackDoacaoDeAlimentos.Controllers
             catch (Exception ex)
             {
                 return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPost("RedefinirSenha")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RedefinirSenha([FromBody] AlterarSenhaDto redefinicao)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(redefinicao.Token) || string.IsNullOrWhiteSpace(redefinicao.NovaSenha))
+                    return BadRequest("Token e senha são obrigatórios.");
+
+                await _autenticacaoService.RedefinirSenha(redefinicao.Token, redefinicao.NovaSenha);
+
+                return Ok(new { mensagem = "Senha redefinida com sucesso." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { erro = "Erro interno ao redefinir senha.", detalhe = ex.Message });
             }
         }
     }

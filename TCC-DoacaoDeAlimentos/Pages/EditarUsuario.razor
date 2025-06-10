@@ -30,14 +30,14 @@
 
                                 <div class="mb-3">
                                     <label for="nome" class="form-label">
-                                        @(entidade.TpEntidade == Entidade.TipoEntidade.O ? "Razão Social *" : "Nome Completo *")
+                                        @(entidade.TpEntidade == "O" ? "Razão Social *" : "Nome Completo *")
                                     </label>
                                     <InputText @bind-Value="entidade.RazaoSocial" class="form-control" id="nome"
-                                               placeholder="@(entidade.TpEntidade == Entidade.TipoEntidade.O ? "Razão Social" : "Nome Completo")" />
+                                               placeholder="@(entidade.TpEntidade == "O" ? "Razão Social" : "Nome Completo")" />
                                     <ValidationMessage For="@(() => entidade.RazaoSocial)" class="text-danger" />
                                 </div>
 
-                                @if (entidade.TpEntidade == Entidade.TipoEntidade.O)
+                                @if (entidade.TpEntidade == "O")
                                 {
                                     <div class="mb-3">
                                         <label for="responsavel" class="form-label">Responsável *</label>
@@ -58,7 +58,7 @@
                                         <ValidationMessage For="@(() => entidade.Sexo)" class="text-danger" />
                                     </div>
                                 }
-                                @if (entidade.TpEntidade == Entidade.TipoEntidade.O || entidade.TpPessoa == Entidade.TipoPessoa.J)
+                                @if (entidade.TpEntidade == "O" || entidade.TpPessoa == Entidade.TipoPessoa.J)
                                 {
                                     <div class="mb-3">
                                         <label for="cnpj" class="form-label">CNPJ *</label>
@@ -66,7 +66,7 @@
                                         <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
                                     </div>
                                 }
-                                else if (entidade.TpEntidade == Entidade.TipoEntidade.D && entidade.TpPessoa == Entidade.TipoPessoa.F)
+                                else if (entidade.TpEntidade == "D" && entidade.TpPessoa == Entidade.TipoPessoa.F)
                                 {
                                     <div class="mb-3">
                                         <label for="cpf" class="form-label">CPF *</label>
