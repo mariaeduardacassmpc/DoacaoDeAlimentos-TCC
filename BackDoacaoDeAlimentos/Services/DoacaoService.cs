@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
+using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using TCCDoacaoDeAlimentos.Shared.Dto;
 using TCCDoacaoDeAlimentos.Shared.Models;
@@ -11,13 +12,26 @@ public class DoacaoService : IDoacaoService
     private readonly IDoacaoRepositorio _doacaoRepositorio;
     private readonly IAutenticacaoService _autenticacaoService;
     private readonly INotificacaoService _notificacaoService;
+    private readonly IAlimentoDoacaoService _alimentiDoacaoService;
+    private readonly IAlimentoDoacaoRepositorio _alimentiDoacaoRepositorio;
 
-    public DoacaoService(IDoacaoRepositorio doacaoRepositorio, IAutenticacaoService autenticacaoService, INotificacaoService notificacaoService)
+    public DoacaoService
+    (
+        IDoacaoRepositorio doacaoRepositorio, 
+        IAutenticacaoService autenticacaoService, 
+        INotificacaoService notificacaoService,
+        IAlimentoDoacaoService alimentiDoacaoService,
+        IAlimentoDoacaoRepositorio alimentoDoacaoRepositorio
+
+    )
     {
         _doacaoRepositorio = doacaoRepositorio;
         _autenticacaoService = autenticacaoService;
         _notificacaoService = notificacaoService;
+        _alimentiDoacaoService = alimentiDoacaoService;
+        _alimentiDoacaoRepositorio = alimentoDoacaoRepositorio;
     }
+
 
     public async Task<bool> AdicionarDoacao(Doacao doacao)
     {
@@ -26,8 +40,19 @@ public class DoacaoService : IDoacaoService
             if (doacao == null)
                 throw new ArgumentNullException(nameof(doacao), "A doação não pode ser nula.");
 
-            await _doacaoRepositorio.AdicionarDoacao(doacao);
-            if (doacao.IdDoacao > 0)
+            var id = await _doacaoRepositorio.AdicionarDoacao(doacao);
+            doacao.Id = id;
+
+            if (doacao.Alimentos != null && doacao.Alimentos.Count > 0)
+            {
+                foreach (var item in doacao.Alimentos)
+                {
+                    item.IdDoacao = id;
+                    await _alimentiDoacaoRepositorio.Adicionar(item);
+                }
+            }
+
+            if (doacao.Id > 0)
             {
                 await _notificacaoService.EnviarEmailConfirmacaoDoacaoDoador(doacao);
                 return true;
@@ -36,9 +61,10 @@ public class DoacaoService : IDoacaoService
         }
         catch (Exception ex)
         {
-            throw new Exception("Ocorreu um erro ao tentar adicionar a doação. Por favor, verifique os dados e tente novamente.", ex);
+            throw new Exception("Ocorreu um erro ao tentar adicionar a doação. Por favor, verifique os dados e tente novamente.");
         }
     }
+
 
     public async Task<Doacao> ObterDoacaoPorId(int id)
     {
@@ -82,14 +108,16 @@ public class DoacaoService : IDoacaoService
         }
     }
 
-    public async Task DeletarDoacao(int id)
+    public async Task CancelarDoacao(int id)
     {
         try
         {
             if (id <= 0)
                 throw new ArgumentException("O ID da doação deve ser maior que zero.", nameof(id));
 
-            await _doacaoRepositorio.DeletarDoacao(id);
+            await _doacaoRepositorio.CancelarDoacao(id);
+            //_notificacaoService.EnviarEmailCancelamentoDoacao(
+            //    )
         }
         catch (Exception ex)
         {

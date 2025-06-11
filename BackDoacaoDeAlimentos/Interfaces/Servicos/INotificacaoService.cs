@@ -10,5 +10,6 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
         Task EnviarEmailConfirmacaoDoacaoDoador(Doacao doacao);
         Task EnviarEmailConfirmacaoDoacaoOng(Doacao doacao);
         Task<bool> EnviarRecuperacaoSenha(string email);
+        Task EnviarEmailCancelamentoDoacao(Doacao doacao);
     }
 }

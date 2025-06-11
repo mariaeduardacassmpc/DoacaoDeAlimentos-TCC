@@ -64,50 +64,73 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-            public async Task EnviarEmailConfirmacaoDoacaoDoador(Doacao doacao)
+        public async Task EnviarEmailConfirmacaoDoacaoDoador(Doacao doacao)
+        {
+            try
             {
-                try
+                var usuario = await _usuarioRepositorio.ObterPorId(doacao.IdDoador);
+                if (usuario == null)
+                    throw new Exception("Usuário doador não encontrado.");
+
+                var instituicao = await _usuarioRepositorio.ObterPorEntidadeId(doacao.IdOng);
+
+                var alimentosDoacao = await _alimentoDoacaoRepositorio.ObterPorDoacao(doacao.Id);
+                var nomesAlimentos = new List<string>();
+
+                foreach (var alimentoD in alimentosDoacao)
                 {
-                    var usuario = await _usuarioRepositorio.ObterPorId(doacao.IdDoador);
-                    if (usuario == null)
-                        throw new Exception("Usuário doador não encontrado.");
-
-                    var instituicao = await _usuarioRepositorio.ObterPorEntidadeId(doacao.IdOng);
-
-                    var alimentosDoacao = await _alimentoDoacaoRepositorio.ObterPorDoacao(doacao.IdDoacao);
-                    var nomesAlimentos = new List<string>();
-
-                    foreach (var alimentoD in alimentosDoacao)
-                    {
-                        var alimento = await _alimentoRepositorio.ObterAlimentoPorId(alimentoD.AlimentoId);
-                        if (alimento != null)
-                            nomesAlimentos.Add(alimento.Nome);
-                    }
-
-                    string nomesAlimentosStr = nomesAlimentos.Count > 0 ? string.Join(", ", nomesAlimentos) : "Alimento";
-
-
-                    await _mailServico.EnviarEmailConfirmacaoDoacaoDoador(
-                        usuario.RazaoSocial,
-                        usuario.Email,
-                        nomesAlimentosStr,
-                        instituicao.RazaoSocial,
-                        instituicao.Endereco,
-                        instituicao.Telefone,
-                        instituicao.Responsavel
-                    );
+                    var alimento = await _alimentoRepositorio.ObterAlimentoPorId(alimentoD.AlimentoId);
+                    if (alimento != null)
+                        nomesAlimentos.Add(alimento.Nome);
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception("Erro ao enviar confirmação de doação.", ex);
-                }
+
+                string nomesAlimentosStr = nomesAlimentos.Count > 0 ? string.Join(", ", nomesAlimentos) : "Alimento";
+
+
+                await _mailServico.EnviarEmailConfirmacaoDoacaoDoador(
+                    usuario.RazaoSocial,
+                    usuario.Email,
+                    nomesAlimentosStr,
+                    instituicao.RazaoSocial,
+                    instituicao.Endereco,
+                    instituicao.Telefone,
+                    instituicao.Responsavel
+                );
             }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao enviar confirmação de doação.", ex);
+            }
+        }
 
         public async Task EnviarEmailConfirmacaoDoacaoOng(Doacao doacao)
         {
             try
             {
                 var usuarioInstituicao = await _usuarioRepositorio.ObterPorEntidadeId(doacao.IdOng);
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao enviar confirmação de doação.", ex);
+            }
+        }
+
+        public async Task EnviarEmailCancelamentoDoacao(Doacao doacao)
+        {
+            try
+            {
+                var usuarioInstituicao = await _usuarioRepositorio.ObterPorEntidadeId(doacao.IdOng);
+
+                //await _mailServico.EnviarEmailConfirmacaoDoacaoDoador(
+                //    usuario.RazaoSocial,
+                //    usuario.Email,
+                //    nomesAlimentosStr,
+                //    instituicao.RazaoSocial,
+                //    instituicao.Endereco,
+                //    instituicao.Telefone,
+                //    instituicao.Responsavel
+                //);
             }
 
             catch (Exception ex)

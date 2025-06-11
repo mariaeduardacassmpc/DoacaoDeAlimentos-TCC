@@ -43,10 +43,9 @@
                                 <label class="form-label">Filtrar por Status</label>
                                 <select class="form-select" @bind="Filtro.Status">
                                     <option value="">Todos</option>
-                                    @foreach (var status in ListaDeStatus)
-                                    {
-                                        <option value="@status">@status</option>
-                                    }
+                                    <option value="1">Pendente</option>
+                                    <option value="2">Cancelada</option>
+                                    <option value="3">Concluida</option>
                                 </select>
                             </div>
                             <div class="col-md-4">
@@ -71,7 +70,7 @@
                                     @foreach (var doacao in DoacoesFiltradas)
                                     {
                                         <tr>
-                                            <td>@doacao.IdDoacao</td>
+                                            <td>@doacao.Id</td>
                                             <td>@ObterNomeOng(doacao.IdOng)</td>
                                             <td>@doacao.DataDoacao.ToString("dd/MM/yyyy")</td>
                                             <td>
@@ -80,8 +79,13 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-success" 
-                                                @onclick="() => VerDetalhes(doacao.IdDoacao)">Detalhes
+                                                <button class="btn btn-sm btn-success"
+                                                        @onclick="() => VerDetalhes(doacao.Id)">
+                                                    Detalhes
+                                                </button>
+                                                <button class="btn btn-sm btn-success"
+                                                        @onclick="() => FinalizarDoacao(doacao.Id)">
+                                                    Finalizar
                                                 </button>
                                             </td>
                                         </tr>
@@ -110,7 +114,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-light">
-                    <h5 class="modal-title">Detalhes da Doação #@(DoacaoSelecionada?.IdDoacao ?? 0)</h5>
+                    <h5 class="modal-title">Detalhes da Doação #@(DoacaoSelecionada?.Id ?? 0)</h5>
                     <button type="button" class="btn-close" @onclick="FecharModal"></button>
                 </div>
                 <div class="modal-body">
@@ -171,25 +175,25 @@
                             <table class="table table-sm">
                                 <thead>
                                     <tr>
-                                        <th>Alimento</th>
-                                        <th>Quantidade</th>
-                                        <th>Unidade</th>                                        
-                                        <th>Validade</th>
-
+                                        <th class="ps-4">Alimento</th>
+                                        <th class="ps-4">Quantidade</th>
+                                        <th class="ps-4">Unidade</th>
+                                        <th class="ps-4">Validade</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var item in DoacaoSelecionada.Alimentos)
                                     {
                                         <tr>
-                                            <td>@ObterNomeAlimento(item.AlimentoId)</td>
-                                            <td>@item.Quantidade</td>
-                                            <td>@item.UnidadeMedida</td>
-                                            <td>@item.Validade</td>
+                                            <td class="ps-4">@ObterNomeAlimento(item.AlimentoId)</td>
+                                            <td class="ps-4">@item.Quantidade</td>
+                                            <td class="ps-4">@item.UnidadeMedida</td>
+                                            <td class="ps-4">@item.Validade.ToString("dd/MM/yyyy")</td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
+
                         </div>
                     }
                 </div>
@@ -291,7 +295,7 @@
     {
         try
         {
-            ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("entidade/obterTodasInstituicoes");
+            ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasInstituicoes");
         }
         catch (Exception ex)
         {
@@ -326,12 +330,12 @@
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Erro ao carregar doações: {errorContent}");
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar doações");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro crítico ao carregar doações: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar doações");
         }
     }
 
@@ -342,7 +346,7 @@
             .Where(d => Filtro.DataDoacao.HasValue
                 ? d.DataDoacao.Date == Filtro.DataDoacao.Value.Date
                 : true)
-            .Where(d => !IdDoacaoFiltro.HasValue || d.IdDoacao == IdDoacaoFiltro.Value) 
+            .Where(d => !IdDoacaoFiltro.HasValue || d.Id == IdDoacaoFiltro.Value)
             .OrderByDescending(d => d.DataDoacao);
 
     private int? IdDoacaoFiltro { get; set; }
@@ -373,13 +377,15 @@
         MostrarModalMotivo = true;
     }
     
-    private void VerDetalhes(int idDoacao)
+    private async Task VerDetalhes(int idDoacao)
     {
-        DoacaoSelecionada = DoacoesFiltradas.FirstOrDefault(d => d.IdDoacao == idDoacao);
+        DoacaoSelecionada = DoacoesFiltradas.FirstOrDefault(d => d.Id == idDoacao);
         
         if (DoacaoSelecionada != null)
         {
             OngSelecionada = ListaDeOngs.FirstOrDefault(o => o.Id == DoacaoSelecionada.IdOng);
+            var alimentos = await Http.GetFromJsonAsync<List<AlimentoDoacao>>($"api/alimentoDoacao/obterTodosPorDoacao/{idDoacao}");
+            DoacaoSelecionada.Alimentos = alimentos ?? new List<AlimentoDoacao>();
             MostrarModal = true;
             StateHasChanged(); 
         }
@@ -403,13 +409,15 @@
         if (DoacaoSelecionada == null || string.IsNullOrEmpty(MotivoCancelamento))
             return;
 
-        var response = await Http.PutAsJsonAsync($"api/doacao/CancelarDoacao/{DoacaoSelecionada.IdDoacao}", MotivoCancelamento);
+        var response = await Http.PutAsJsonAsync($"api/doacao/cancelarDoacao/{DoacaoSelecionada.Id}", MotivoCancelamento);
 
         if (response.IsSuccessStatusCode)
         {
-            var doacao = DoacoesSalvas.FirstOrDefault(d => d.IdDoacao == DoacaoSelecionada.IdDoacao);
+            var doacao = DoacoesSalvas.FirstOrDefault(d => d.Id == DoacaoSelecionada.Id);
             if (doacao != null)
                 doacao.Status = StatusDoacao.Cancelada;
+            await JSRuntime.InvokeVoidAsync("alert", "Doação cancelada!");
+
         }
 
         MostrarModalMotivo = false;
@@ -417,4 +425,28 @@
         MotivoCancelamento = null;
         StateHasChanged();
     }
+
+    private async Task FinalizarDoacao(int idDoacao)
+    {
+        var confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja realmente finalizar esta doação?");
+        if (!confirm)
+            return;
+
+        var response = await Http.PutAsJsonAsync($"api/doacao/atualizar/{idDoacao}", new Doacao { Id = idDoacao, Status = StatusDoacao.Finalizada });
+
+        if (response.IsSuccessStatusCode)
+        {
+            var doacao = DoacoesSalvas.FirstOrDefault(d => d.Id == idDoacao);
+            if (doacao != null)
+                doacao.Status = StatusDoacao.Finalizada;
+
+            StateHasChanged();
+            await JSRuntime.InvokeVoidAsync("alert", "Doação finalizada com sucesso!");
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Erro ao finalizar doação.");
+        }
+    }
+
 }

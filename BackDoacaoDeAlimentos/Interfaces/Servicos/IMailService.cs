@@ -9,6 +9,8 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
         string enderecoOng, string telefoneOng, string responsavelOng);
         Task<bool> EnviarEmailConfirmacaoDoacaoOng(string nomeDoador, string emailDoador, string alimento,
         string nomeOng, string enderecoOng, string telefoneOng, string responsavelOng);
+        Task<bool> EnviarEmailCancelamentoDoacao(string nomeDoador, string emailDoador, string alimento,
+        string nomeOng, string telefoneDoador, string motivoCancelamento);
         MimeMessage CriarMensagemRecuperacao(string remetente, string nome, string usuario, string link);
         MimeMessage CriarMensagemConfirmacaoDoacaoDoacao(string remetente, string nomeDoador, string emailDestino,
           string alimento, string nomeOng, string enderecoOng, string telefoneOng, string responsavelOng);

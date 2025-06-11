@@ -24,35 +24,35 @@ public class DoacaoRepositorio : IDoacaoRepositorio
 
     public async Task<Doacao> ObterDoacaoPorId(int id)
     {
-        var sql = "SELECT * FROM Doacao WHERE IdDoacao = @Id";
+        var sql = "SELECT * FROM Doacao WHERE Id = @Id";
         return await _db.QueryFirstOrDefaultAsync<Doacao>(sql, new { Id = id });
     }
 
-    public async Task AdicionarDoacao(Doacao doacao)
+    public async Task<int> AdicionarDoacao(Doacao doacao)
     {
         var sql = @"INSERT INTO Doacao 
-                        (IdOng, IdDoador, DataDoacao, Observacao, Status)
-                    VALUES (@IdOng, @IdDoador, @DataDoacao, @Observacao, @Status);
-                        SELECT CAST(SCOPE_IDENTITY() as int);
-        ";
+                    (IdOng, IdDoador, DataDoacao, Observacao, Status)
+                VALUES (@IdOng, @IdDoador, @DataDoacao, @Observacao, @Status);
+                SELECT CAST(SCOPE_IDENTITY() as int);";
 
         var id = await _db.ExecuteScalarAsync<int>(sql, doacao);
+        return id;
     }
-
     public async Task AtualizarDoacao(Doacao doacao)
     {
         var sql = @"UPDATE Doacao
             SET NomeAlimento = @NomeAlimento,
                 Quantidade = @Quantidade,
-                Data = @Data
+                Data = @Data,
+                Status = @Status
             WHERE Id = @Id";
 
         await _db.ExecuteAsync(sql, doacao);
     }
 
-    public async Task DeletarDoacao(int id)
+    public async Task CancelarDoacao(int id)
     {
-        var sql = "DELETE FROM Doacao WHERE IdDoacao = @Id";
+        var sql = "UPDATE Doacao SET Status = 3 WHERE Id = @Id";
         await _db.ExecuteAsync(sql, new { Id = id });
     }
 
@@ -72,11 +72,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
         {
             sql += " AND Status = @Status";
         }
-        //if (filtroDoacaoDto.DataDoacao.HasValue)
-        //{
-        //    sql += " AND DataDoacao = @DataDoacao";
-        //}
-        
+
         return await _db.QueryAsync<Doacao>(sql, filtroDoacaoDto);
     }
 
@@ -84,7 +80,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
     {
         var sql = @"
             SELECT 
-                (SELECT COUNT(DISTINCT IdOng) FROM Doacao WHERE Status = 3) AS TotalOngsAjudadas,
+                (SELECT COUNT(DISTINCT IdOng) FROM Doacao) AS TotalOngsAjudadas,
                 (SELECT SUM(Quantidade) FROM AlimentoDoacao) AS TotalKgAlimentosDoado
         ";
 

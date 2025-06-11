@@ -10,6 +10,6 @@ public interface IDoacaoService
     Task<Doacao> ObterDoacaoPorId(int id);
     Task<bool> AdicionarDoacao(Doacao doacao);
     Task AtualizarDoacao(Doacao doacao);
-    Task DeletarDoacao(int id);
+    Task CancelarDoacao(int id);
     Task<EstatisticasDto> ObterEstatisticas();
 }

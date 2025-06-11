@@ -31,7 +31,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter estatísticas: {ex.Message}", ex);
+                throw new Exception($"Erro ao obter estatísticas.");
             }
         }
 
@@ -51,7 +51,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao filtrar doações: {ex.Message}", ex);
+                throw new Exception($"Erro ao filtrar doações.");
             }
         }
 
@@ -68,7 +68,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter todas as doações: {ex.Message}", ex);
+                throw new Exception($"Erro ao obter todas as doações.");
             }
         }
 
@@ -88,7 +88,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter doação por ID: {ex.Message}", ex);
+                throw new Exception($"Erro ao obter doação por ID.");
             }
         }
 
@@ -101,11 +101,11 @@ namespace BackDoacaoDeAlimentos.Controllers
                     throw new ArgumentNullException(nameof(doacao));
 
                 await _doacaoService.AdicionarDoacao(doacao);
-                return CreatedAtAction(nameof(Adicionar), new { id = doacao.IdDoacao }, doacao);
+                return CreatedAtAction(nameof(Adicionar), new { id = doacao.Id }, doacao);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao adicionar doação: {ex.Message}", ex);
+                throw new Exception($"Erro ao adicionar doação.");
             }
         }
 
@@ -117,7 +117,7 @@ namespace BackDoacaoDeAlimentos.Controllers
                 if (doacao == null)
                     throw new ArgumentNullException(nameof(doacao));
 
-                var doacaoExistente = await _doacaoService.ObterDoacaoPorId(doacao.IdDoacao);
+                var doacaoExistente = await _doacaoService.ObterDoacaoPorId(doacao.Id);
                 if (doacaoExistente == null)
                     return NotFound();
 
@@ -126,12 +126,12 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao atualizar doação: {ex.Message}", ex);
+                throw new Exception($"Erro ao atualizar doação.");
             }
         }
 
-        [HttpDelete("CancelarDoacao/{id}")]
-        public async Task<IActionResult> Deletar(int id)
+        [HttpPut("cancelarDoacao/{id}")]
+        public async Task<IActionResult> CancelarDoacao(int id)
         {
             try
             {
@@ -142,12 +142,12 @@ namespace BackDoacaoDeAlimentos.Controllers
                 if (doacao == null)
                     return NotFound();
 
-                await _doacaoService.DeletarDoacao(id);
+                await _doacaoService.CancelarDoacao(id);
                 return NoContent();
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao cancelar doação: {ex.Message}", ex);
+                throw new Exception($"Erro ao cancelar doação.");
             }
         }
     }

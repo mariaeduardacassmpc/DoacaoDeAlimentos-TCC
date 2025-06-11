@@ -4,7 +4,7 @@ using TCCDoacaoDeAlimentos.Shared.Models;
 namespace BackDoacaoDeAlimentos.Controllers
 {
     [ApiController]
-    [Route("api/alimento-doacao")]
+    [Route("api/alimentoDoacao")]
     public class AlimentoDoacaoController : ControllerBase
     {
         private readonly IAlimentoDoacaoService _alimentoDoacaoService;
@@ -17,38 +17,66 @@ namespace BackDoacaoDeAlimentos.Controllers
         [HttpGet("obterTodosPorDoacao/{doacaoId}")]
         public async Task<IActionResult> ObterTodosPorDoacao(int doacaoId)
         {
-            var alimentos = await _alimentoDoacaoService.ListarAlimentosPorDoacao(doacaoId);
-            if (alimentos == null || !alimentos.Any())
-                return NotFound("Nenhum alimento encontrado para essa doação.");
+            try
+            {
+                var alimentos = await _alimentoDoacaoService.ListarAlimentosPorDoacao(doacaoId);
+                if (alimentos == null || !alimentos.Any())
+                    return NotFound("Nenhum alimento encontrado para essa doação.");
 
-            return Ok(alimentos);
+                return Ok(alimentos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Erro ao buscar alimentos da doação.", details = ex.Message });
+            }
         }
 
         [HttpGet("obterPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
-            var alimento = await _alimentoDoacaoService.ObterPorId(id);
-            if (alimento == null)
-                return NotFound("Alimento não encontrado.");
+            try
+            {
+                var alimento = await _alimentoDoacaoService.ObterPorId(id);
+                if (alimento == null)
+                    return NotFound("Alimento não encontrado.");
 
-            return Ok(alimento);
+                return Ok(alimento);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Erro ao buscar alimento.", details = ex.Message });
+            }
         }
 
         [HttpGet("proximosVencimentos")]
         public async Task<IActionResult> ObterProximosVencimentos([FromQuery] int diasAntecedencia = 7)
         {
-            var alimentos = await _alimentoDoacaoService.ListarAlimentosProximosVencimento(diasAntecedencia);
-            return Ok(alimentos);
+            try
+            {
+                var alimentos = await _alimentoDoacaoService.ListarAlimentosProximosVencimento(diasAntecedencia);
+                return Ok(alimentos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Erro ao buscar alimentos com vencimento próximo.", details = ex.Message });
+            }
         }
 
         [HttpPost("adicionar")]
         public async Task<IActionResult> Adicionar([FromBody] AlimentoDoacao alimentoDoacao)
         {
-            if (alimentoDoacao == null)
-                return BadRequest("O alimento da doação não pode ser nulo.");
+            try
+            {
+                if (alimentoDoacao == null)
+                    return BadRequest("O alimento da doação não pode ser nulo.");
 
-            var novoAlimento = await _alimentoDoacaoService.AdicionarAlimentoADoacao(alimentoDoacao);
-            return CreatedAtAction(nameof(ObterPorId), new { id = novoAlimento.Id }, novoAlimento);
+                var novoAlimento = await _alimentoDoacaoService.AdicionarAlimentoADoacao(alimentoDoacao);
+                return CreatedAtAction(nameof(ObterPorId), new { id = novoAlimento.Id }, novoAlimento);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Erro ao adicionar alimento à doação.", details = ex.Message });
+            }
         }
 
         [HttpPut("atualizarQuantidade/{id}")]
@@ -61,19 +89,26 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, new { success = false, message = "Erro ao atualizar quantidade do alimento.", details = ex.Message });
             }
         }
 
         [HttpDelete("deletar/{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
-            var alimento = await _alimentoDoacaoService.ObterPorId(id);
-            if (alimento == null)
-                return NotFound("Alimento não encontrado.");
+            try
+            {
+                var alimento = await _alimentoDoacaoService.ObterPorId(id);
+                if (alimento == null)
+                    return NotFound("Alimento não encontrado.");
 
-            await _alimentoDoacaoService.Remover(id);
-            return NoContent();
+                await _alimentoDoacaoService.Remover(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Erro ao deletar alimento da doação.", details = ex.Message });
+            }
         }
     }
 }
