@@ -15,18 +15,18 @@
                     <div class="card-body p-5">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h1 class="card-title mb-0">
-                                @(TipoUsuario == "O" ? "Doações Recebidas" : "Minhas Doações")
+                                @(TpEntidade == "O" ? "Doações Recebidas" : "Minhas Doações")
                             </h1>
-                            @if (TipoUsuario == "D")
+                            @if (TpEntidade == "D")
                             {
                                 <button class="btn btn-success" @onclick="NavigateToCadastro">
                                     <i class="bi bi-plus-circle me-2"></i>Nova Doação
                                 </button>
                             }
                         </div>
-
-                        <div class="row">
-                            @if (TipoUsuario == "D")
+                     
+                        <div class="row mb-4">
+                            @if (TpEntidade == "D")
                             {
                                 <div class="col-md-4">
                                     <label class="form-label">Filtrar por Instituição</label>
@@ -39,18 +39,30 @@
                                     </select>
                                 </div>
                             }
-                            <div class="col-md-4">
-                                <label class="form-label">Filtrar por Status</label>
-                                <select class="form-select" @bind="Filtro.Status">
-                                    <option value="">Todos</option>
-                                    <option value="1">Pendente</option>
-                                    <option value="2">Cancelada</option>
-                                    <option value="3">Concluida</option>
-                                </select>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <div class="flex-grow-1 me-2">
+                                    <label class="form-label">Filtrar por Status</label>
+                                    <select class="form-select" @bind="Filtro.Status">
+                                        <option value="">Todos</option>
+                                        <option value="1">Pendente</option>
+                                        <option value="2">Cancelada</option>
+                                        <option value="3">Concluida</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Data da Doação</label>
-                                <input type="date" class="form-control" @bind="Filtro.DataDoacao" />
+                                <div class="d-flex align-items-center">
+                                    <input type="date" class="form-control me-2" @bind="Filtro.DataDoacao" />
+                                    @if (TpEntidade == "O")
+                                    {
+                                        <button class="btn btn-outline-success"
+                                                style="white-space: nowrap; height: 38px"
+                                                @onclick="BaixarRelatorioPdf">
+                                            <i class="bi bi-file-earmark-pdf me-2"></i> Relatório
+                                        </button>
+                                    }
+                                </div>
                             </div>
                         </div>
 
@@ -79,15 +91,20 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-success"
+                                                <button class="btn btn-outline-success btn-sm me-1"
                                                         @onclick="() => VerDetalhes(doacao.Id)">
                                                     Detalhes
                                                 </button>
-                                                <button class="btn btn-sm btn-success"
-                                                        @onclick="() => FinalizarDoacao(doacao.Id)">
-                                                    Finalizar
-                                                </button>
+                                                @if (TpEntidade == "O")
+                                                {
+                                                    <button class="btn btn-sm btn-success"
+                                                            @onclick="() => FinalizarDoacao(doacao.Id)">
+                                                        Finalizar
+                                                    </button>
+                                                }
                                             </td>
+
+
                                         </tr>
                                     }
                                 </tbody>
@@ -134,34 +151,34 @@
                                         <span class="text-muted">Não informado</span>
                                     }
                                 </p> 
-                              <p>
-                                <strong>Telefone: </strong>
-                                @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Telefone))
-                                {
-                                    <a href="tel:@OngSelecionada.Telefone">
-                                        @OngSelecionada.Telefone
-                                        <i class="bi bi-telephone-fill ms-1"></i>
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">Não informado</span>
-                                }
-                            </p>
-                            <p>
-                                <strong>Endereço: </strong>
-                                @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Endereco))
-                                {
-                                    <a href="https://www.google.com/maps/search/@(Uri.EscapeDataString(OngSelecionada.Endereco))" target="_blank" rel="noopener">
-                                        @OngSelecionada.Endereco
-                                        <i class="bi bi-geo-alt-fill ms-1"></i>
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">Não informado</span>
-                                }
-                            </p>
+                                <p>
+                                    <strong>Telefone: </strong>
+                                    @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Telefone))
+                                    {
+                                        <a href="tel:@OngSelecionada.Telefone">
+                                            @OngSelecionada.Telefone
+                                            <i class="bi bi-telephone-fill ms-1"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Não informado</span>
+                                    }
+                                </p>
+                                <p>
+                                    <strong>Endereço: </strong>
+                                    @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Endereco))
+                                    {
+                                        <a href="https://www.google.com/maps/search/@(Uri.EscapeDataString(OngSelecionada.Endereco))" target="_blank" rel="noopener">
+                                            @OngSelecionada.Endereco
+                                            <i class="bi bi-geo-alt-fill ms-1"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Não informado</span>
+                                    }
+                                </p>
                             </div>
                             <div class="col-md-6">
                                 <h6>Informações da Doação</h6>
@@ -220,8 +237,8 @@
                     {
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" id="@motivo" name="motivoCancelamento"
-                                   value="@motivo" @onchange="() => MotivoCancelamento = motivo"
-                                   checked="@(MotivoCancelamento == motivo)" />
+                            value="@motivo" @onchange="() => MotivoCancelamento = motivo"
+                            checked="@(MotivoCancelamento == motivo)" />
                             <label class="form-check-label" for="@motivo">@motivo</label>
                         </div>
                     }
@@ -241,8 +258,7 @@
     private List<Doacao> DoacoesSalvas = new();
     private List<Entidade> ListaDeOngs = new();
     private List<Alimento> ListaDeAlimentos = new();
-    private List<string> ListaDeStatus = new() { "Pendente", "Confirmada", "Cancelada" };
-    private string TipoUsuario = "D";
+    private string TpEntidade;
     private bool MostrarModal { get; set; } = false;
     private Doacao DoacaoSelecionada { get; set; }
     private Entidade? OngSelecionada { get; set; }
@@ -279,6 +295,17 @@
                         IdDoador = idUsuario
                     };
             }
+
+            // Obter o tipo de usuário pela claim
+            var tpEntidadeClaim = user.FindFirst("tpentidade");
+            if (tpEntidadeClaim != null)
+            {
+                TpEntidade = tpEntidadeClaim.Value;
+            }
+            else
+            {
+                TpEntidade = ""; // ou valor padrão
+            }
         }
         else
         {
@@ -290,6 +317,7 @@
         await ObterInstituicoes();
         await ObterDoacoes();
     }
+
 
     private async Task ObterInstituicoes()
     {
@@ -448,5 +476,31 @@
             await JSRuntime.InvokeVoidAsync("alert", "Erro ao finalizar doação.");
         }
     }
+
+    private async Task BaixarRelatorioPdf()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/relatorio/gerar-pdf", DoacoesFiltradas.ToList());
+
+            if (response.IsSuccessStatusCode)
+            {
+                var fileBytes = await response.Content.ReadAsByteArrayAsync();
+                var base64 = Convert.ToBase64String(fileBytes);
+                var fileName = $"RelatorioDoacoes_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+
+                await JSRuntime.InvokeVoidAsync("blazorDownloadFile", fileName, "application/pdf", base64);
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Erro ao gerar o relatório.");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao gerar o relatório: {ex.Message}");
+        }
+    }
+
 
 }

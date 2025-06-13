@@ -123,7 +123,7 @@ namespace BackDoacaoDeAlimentos.Servicos
         }
      
 
-        private string CriptografarSenha(string senha)
+        public string CriptografarSenha(string senha)
         {
             using var sha256 = SHA256.Create();
             var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(senha));

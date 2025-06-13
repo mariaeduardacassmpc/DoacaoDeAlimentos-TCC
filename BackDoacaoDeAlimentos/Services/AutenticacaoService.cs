@@ -16,14 +16,17 @@ namespace BackDoacaoDeAlimentos.Services
         private readonly IMailService _mailServico;
         private readonly IUsuarioRepositorio _usuarioRepositorio;
         private readonly IPasswordHasher<Usuario> _hasher;
+        private readonly IUsuarioService _usuarioService;
 
         public AutenticacaoService(
-            IEntidadeRepositorio entidadeRepositorio,
-            HttpClient http,
-            IMailService mailServico,
-            IUsuarioRepositorio usuarioRepositorio,
-            IJwtService jwtService,
-            IPasswordHasher<Usuario> hasher)
+              IEntidadeRepositorio entidadeRepositorio,
+              HttpClient http,
+              IMailService mailServico,
+              IUsuarioRepositorio usuarioRepositorio,
+              IJwtService jwtService,
+              IPasswordHasher<Usuario> hasher,
+              IUsuarioService usuarioService
+        )
         {
             _entidadeRepositorio = entidadeRepositorio;
             _http = http;
@@ -31,7 +34,9 @@ namespace BackDoacaoDeAlimentos.Services
             _usuarioRepositorio = usuarioRepositorio;
             _jwtService = jwtService;
             _hasher = hasher;
+            _usuarioService = usuarioService;
         }
+
 
         public string GerarHashSenha(string senha)
         {
@@ -76,7 +81,7 @@ namespace BackDoacaoDeAlimentos.Services
                 return new RespostaAutenticacao
                 {
                     Token = token,
-                    NomeUsuario = usuario.Entidade?.RazaoSocial ?? usuario.Email,
+                    NomeUsuario = usuario.RazaoSocial ?? usuario.Email,
                     Email = usuario.Email
                 };
             }
@@ -122,7 +127,7 @@ namespace BackDoacaoDeAlimentos.Services
                 var email = partes[0];
                 var dataExpiracao = DateTime.Parse(partes[1]);
 
-                if (DateTime.UtcNow > dataExpiracao)
+                if (DateTime.Now > dataExpiracao)
                     return (false, null);
 
                 return (true, email);
@@ -143,7 +148,7 @@ namespace BackDoacaoDeAlimentos.Services
             if (usuario == null)
                 throw new Exception("Usuário não encontrado.");
 
-            var senhaHash = GerarHashSenha(novaSenha);
+            var senhaHash = _usuarioService.CriptografarSenha(novaSenha);
             usuario.Senha = senhaHash;
             await _usuarioRepositorio.Atualizar(usuario);
         }

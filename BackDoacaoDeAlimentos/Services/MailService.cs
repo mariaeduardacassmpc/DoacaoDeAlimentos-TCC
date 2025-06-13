@@ -197,7 +197,7 @@ public class MailService : IMailService
             {
                 HtmlBody = $@"
                     <p>Olá {nomeDoador},</p>
-                    <p>Parabéns! Sua doação do alimento <strong>{alimento}</strong> foi efetuada para a ONG <strong>{nomeOng}</strong>.</p>
+                    <p>Parabéns! Sua doação com o(s) alimento(s): <strong>{alimento}</strong> foi efetuada para a ONG <strong>{nomeOng}</strong>.</p>
                     <p>Endereço da ONG: <strong>{enderecoOng}</strong></p>
                     <p>Telefone de contato: <strong>{telefoneOng}</strong></p>
                     <p>Responsável: <strong>{responsavelOng}</strong></p>

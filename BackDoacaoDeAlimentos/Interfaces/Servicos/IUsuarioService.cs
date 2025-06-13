@@ -10,5 +10,6 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
         Task<Usuario> AutenticarUsuario(string email, string senha);
         Task AtualizarUsuario(Usuario usuario);
         Task<Usuario> ObterPorEmail(string email);
+        public string CriptografarSenha(string senha);
     }
 }

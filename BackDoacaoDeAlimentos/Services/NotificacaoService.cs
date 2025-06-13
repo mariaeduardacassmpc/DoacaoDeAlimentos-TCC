@@ -45,15 +45,11 @@ namespace BackDoacaoDeAlimentos.Services
                 if (usuario == null)
                     throw new Exception("Usuário não encontrado.");
 
-                Entidade entidade = usuario.Entidade;
-                if (entidade == null)
-                    throw new Exception("Entidade não encontrada.");
-
-                var token = _jwtService.GerarTokenRecuperacao(email);
+                               var token = _jwtService.GerarTokenRecuperacao(email);
                 var link = $"https://localhost:7170/alterarsenha?token={token}";
 
                 return await _mailServico.EnviarEmailRecuperacaoSenha(
-                    entidade.RazaoSocial,
+                    usuario.RazaoSocial,
                     usuario.Email,
                     link
                 );
@@ -120,7 +116,7 @@ namespace BackDoacaoDeAlimentos.Services
         {
             try
             {
-                var usuarioInstituicao = await _usuarioRepositorio.ObterPorEntidadeId(doacao.IdOng);
+                var usuarioInstituicao = await _usuarioRepositorio.ObterPorEntidadeId(doacao.Id);
 
                 //await _mailServico.EnviarEmailConfirmacaoDoacaoDoador(
                 //    usuario.RazaoSocial,
