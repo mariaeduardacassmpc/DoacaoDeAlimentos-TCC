@@ -1,8 +1,10 @@
 ﻿@page "/"
-@using TCCDoacaoDeAlimentos.Shared.Dto
-@inject NavigationManager Navigation
-@inject HttpClient Http
 @using System.Text.Json;
+@using TCCDoacaoDeAlimentos.Shared.Dto
+@using TCCDoacaoDeAlimentos.Shared.Models
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
 
 <div class="hero-section py-5" style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/img-home.jpg') no-repeat center center; background-size: cover; min-height: 80vh; display: flex; align-items: center;">
     <div class="container text-white">
@@ -201,26 +203,62 @@
     </div>
 </div>
 
- @if (modalAberto == "saibaMais")
-{
-    <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);" @onclick="FecharModal">
-        <div class="modal-dialog" @onclick:stopPropagation>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Saiba Mais</h5>
-                    <button class="btn-close" @onclick="FecharModal"></button>
-                </div>
-                <div class="modal-body text-start">
-                    Após registrar sua doação, você receberá um e-mail de confirmação com os dados da ONG beneficiada, incluindo <strong>endereço</strong> e <strong>telefone</strong>.<br><br>
-                    A ONG também receberá seus dados, como <strong>nome</strong>, <strong>telefone</strong> e os <strong>alimentos que você deseja doar</strong>.<br><br>
+
+<div class="my-5"></div>
+<section class="py-10 bg-light-success" style="min-height: 800px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm bg-white">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <div class="icon-stack icon-stack-lg bg-success bg-opacity-10 text-success mb-3">
+                                <i class="bi bi-chat-square-quote fs-1"></i>
+                            </div>
+                            <h2 class="fw-bold text-dark">Envie seu Depoimento</h2>
+                            <p class="text-muted">Compartilhe sua experiência com a AlimentAção</p>
+                        </div>
+
+                        <EditForm Model="@DepoimentoModel" OnValidSubmit="HandleSubmit" class="needs-validation" novalidate>
+                            <DataAnnotationsValidator />
+
+                            <div class="mb-4">
+                                <label for="nome" class="form-label">Nome</label>
+                                <InputText id="nome" @bind-Value="DepoimentoModel.Nome" class="form-control form-control-lg" />
+                                <ValidationMessage For="@(() => DepoimentoModel.Nome)" />
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="email" class="form-label">Email</label>
+                                <InputText id="email" @bind-Value="DepoimentoModel.Email" class="form-control form-control-lg" />
+                                <ValidationMessage For="@(() => DepoimentoModel.Email)" />
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="mensagem" class="form-label">Mensagem</label>
+                                <InputTextArea id="mensagem"
+                                               @bind-Value="DepoimentoModel.Mensagem"
+                                               class="form-control form-control-lg"
+                                               style="resize: none; overflow: hidden; min-height: 80px;"
+                                               oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+                                               rows="1" />
+                                <ValidationMessage For="@(() => DepoimentoModel.Mensagem)" />
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="bi bi-send-fill me-2"></i> Enviar Depoimento
+                                </button>
+                            </div>
+                        </EditForm>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-}
+</section>
 
-<div class="my-5"></div>
-<footer class="bg-dark text-white pt-5 pb-4 mt-5">
+<footer class="bg-dark text-white pt-5 pb-4">
     <div class="container">
         <div class="row g-4">
             <div class="col-lg-4">
@@ -231,7 +269,6 @@
                 <div class="social-icons mt-4">
                     <a href="#" class="text-white me-3"><i class="bi bi-facebook fs-5"></i></a>
                     <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-5"></i></a>
-                    <a href="#" class="text-white"><i class="bi bi-linkedin fs-5"></i></a>
                 </div>
             </div>
 
@@ -247,11 +284,11 @@
 
             <div class="col-lg-4">
                 <h5 class="fw-bold mb-4">Contato</h5>
-                <p><i class="bi bi-telephone-fill me-2"></i> (11) 98765-4321</p>
+                <p><i class="bi bi-telephone-fill me-2"></i> (43) 99931-1445</p>
                 <p><i class="bi bi-envelope-fill me-2"></i> equipesuportealimentacao@gmail.com</p>
 
                 <h6 class="fw-bold mt-4">Horário de Atendimento</h6>
-                <p>Segunda-Sexta: 8h - 19h<br>Sábado: 8h - 13h<br>Domingo: Fechado</p>
+                <p>Segunda-Sexta: 8h - 17h<br>Sábado: 8h - 11h</p>
             </div>
         </div>
 
@@ -263,12 +300,48 @@
     </div>
 </footer>
 
+@if (modalAberto == "saibaMais")
+{
+        <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);" @onclick="FecharModal">
+            <div class="modal-dialog" @onclick:stopPropagation>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Saiba Mais</h5>
+                        <button class="btn-close" @onclick="FecharModal"></button>
+                    </div>
+                    <div class="modal-body text-start">
+                        Após registrar sua doação, você receberá um e-mail de confirmação com os dados da ONG beneficiada, incluindo <strong>endereço</strong> e <strong>telefone</strong>.<br><br>
+                        A ONG também receberá seus dados, como <strong>nome</strong>, <strong>telefone</strong> e os <strong>alimentos que você deseja doar</strong> e entrará em contato.<br><br>
 
+                    </div>
+                </div>
+            </div>
+        </div>
+}
 @code {
+
     private string? modalAberto = null;
     private EstatisticasDto estatisticas = new();
     private string tipoCadastro;
     private string mensagem = " ";
+
+    private DepoimentoModel DepoimentoModel { get; set; } = new DepoimentoModel();
+
+    private async Task HandleSubmit()
+    {
+        DepoimentoModel = new DepoimentoModel();
+        await JS.InvokeVoidAsync("alert", "Depoimento enviado");
+    }
+
+    private void AbrirModal(string modal)
+    {
+        modalAberto = modal;
+    }
+
+    private void FecharModal()
+    {
+        modalAberto = null;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -286,19 +359,7 @@
         }
         catch (Exception ex)
         {
-            mensagem = $"Erro ao carregar estatísticas: {ex.Message}";
+            mensagem = "Erro ao carregar estatísticas.";
         }
     }
-
-    private void AbrirModal(string modal)
-    {
-        modalAberto = modal;
-    }
-
-    private void FecharModal()
-    {
-        modalAberto = null;
-    }
-
 }
-

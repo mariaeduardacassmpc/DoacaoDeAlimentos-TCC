@@ -58,23 +58,24 @@ public class DoacaoRepositorio : IDoacaoRepositorio
 
     public async Task<IEnumerable<Doacao>> ObterDoacoesPorDoadorOuOng(FiltroDoacaoDto filtroDoacaoDto)
     {
+        if ((filtroDoacaoDto.IdDoador == null || filtroDoacaoDto.IdDoador == 0) &&
+            (filtroDoacaoDto.IdOng == null || filtroDoacaoDto.IdOng == 0))
+            return Enumerable.Empty<Doacao>();
+
         var sql = "SELECT * FROM Doacao WHERE YEAR(DataDoacao) >= 2025";
 
         if (filtroDoacaoDto.IdDoador.HasValue && filtroDoacaoDto.IdDoador.Value != 0)
-        {
             sql += " AND IdDoador = @IdDoador";
-        }
         if (filtroDoacaoDto.IdOng.HasValue && filtroDoacaoDto.IdOng.Value != 0)
-        {
             sql += " AND IdOng = @IdOng";
-        }
         if (filtroDoacaoDto.Status.HasValue && filtroDoacaoDto.Status.Value != 0)
-        {
             sql += " AND Status = @Status";
-        }
+        if (filtroDoacaoDto.DataDoacao.HasValue)
+            sql += " AND CAST(DataDoacao AS DATE) = @DataDoacao";
 
         return await _db.QueryAsync<Doacao>(sql, filtroDoacaoDto);
     }
+
 
     public async Task<EstatisticasDto> ObterEstatisticas()
     {

@@ -10,6 +10,9 @@ using BackDoacaoDeAlimentos.Repositorio;
 using BackDoacaoDeAlimentos.Servicos;
 using BackDoacaoDeAlimentos.Repositorios;
 using TCCDoacaoDeAlimentos.Shared.Models;
+using Microsoft.AspNetCore.Components.Authorization;
+using TCCDoacaoDeAlimentos.Shared.Autenticacao;
+using Blazored.SessionStorage; 
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -102,7 +105,6 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
