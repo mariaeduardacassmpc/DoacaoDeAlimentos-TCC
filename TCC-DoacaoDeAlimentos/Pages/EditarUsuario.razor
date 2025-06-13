@@ -1,4 +1,4 @@
-﻿@page "/EditarUsuario"
+﻿@page "/EditarUsuario/{id}"
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
@@ -142,25 +142,37 @@
     private Entidade entidade = new Entidade();
     private bool _showPassword = false;
     private bool carregando = true;
+    [Parameter]
+    public int? id { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        var email = user.Identity?.IsAuthenticated == true ? user.Identity.Name : null;
-
-        if (!string.IsNullOrEmpty(email))
+        if (id.HasValue && id.Value > 0)
         {
-            entidade = await Http.GetFromJsonAsync<Entidade>($"api/entidade/obterPorEmail/{email}");
+            // Buscar pelo id da URL
+            entidade = await Http.GetFromJsonAsync<Entidade>($"api/entidade/obterPorId/{id.Value}");
         }
         else
         {
-            await JSRuntime.InvokeVoidAsync("alert", "Usuário não autenticado.");
-            Navigation.NavigateTo("/login");
+            // Buscar pelo id do usuário logado
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            var idClaim = user.FindFirst("sub") ?? user.FindFirst("userid") ?? user.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (idClaim != null && int.TryParse(idClaim.Value, out int idUsuario))
+            {
+                entidade = await Http.GetFromJsonAsync<Entidade>($"api/entidade/obterPorId/{idUsuario}");
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Usuário não autenticado.");
+                Navigation.NavigateTo("/login");
+            }
         }
         carregando = false;
     }
+
 
 
     private async Task AtualizarEntidade()

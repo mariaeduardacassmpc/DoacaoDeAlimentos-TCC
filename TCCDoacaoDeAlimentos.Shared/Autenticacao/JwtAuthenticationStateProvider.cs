@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization; 
-using Blazored.LocalStorage;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.SessionStorage;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -7,16 +7,16 @@ namespace TCCDoacaoDeAlimentos.Shared.Autenticacao
 {
     public class JwtAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private readonly ILocalStorageService _localStorage;
+        private readonly ISessionStorageService _sessionStorage;
 
-        public JwtAuthenticationStateProvider(ILocalStorageService localStorage)
+        public JwtAuthenticationStateProvider(ISessionStorageService sessionStorage)
         {
-            _localStorage = localStorage;
+            _sessionStorage = sessionStorage;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-           var token = await _localStorage.GetItemAsStringAsync("token");
+           var token = await _sessionStorage.GetItemAsStringAsync("token");
 
             if (string.IsNullOrWhiteSpace(token))
             {
@@ -28,7 +28,7 @@ namespace TCCDoacaoDeAlimentos.Shared.Autenticacao
 
             if (jwt.ValidTo < DateTime.UtcNow)
             {
-                await _localStorage.RemoveItemAsync("token");
+                await _sessionStorage.RemoveItemAsync("token");
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
 

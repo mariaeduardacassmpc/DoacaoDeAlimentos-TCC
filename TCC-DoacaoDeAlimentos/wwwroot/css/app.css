@@ -16,6 +16,17 @@ button.page-link:focus {
     box-shadow: none !important;
 }
 
+#perfilMenu:focus, #perfilMenu:active {
+    box-shadow: none !important;
+    outline: none !important;
+    background: transparent !important;
+}
+
+.dropdown-menu .dropdown-item:active, .dropdown-menu .dropdown-item:focus {
+    background-color: #198754 !important;
+    color: #fff !important;
+}
+
 .link-black, .link-black:visited, .link-black:active, .link-black:hover, .link-black:focus {
     color: #212529 !important;
     text-decoration: none;

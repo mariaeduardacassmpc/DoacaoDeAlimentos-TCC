@@ -10,10 +10,11 @@
     <main>
         <nav class="navbar navbar-expand-lg navbar-light px-4 py-3 shadow-sm" style="background-color: white;">
             <div class="container-fluid">
-                <NavLink class="navbar-brand fw-bold d-flex align-items-center" href="/">
+                <NavLink class="navbar-brand fw-bold d-flex align-items-center" href="/" Match="NavLinkMatch.All">
                     <i class="bi bi-heart-fill me-2" style="color: var(--primary-color); font-size: 1.5rem;"></i>
                     <span style="color: var(--primary-color);">AlimentAção</span>
                 </NavLink>
+
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,12 +57,6 @@
                                 <NavLink class="nav-link" href="/Usuarios" @onclick="FecharMenu">Listar Úsuarios</NavLink>
                             </li>
                         }
-                        @if (UsuarioEstaLogado)
-                        {
-                            <li class="nav-item mx-2">
-                                <NavLink class="nav-link" href="/alterarsenha" @onclick="FecharMenu">Editar Conta</NavLink>
-                            </li>
-                        }
                     </ul>
 
                     <div class="d-flex align-items-center gap-2">
@@ -78,6 +73,25 @@
                         }
                     </div>
 
+                    <div class="d-flex align-items-center me-3">
+                        @if (UsuarioEstaLogado)
+                        {
+                            <div class="dropdown">
+                                <button class="btn border-0 p-0 bg-transparent" type="button" id="perfilMenu" data-bs-toggle="dropdown" aria-expanded="false"
+                                        style="box-shadow:none; outline:none;">
+                                    <i class="bi bi-person-circle fs-3 text-success"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilMenu">
+                                    <li>
+                                        <a class="dropdown-item" @onclick="IrParaPerfil">Meu Perfil</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" @onclick="Logout">Sair</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </nav>
@@ -96,6 +110,40 @@
     private bool modalAberto = false;
     private bool UsuarioEstaLogado;
 
+    private async void IrParaPerfil()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", "token");
+
+        if (user.Identity?.IsAuthenticated == true && !string.IsNullOrEmpty(token))
+        {
+            var idClaim = user.FindFirst("sub") ?? user.FindFirst("userid") ?? user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (idClaim != null)
+            {
+                Navigation.NavigateTo($"/EditarUsuario/{idClaim.Value}");
+            }
+            else
+            {
+                Navigation.NavigateTo("/login", true);
+            }
+        }
+        else
+        {
+            Navigation.NavigateTo("/login", true);
+        }
+    }
+
+    private async Task Logout()
+    {
+        await JS.InvokeVoidAsync("sessionStorage.removeItem", "token");
+        UsuarioEstaLogado = false;
+        TpEntidade = "";
+        EmailUsuarioLogado = "";
+        StateHasChanged();
+        Navigation.NavigateTo("/login", true);
+    }
+
     private async Task FecharMenu()
     {
         await JS.InvokeVoidAsync("fecharMenuNavbar");
@@ -105,11 +153,15 @@
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
+        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", "token");
+
+        UsuarioEstaLogado = (user.Identity?.IsAuthenticated == true) && !string.IsNullOrEmpty(token);
+
         TpEntidade = user.FindFirst("TpEntidade")?.Value ?? "";
-        EmailUsuarioLogado = user.Identity?.IsAuthenticated == true ? user.Identity.Name : "";
-        UsuarioEstaLogado = user.Identity?.IsAuthenticated == true;
+        EmailUsuarioLogado = user.Identity?.Name ?? "";
         StateHasChanged();
     }
+
 
     protected override async Task OnInitializedAsync()
     {

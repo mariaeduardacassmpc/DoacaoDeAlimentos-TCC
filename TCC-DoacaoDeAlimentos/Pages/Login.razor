@@ -2,10 +2,14 @@
 @using Blazored.Modal
 @using Blazored.Modal.Services
 @using TCCDoacaoDeAlimentos.Shared.Models
+@using TCCDoacaoDeAlimentos.Shared.Autenticacao
+@using Microsoft.AspNetCore.Components.Authorization
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject Blazored.Toast.Services.IToastService ToastService
 @inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider AuthStateProvider
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <div class="login-container" style="background-color: #d4edda; min-height: 100vh;">
     <div class="container py-5">
@@ -88,8 +92,9 @@
                 var usuarioLogado = await response.Content.ReadFromJsonAsync<UsuarioLogado>();
                 if (usuarioLogado != null)
                 {
-                    await JSRuntime.InvokeVoidAsync("localStorage.setItem", "token", usuarioLogado.Token);
-                    Console.WriteLine(usuarioLogado.Token);
+                    await sessionStorage.SetItemAsStringAsync("token", usuarioLogado.Token);
+                    var authProvider = (JwtAuthenticationStateProvider)AuthStateProvider;
+                    authProvider.NotifyUserAuthentication(usuarioLogado.Token);
 
                     sucesso = true;
                     await JSRuntime.InvokeVoidAsync("alert", $"Login realizado com sucesso!");

@@ -24,7 +24,7 @@
                                 </button>
                             }
                         </div>
-                     
+
                         <div class="row mb-4">
                             @if (TpEntidade == "D")
                             {
@@ -54,14 +54,14 @@
                                 <label class="form-label">Data da Doação</label>
                                 <div class="d-flex align-items-center">
                                     <input type="date" class="form-control me-2" @bind="Filtro.DataDoacao" />
-                                    @if (TpEntidade == "O")
-                                    {
-                                        <button class="btn btn-outline-success"
-                                                style="white-space: nowrap; height: 38px"
-                                                @onclick="BaixarRelatorioPdf">
-                                            <i class="bi bi-file-earmark-pdf me-2"></i> Relatório
-                                        </button>
-                                    }
+                                    @* @if (TpEntidade == "O") *@
+                                    @* { *@
+                                    @*     <button class="btn btn-outline-success" *@
+                                    @*     style="white-space: nowrap; height: 38px" *@
+                                    @*     @onclick="BaixarRelatorioPdf"> *@
+                                    @*         <i class="bi bi-file-earmark-pdf me-2"></i> Relatório *@
+                                    @*     </button> *@
+                                    @* } *@
                                 </div>
                             </div>
                         </div>
@@ -92,13 +92,13 @@
                                             </td>
                                             <td>
                                                 <button class="btn btn-outline-success btn-sm me-1"
-                                                        @onclick="() => VerDetalhes(doacao.Id)">
+                                                @onclick="() => VerDetalhes(doacao.Id)">
                                                     Detalhes
                                                 </button>
                                                 @if (TpEntidade == "O")
                                                 {
                                                     <button class="btn btn-sm btn-success"
-                                                            @onclick="() => FinalizarDoacao(doacao.Id)">
+                                                    @onclick="() => FinalizarDoacao(doacao.Id)">
                                                         Finalizar
                                                     </button>
                                                 }
@@ -113,9 +113,18 @@
 
                         @if (!DoacoesFiltradas.Any())
                         {
-                            <div class="alert alert-success text-center">
-                                Nenhuma doação encontrada.
-                            </div>
+                            @if (!UsuarioLogado)
+                            {
+                                <div class="alert alert-success text-center">
+                                    Nenhuma doação encontrada. Faça Login para poder visualizar as doações
+                                </div>
+                            }
+                            else if (!DoacoesFiltradas.Any())
+                            {
+                                <div class="alert alert-success text-center">
+                                    Nenhuma doação encontrada.
+                                </div>
+                            }
                         }
                     </div>
                 </div>
@@ -264,12 +273,14 @@
     private Entidade? OngSelecionada { get; set; }
     private bool MostrarModalMotivo { get; set; } = false;
     private string? MotivoCancelamento { get; set; }
+    private bool UsuarioLogado { get; set; }
     private string[] Motivos = new[]
     {
            "Alimento estragou/perdeu a validade",
             "Problemas logísticos (transporte, horário)",
             "Erro no cadastro da doação",
             "Instituição não entrou em contato/desistiu",
+            "Doador não desistiu",
             "Mudança de planejamento pessoal",
             "Preocupação com a qualidade do alimento",
             "Outro motivo"
@@ -282,41 +293,32 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var token = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "token");
+        UsuarioLogado = !string.IsNullOrEmpty(token);
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
             var idClaim = user.FindFirst("sub") ?? user.FindFirst("userid") ?? user.FindFirst(ClaimTypes.NameIdentifier);
+            var tpEntidadeClaim = user.FindFirst("tpentidade");
+            TpEntidade = tpEntidadeClaim?.Value ?? "";
+
             if (idClaim != null && int.TryParse(idClaim.Value, out int idUsuario))
             {
-                Filtro = new FiltroDoacaoDto
-                    {
-                        IdDoador = idUsuario
-                    };
+                if (TpEntidade == "D")
+                    Filtro = new FiltroDoacaoDto { IdDoador = idUsuario };
+                else if (TpEntidade == "O")
+                    Filtro = new FiltroDoacaoDto { IdOng = idUsuario };
             }
-
-            // Obter o tipo de usuário pela claim
-            var tpEntidadeClaim = user.FindFirst("tpentidade");
-            if (tpEntidadeClaim != null)
-            {
-                TpEntidade = tpEntidadeClaim.Value;
-            }
-            else
-            {
-                TpEntidade = ""; // ou valor padrão
-            }
-        }
-        else
-        {
-            Navigation.NavigateTo("/login");
-            return;
         }
 
         await ObterAlimentos();
         await ObterInstituicoes();
         await ObterDoacoes();
     }
+
 
 
     private async Task ObterInstituicoes()
@@ -347,17 +349,22 @@
 
     private async Task ObterDoacoes()
     {
+        if (Filtro.IdDoador == null || Filtro.IdDoador == 0)
+        {
+            DoacoesSalvas = new List<Doacao>();
+            return;
+        }
+
         try
         {
             var response = await Http.PostAsJsonAsync("api/doacao/filtrarDoacao", Filtro);
-        
+
             if (response.IsSuccessStatusCode)
             {
                 DoacoesSalvas = await response.Content.ReadFromJsonAsync<List<Doacao>>();
             }
             else
             {
-                var errorContent = await response.Content.ReadAsStringAsync();
                 await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar doações");
             }
         }
@@ -366,6 +373,7 @@
             await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar doações");
         }
     }
+
 
     private IEnumerable<Doacao> DoacoesFiltradas =>
         DoacoesSalvas
@@ -481,7 +489,7 @@
     {
         try
         {
-            var response = await Http.PostAsJsonAsync("api/relatorio/gerar-pdf", DoacoesFiltradas.ToList());
+            var response = await Http.PostAsJsonAsync("api/relatorio/gerarPdf", DoacoesFiltradas.ToList());
 
             if (response.IsSuccessStatusCode)
             {
@@ -501,6 +509,4 @@
             await JSRuntime.InvokeVoidAsync("alert", $"Erro ao gerar o relatório: {ex.Message}");
         }
     }
-
-
 }

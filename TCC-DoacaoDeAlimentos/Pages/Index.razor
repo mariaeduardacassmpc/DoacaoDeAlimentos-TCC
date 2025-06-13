@@ -11,7 +11,7 @@
         <div class="row align-items-center">
             <div class="col-lg-6">
                 <h1 class="display-3 fw-bold mb-2">Alimente Esperança</h1>
-                <h2 class="display-4 fw-bold mb-3" style="color: forestgreen">Doe Alimentos</h2>
+                <h2 class="fw-bold mb-3" style="color: forestgreen">Doe Alimentos</h2>
                 <p class="lead mb-5">
                     O AlimentAção faz a ponte entre doadores de alimentos e organizações que lutam contra a fome.
                     Juntos podemos combater a fome e transformar vidas.
@@ -225,13 +225,13 @@
                             <div class="mb-4">
                                 <label for="nome" class="form-label">Nome</label>
                                 <InputText id="nome" @bind-Value="DepoimentoModel.Nome" class="form-control form-control-lg" />
-                                <ValidationMessage For="@(() => DepoimentoModel.Nome)" />
+                                <ValidationMessage For="@(() => DepoimentoModel.Nome)" class="text-danger" />
                             </div>
 
                             <div class="mb-4">
                                 <label for="email" class="form-label">Email</label>
                                 <InputText id="email" @bind-Value="DepoimentoModel.Email" class="form-control form-control-lg" />
-                                <ValidationMessage For="@(() => DepoimentoModel.Email)" />
+                                <ValidationMessage For="@(() => DepoimentoModel.Email)" class="text-danger" />
                             </div>
 
                             <div class="mb-4">
@@ -242,7 +242,7 @@
                                                style="resize: none; overflow: hidden; min-height: 80px;"
                                                oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
                                                rows="1" />
-                                <ValidationMessage For="@(() => DepoimentoModel.Mensagem)" />
+                                <ValidationMessage For="@(() => DepoimentoModel.Mensagem)" class="text-danger" />
                             </div>
 
                             <div class="d-grid">
