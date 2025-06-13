@@ -202,7 +202,9 @@ public class MailService : IMailService
                     <p>Telefone de contato: <strong>{telefoneOng}</strong></p>
                     <p>Responsável: <strong>{responsavelOng}</strong></p>
                     <p>Aguarde a ONG entrar em contato para finalizar o processo.</p>
-                    <p>Obrigado por sua colaboração!</p>"
+                    <p>Obrigado por sua colaboração!</p>
+                    <p><strong>Equipe de Suporte AlimentAção </strong></p>"
+
             };
 
             mail.Body = body.ToMessageBody();
@@ -229,10 +231,10 @@ public class MailService : IMailService
             {
                 HtmlBody = $@"
                     <p>Olá {nomeOng},</p>
-                    <p>O doador <strong>{nomeDoador}</strong> realizou uma doação do alimento <strong>{alimento}</strong>.</p>
+                    <p>O doador(a) <strong>{nomeDoador}</strong> realizou uma doação do(s) alimento(s) <strong>{alimento}</strong>.</p>
                     <p>Telefone para contato do doador: <strong>{telefoneDoador}</strong></p>
                     <p>Por favor, entre em contato com o doador para combinar os detalhes da entrega.</p>
-                    <p>Equipe AlimentAção.</p>"
+                    <p>Equipe de Suporte AlimentAção.</p>"
             };
 
             mail.Body = body.ToMessageBody();
@@ -259,13 +261,13 @@ public class MailService : IMailService
             {
                 HtmlBody = $@"
                 <p>Olá {nomeOng},</p>
-                <p>Informamos que o doador <strong>{nomeDoador}</strong> cancelou a doação do alimento <strong>{alimento}</strong>.</p>
+                <p>Informamos que o doador(a) <strong>{nomeDoador}</strong> cancelou a doação do(s) alimento(s) <strong>{alimento}</strong>.</p>
                 <p><strong>Motivo do cancelamento:</strong> {motivoCancelamento}</p>
-                <p>Telefone de contato do doador (caso deseje falar com ele): <strong>{telefoneDoador}</strong></p>
+                <p>Telefone de contato do doador(a) (caso deseje falar com ele): <strong>{telefoneDoador}</strong></p>
                 <p>Essa doação não será mais exibida entre as doações ativas no sistema.</p>
                 <br/>
                 <p>Atenciosamente,</p>
-                <p><strong>Equipe AlimentAção</strong></p>"
+                <p><strong>Equipe de Suporte AlimentAção</strong></p>"
             };
 
 
