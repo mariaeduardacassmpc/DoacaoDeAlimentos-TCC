@@ -84,7 +84,7 @@ namespace BackDoacaoDeAlimentos.Services
 
 
                 await _mailServico.EnviarEmailConfirmacaoDoacaoDoador(
-                    usuario.RazaoSocial,
+                    usuario.NomeFantasia,
                     usuario.Email,
                     nomesAlimentosStr,
                     instituicao.RazaoSocial,
@@ -104,6 +104,31 @@ namespace BackDoacaoDeAlimentos.Services
             try
             {
                 var usuarioInstituicao = await _usuarioRepositorio.ObterPorEntidadeId(doacao.IdOng);
+                if (usuarioInstituicao == null)
+                    throw new Exception("Usuário da instituição não encontrado.");
+
+                var doador = await _usuarioRepositorio.ObterPorId(doacao.IdDoador);
+
+                var alimentosDoacao = await _alimentoDoacaoRepositorio.ObterPorDoacao(doacao.Id);
+                var nomesAlimentos = new List<string>();
+
+                foreach (var alimentoD in alimentosDoacao)
+                {
+                    var alimento = await _alimentoRepositorio.ObterAlimentoPorId(alimentoD.AlimentoId);
+                    if (alimento != null)
+                        nomesAlimentos.Add(alimento.Nome);
+                }
+
+                string nomesAlimentosStr = nomesAlimentos.Count > 0 ? string.Join(", ", nomesAlimentos) : "Alimento";
+
+
+                await _mailServico.EnviarEmailConfirmacaoDoacaoOng(
+                    usuarioInstituicao.RazaoSocial,
+                    usuarioInstituicao.Email,
+                    nomesAlimentosStr,
+                    doador.NomeFantasia,
+                    doador.Telefone
+                );
             }
 
             catch (Exception ex)

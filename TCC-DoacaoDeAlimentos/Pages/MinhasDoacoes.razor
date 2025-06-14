@@ -1,10 +1,12 @@
 ﻿@page "/MinhasDoacoes"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
+@inject HttpClient Http
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @using System.Security.Claims
 @using TCCDoacaoDeAlimentos.Shared.Models;
+@using TCCDoacaoDeAlimentos.Shared.Dto;
 @using Microsoft.AspNetCore.Components.Authorization
 
 <div class="min-vh-100" style="background-color: #d4edda;">
@@ -265,15 +267,16 @@
 @code {
     private FiltroDoacaoDto Filtro { get; set; } = new();
     private List<Doacao> DoacoesSalvas = new();
-    private List<Entidade> ListaDeOngs = new();
+    private List<OngDto> ListaDeOngs = new();
     private List<Alimento> ListaDeAlimentos = new();
     private string TpEntidade;
     private bool MostrarModal { get; set; } = false;
     private Doacao DoacaoSelecionada { get; set; }
-    private Entidade? OngSelecionada { get; set; }
+    private OngDto? OngSelecionada { get; set; }
     private bool MostrarModalMotivo { get; set; } = false;
     private string? MotivoCancelamento { get; set; }
     private bool UsuarioLogado { get; set; }
+
     private string[] Motivos = new[]
     {
            "Alimento estragou/perdeu a validade",
@@ -298,11 +301,12 @@
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
+        string cidadeUsuario = user.FindFirst("cidade")?.Value ?? "";
 
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
             var idClaim = user.FindFirst("sub") ?? user.FindFirst("userid") ?? user.FindFirst(ClaimTypes.NameIdentifier);
-            var tpEntidadeClaim = user.FindFirst("tpentidade");
+            var tpEntidadeClaim = user.FindFirst("TpEntidade");
             TpEntidade = tpEntidadeClaim?.Value ?? "";
 
             if (idClaim != null && int.TryParse(idClaim.Value, out int idUsuario))
@@ -315,22 +319,24 @@
         }
 
         await ObterAlimentos();
-        await ObterInstituicoes();
+        await ObterInstituicoesPorCidade(cidadeUsuario);
         await ObterDoacoes();
     }
 
-
-
-    private async Task ObterInstituicoes()
+    private async Task ObterInstituicoesPorCidade(string cidade)
     {
         try
         {
-            ListaDeOngs = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasInstituicoes");
+           if (!string.IsNullOrWhiteSpace(cidade))
+           {
+                ListaDeOngs = await Http.GetFromJsonAsync<List<OngDto>>(
+                $"api/entidade/buscarInstituicoesPorCidade/{Uri.EscapeDataString(cidade)}"
+                ) ?? new List<OngDto>();
+           }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao carregar Instituições: {ex.Message}");
-            ListaDeOngs = new List<Entidade>(); 
+            ListaDeOngs = new List<OngDto>();
         }
     }
 

@@ -54,7 +54,7 @@ public class MailService : IMailService
             var settings = _config.GetSection("EmailSettings");
             var remetente = settings["Email"];
 
-            var mensagem = CriarMensagemConfirmacaoDoacaoDoacao(
+            var mensagem = CriarMensagemConfirmacaoDoacaoDoador(
                 remetente,
                 nomeDoador,
                 emailDoador,
@@ -82,23 +82,21 @@ public class MailService : IMailService
         }
     }
 
-    public async Task<bool> EnviarEmailConfirmacaoDoacaoOng(string nomeDoador, string emailDoador, string alimento,
-        string nomeOng, string enderecoOng, string telefoneOng, string responsavelOng)
+    public async Task<bool> EnviarEmailConfirmacaoDoacaoOng(string nomeOng, string emailOng, string alimento,
+       string nomeDoador, string telefoneDoador)
     {
         try
         {
             var settings = _config.GetSection("EmailSettings");
             var remetente = settings["Email"];
 
-            var mensagem = CriarMensagemConfirmacaoDoacaoDoacao(
+            var mensagem = CriarMensagemConfirmacaoDoacaoOng(
                 remetente,
-                nomeDoador,
-                emailDoador,
-                alimento,
                 nomeOng,
-                enderecoOng,
-                telefoneOng,
-                responsavelOng
+                emailOng,
+                alimento,
+                nomeDoador,
+                telefoneDoador
             );
 
             await EnviarEmail(
@@ -183,7 +181,7 @@ public class MailService : IMailService
         }
     }
 
-    public MimeMessage CriarMensagemConfirmacaoDoacaoDoacao(string remetente, string nomeDoador, string emailDestino,
+    public MimeMessage CriarMensagemConfirmacaoDoacaoDoador(string remetente, string nomeDoador, string emailDestino,
         string alimento, string nomeOng, string enderecoOng, string telefoneOng, string responsavelOng)
     {
         try
@@ -217,14 +215,14 @@ public class MailService : IMailService
         }
     }
 
-    public MimeMessage CriarMensagemConfirmacaoDoacaoOng(string remetente, string nomeOng, string emailDestino,
-        string nomeDoador, string alimento, string telefoneDoador)
+    public MimeMessage CriarMensagemConfirmacaoDoacaoOng(string remetente, string nomeOng, string emailOng,
+         string alimento, string nomeDoador, string telefoneDoador)
     {
         try
         {
             var mail = new MimeMessage();
             mail.From.Add(new MailboxAddress("Suporte AlimentAção", remetente));
-            mail.To.Add(new MailboxAddress(nomeOng, emailDestino));
+            mail.To.Add(new MailboxAddress(nomeOng, emailOng));
             mail.Subject = "Nova Doação Recebida";
 
             var body = new BodyBuilder

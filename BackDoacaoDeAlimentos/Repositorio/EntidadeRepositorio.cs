@@ -155,8 +155,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
                     Cidade = @Cidade,
                     Email = @Email,
                     Sexo = @Sexo,
-                    Responsavel = @Responsavel,
-                    Ativo = @Ativo
+                    Responsavel = @Responsavel
                 WHERE Id = @Id";
 
                 await _db.ExecuteAsync(sql, entidade, transaction);

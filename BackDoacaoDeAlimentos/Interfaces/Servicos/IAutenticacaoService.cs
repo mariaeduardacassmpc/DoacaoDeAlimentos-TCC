@@ -7,7 +7,7 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
     {
         string GerarHashSenha(string senha);
         bool VerificarSenha(string senhaDigitada, string senhaHash);
-        RespostaAutenticacao Login(string login, string senha);
+        void Login(string login, string senha);
         (bool valido, string email) ValidarToken(string token);
         Task RedefinirSenha(string token, string senha);
     }

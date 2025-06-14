@@ -55,6 +55,8 @@ public class DoacaoService : IDoacaoService
             if (doacao.Id > 0)
             {
                 await _notificacaoService.EnviarEmailConfirmacaoDoacaoDoador(doacao);
+                await _notificacaoService.EnviarEmailConfirmacaoDoacaoOng(doacao);
+
                 return true;
             }
             return false;

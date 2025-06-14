@@ -11,4 +11,7 @@ public class OpenCageResult
 public class OpenCageComponents
 {
     public string City { get; set; }
+    public string Town { get; set; } // Added property
+    public string Village { get; set; } // Added property
+    public string Municipality { get; set; } // Added property
 }

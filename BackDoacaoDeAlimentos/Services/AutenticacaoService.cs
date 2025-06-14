@@ -63,7 +63,7 @@ namespace BackDoacaoDeAlimentos.Services
             }
         }
 
-        public RespostaAutenticacao Login(string login, string senha)
+        public void Login(string login, string senha)
         {
             try
             {
@@ -76,14 +76,14 @@ namespace BackDoacaoDeAlimentos.Services
                 if (!VerificarSenha(senha, usuario.SenhaHash))
                     throw new Exception("Senha inválida.");
 
-                var token = _jwtService.GerarToken(usuario);
+                //var token = _jwtService.GerarToken(usuario);
 
-                return new RespostaAutenticacao
-                {
-                    Token = token,
-                    NomeUsuario = usuario.RazaoSocial ?? usuario.Email,
-                    Email = usuario.Email
-                };
+                //return new RespostaAutenticacao
+                //{
+                //    Token = token,
+                //    NomeUsuario = usuario.RazaoSocial ?? usuario.Email,
+                //    Email = usuario.Email
+                //};
             }
             catch (Exception ex)
             {

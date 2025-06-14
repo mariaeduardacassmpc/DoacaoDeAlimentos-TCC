@@ -136,5 +136,12 @@ namespace BackDoacaoDeAlimentos.Controllers
 
             return Ok(instituicao);
         }
+
+        [HttpGet("buscarInstituicoesPorCidade/{cidade}")]
+        public async Task<IActionResult> BuscarInstituicaoPorCoordenadas(string cidade)
+        {
+            var instituicao = await _entidadeService.ObterInstituicaoPorCidade(cidade);
+            return Ok(instituicao);
+        }
     }
 }

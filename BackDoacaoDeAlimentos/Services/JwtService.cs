@@ -16,13 +16,14 @@ namespace BackDoacaoDeAlimentos.Services
         {
             _config = config;
         }
-        public string GerarToken(Usuario usuario)
+        public string GerarToken(Usuario usuario, string cidade)
         {
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim("TpEntidade", usuario.TpEntidade) 
+                new Claim("TpEntidade", usuario.TpEntidade),
+                new Claim("cidade", cidade) 
             };
 
             var jwtKey = _config["Jwt:Key"];

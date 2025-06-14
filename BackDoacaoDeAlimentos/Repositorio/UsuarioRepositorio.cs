@@ -21,7 +21,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
             const string sql = @"
                 SELECT 
                     u.Id, u.EntidadeId, u.Email, u.Senha,
-                    e.Id AS Entidade_Id, e.RazaoSocial, e.TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
+                    e.Id AS Entidade_Id, e.RazaoSocial, e.NomeFantasia, e.TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
                 FROM Usuario u
                 INNER JOIN Entidade e ON u.EntidadeId = e.Id
                 WHERE u.EntidadeId = @EntidadeId";
@@ -100,7 +100,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
             const string sql = @"
                 SELECT 
                     u.Id, u.EntidadeId, u.Email, u.Senha,
-                    e.Id AS Entidade_Id, e.RazaoSocial, e.TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
+                    e.Id AS Entidade_Id, e.RazaoSocial, e.NomeFantasia, e.TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
                 FROM Usuario u
                 INNER JOIN Entidade e ON u.EntidadeId = e.Id
                 WHERE u.Id = @Id";

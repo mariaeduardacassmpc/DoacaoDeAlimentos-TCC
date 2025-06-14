@@ -32,6 +32,19 @@ button.page-link:focus {
     text-decoration: none;
 }
 
+.btn-cancelar {
+    background-color: white;
+    border: 1px solid #6c757d; /* Borda cinza visível */
+    color: #6c757d; /* Texto cinza escuro */
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+    .btn-cancelar:hover {
+        background-color: #f1f1f1; /* Fundo cinzinha claro ao passar o mouse */
+        border-color: #5a6268; /* Borda um pouco mais escura no hover */
+        color: #5a6268; /* Texto também escurece no hover */
+    }
+
 html, body {
     font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     margin: 0;

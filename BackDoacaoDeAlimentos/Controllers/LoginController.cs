@@ -19,36 +19,43 @@ namespace BackDoacaoDeAlimentos.Controllers
         private IAutenticacaoService _autenticacaoService;
         private IUsuarioService _usuarioService; 
         private INotificacaoService _notificacaoService;
+        private IEntidadeService _entidadeService;
 
         public LoginController(IJwtService jwtService, 
             IAutenticacaoService autenticacaoService,
             IUsuarioService usuarioService,
-            INotificacaoService notificacaoService
+            INotificacaoService notificacaoService,
+            IEntidadeService entidadeService
         ) 
         {
             _jwtService = jwtService;
             _autenticacaoService = autenticacaoService;
             _usuarioService = usuarioService;
             _notificacaoService = notificacaoService;
+            _entidadeService = entidadeService; 
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var usuario = _usuarioService.AutenticarUsuario(request.Email, request.Senha).Result;
 
             if (usuario == null)
                 return Unauthorized("Usuário não encontrado.");
 
-            var token = _jwtService.GerarToken(usuario);
+            var entidade = await _entidadeService.ObterEntidadePorId(usuario.EntidadeId);
+            var cidade = entidade?.Cidade ?? "";
+
+            var token = _jwtService.GerarToken(usuario, cidade);
 
             return Ok(new
             {
                 token,
                 NomeUsuario = usuario.RazaoSocial ?? usuario.Email,
                 usuario.Email,
-                TpEntidade = usuario.TpEntidade
+                TpEntidade = usuario.TpEntidade,
+                Cidade = cidade
             });
         }
 

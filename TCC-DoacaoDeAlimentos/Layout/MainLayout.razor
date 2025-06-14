@@ -59,7 +59,7 @@
                         }
                     </ul>
 
-                    <div class="d-flex align-items-center gap-2">
+                                       <div class="d-flex align-items-center gap-2">
                         @if (!UsuarioEstaLogado)
                         {
                             <a class="btn btn-outline-success" href="/Login" @onclick="FecharMenu">Entrar</a>
@@ -67,19 +67,18 @@
 
                         @if (TpEntidade != "O")
                         {
-                            <a class="btn btn-success" href="/CadastroDeDoacao" @onclick="FecharMenu">
+                            <a class="btn btn-success me-2" href="/CadastroDeDoacao" @onclick="FecharMenu">
                                 <i class="bi bi-gift-fill me-1"></i> Doar
                             </a>
                         }
                     </div>
-
                     <div class="d-flex align-items-center me-3">
                         @if (UsuarioEstaLogado)
                         {
                             <div class="dropdown">
                                 <button class="btn border-0 p-0 bg-transparent" type="button" id="perfilMenu" data-bs-toggle="dropdown" aria-expanded="false"
                                         style="box-shadow:none; outline:none;">
-                                    <i class="bi bi-person-circle fs-3 text-success"></i>
+                                        <i class="bi bi-person-circle fs-2 text-success"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilMenu">
                                     <li>
@@ -92,6 +91,7 @@
                             </div>
                         }
                     </div>
+
                 </div>
             </div>
         </nav>
@@ -112,26 +112,7 @@
 
     private async void IrParaPerfil()
     {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", "token");
-
-        if (user.Identity?.IsAuthenticated == true && !string.IsNullOrEmpty(token))
-        {
-            var idClaim = user.FindFirst("sub") ?? user.FindFirst("userid") ?? user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (idClaim != null)
-            {
-                Navigation.NavigateTo($"/EditarUsuario/{idClaim.Value}");
-            }
-            else
-            {
-                Navigation.NavigateTo("/login", true);
-            }
-        }
-        else
-        {
-            Navigation.NavigateTo("/login", true);
-        }
+        Navigation.NavigateTo($"/EditarUsuario");
     }
 
     private async Task Logout()

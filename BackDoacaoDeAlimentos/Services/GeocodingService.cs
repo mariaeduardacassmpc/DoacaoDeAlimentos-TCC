@@ -30,8 +30,8 @@ public class GeolocalizacaoService : IGeolocalizacaoService
             });
 
             var components = openCage?.Results?.FirstOrDefault()?.Components;
-            var cidade = components?.City;
-              
+            var cidade = components?.City ?? components?.Town ?? components?.Village ?? components?.Municipality;
+
             if (!string.IsNullOrEmpty(cidade))
                 return cidade;
         }
