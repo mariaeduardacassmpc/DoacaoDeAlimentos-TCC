@@ -41,10 +41,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
     public async Task AtualizarDoacao(Doacao doacao)
     {
         var sql = @"UPDATE Doacao
-            SET NomeAlimento = @NomeAlimento,
-                Quantidade = @Quantidade,
-                Data = @Data,
-                Status = @Status
+            SET Status = @Status
             WHERE Id = @Id";
 
         await _db.ExecuteAsync(sql, doacao);
@@ -52,7 +49,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
 
     public async Task CancelarDoacao(int id)
     {
-        var sql = "UPDATE Doacao SET Status = 3 WHERE Id = @Id";
+        var sql = "UPDATE Doacao SET Status = 2 WHERE Id = @Id";
         await _db.ExecuteAsync(sql, new { Id = id });
     }
 

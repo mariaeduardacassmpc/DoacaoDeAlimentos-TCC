@@ -7,7 +7,7 @@ using BackDoacaoDeAlimentos.Servicos;
 namespace BackDoacaoDeAlimentos.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/usuario")]
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _usuarioService;
@@ -16,36 +16,57 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             _usuarioService = usuarioService;
         }
-        
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
-            var usuario = await _usuarioService.ObterUsuarioPorId(id);
-            return Ok(usuario);
+            try
+            {
+                var usuario = await _usuarioService.ObterUsuarioPorId(id);
+                if (usuario == null)
+                    return NotFound("Usuário não encontrado.");
+
+                return Ok(usuario);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao buscar usuário: {ex.Message}");
+            }
         }
 
         [HttpPost("autenticar")]
-        public async Task<IActionResult> Autenticar([FromBody] LoginRequest loginRequest)
+        public async Task<IActionResult> Autenticar([FromBody] RequisicaoLogin login)
         {
-            var usuario = await _usuarioService.AutenticarUsuario(loginRequest.Email, loginRequest.Senha);
-            return Ok(usuario);
+            try
+            {
+                var usuario = await _usuarioService.AutenticarUsuario(login.Email, login.Senha);
+                if (usuario == null)
+                    return Unauthorized("Credenciais inválidas.");
+
+                return Ok(usuario);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao autenticar usuário: {ex.Message}");
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Atualizar(int id, [FromBody] Usuario usuario)
         {
-            if (id != usuario.Id)
-                return BadRequest("ID do usuário não corresponde");
+            try
+            {
+                if (id != usuario.Id)
+                    return BadRequest("ID do usuário não corresponde.");
 
-            await _usuarioService.AtualizarUsuario(usuario);
-            return NoContent();
+                await _usuarioService.AtualizarUsuario(usuario);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar usuário: {ex.Message}");
+            }
         }
-        
-    }
-
-    public class LoginRequest
-    {
-        public string Email { get; set; }
-        public string Senha { get; set; }
     }
 }

@@ -116,30 +116,31 @@ public class MailService : IMailService
         }
     }
 
-    public async Task<bool> EnviarEmailCancelamentoDoacao(string nomeDoador, string emailDoador, string alimento,
-        string nomeOng, string telefoneDoador, string motivoCancelamento)
+    public async Task<bool> EnviarEmailCancelamentoDoacao(string nomeOng, string emailOng, string alimento,
+        string nomeDoador, string telefoneDoador, string motivoCancelamento)
     {
         try
         {
             var settings = _config.GetSection("EmailSettings");
             var remetente = settings["Email"];
 
-            //var mensagem = CriarMensagemCancelamentoDoacao(
-            //    remetente,
-            //    nomeDoador,
-            //    emailDoador,
-            //    alimento,
-            //    telefoneDoador,
-            //    motivoCancelamento
-            //);
+            var mensagem = CriarMensagemCancelamentoDoacao(
+                remetente,
+                nomeOng,
+                emailOng,
+                alimento,
+                nomeDoador,
+                telefoneDoador,
+                motivoCancelamento
+            );
 
-            //await EnviarEmail(
-            //    remetente,
-            //    settings["Password"],
-            //    settings["Host"],
-            //    settings.GetValue<int>("Port")
-            //    //mensagem
-            //);
+            await EnviarEmail(
+                    remetente,
+                    settings["Password"],
+                    settings["Host"],
+                    settings.GetValue<int>("Port"),
+                    mensagem
+                );
 
             return true;
         }
@@ -246,7 +247,7 @@ public class MailService : IMailService
     }
 
     public MimeMessage CriarMensagemCancelamentoDoacao(string remetente, string nomeOng, string emailDestino,
-        string nomeDoador, string alimento, string telefoneDoador, string motivoCancelamento)
+       string alimento, string nomeDoador, string telefoneDoador, string motivoCancelamento)
     {
         try
         {
@@ -262,7 +263,6 @@ public class MailService : IMailService
                 <p>Informamos que o doador(a) <strong>{nomeDoador}</strong> cancelou a doação do(s) alimento(s) <strong>{alimento}</strong>.</p>
                 <p><strong>Motivo do cancelamento:</strong> {motivoCancelamento}</p>
                 <p>Telefone de contato do doador(a) (caso deseje falar com ele): <strong>{telefoneDoador}</strong></p>
-                <p>Essa doação não será mais exibida entre as doações ativas no sistema.</p>
                 <br/>
                 <p>Atenciosamente,</p>
                 <p><strong>Equipe de Suporte AlimentAção</strong></p>"

@@ -37,9 +37,9 @@ namespace BackDoacaoDeAlimentos.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] RequisicaoLogin login)
         {
-            var usuario = _usuarioService.AutenticarUsuario(request.Email, request.Senha).Result;
+            var usuario = _usuarioService.AutenticarUsuario(login.Email, login.Senha).Result;
 
             if (usuario == null)
                 return Unauthorized("Usuário não encontrado.");
