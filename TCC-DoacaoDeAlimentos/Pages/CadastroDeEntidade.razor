@@ -69,15 +69,15 @@
                             }
                             @if (entidade.TpEntidade == "D" && entidade.TpPessoa == Entidade.TipoPessoa.F)
                             {
-                            <div class="mb-3">
-                                <label for="sexo" class="form-label">Sexo *</label>
-                                <InputSelect @bind-Value="entidade.Sexo" class="form-control" id="sexo">
-                                    <option value="" selected disabled>Selecione...</option>
-                                    <option value="F">Feminino</option>
-                                    <option value="M">Masculino</option>
-                                </InputSelect>
-                                <ValidationMessage For="@(() => entidade.Sexo)" class="text-danger" />
-                            </div>
+                                <div class="mb-3">
+                                    <label for="sexo" class="form-label">Sexo *</label>
+                                    <InputSelect @bind-Value="entidade.Sexo" class="form-control" id="sexo">
+                                        <option value="" selected disabled>Selecione...</option>
+                                        <option value="F">Feminino</option>
+                                        <option value="M">Masculino</option>
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => entidade.Sexo)" class="text-danger" />
+                                </div>
                             }
 
                             @if (entidade.TpEntidade == "D")
@@ -211,10 +211,10 @@
 
 @code {
     private Entidade entidade = new Entidade
-    {
+        {
             TpEntidade = "",
             TpPessoa = null
-    };
+        };
     private bool _showPassword = false;
     private bool tentouEnviar = false;
     private double? latitude;
