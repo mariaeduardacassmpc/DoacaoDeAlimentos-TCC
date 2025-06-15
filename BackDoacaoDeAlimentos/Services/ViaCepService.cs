@@ -11,7 +11,7 @@
 
         public async Task<ViaCep> BuscarEnderecoPorCep(string cep)
         {
-            cep = cep.Replace("-", "").Trim();
+            cep = cep.Replace("-", "").Trim(); // Remove hífens e espaços desnecessários
 
             var response = await _httpClient.GetFromJsonAsync<ViaCep>($"https://viacep.com.br/ws/{cep}/json/");
 

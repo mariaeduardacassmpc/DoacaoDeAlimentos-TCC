@@ -233,13 +233,13 @@
                     Senha = entidade.Senha,
                     ConfirmarSenha = entidade.ConfirmarSenha,
                     Email = entidade.Email,
-                    Telefone = RemoveMask(entidade.Telefone),
-                    CNPJ_CPF = RemoveMask(entidade.CNPJ_CPF),
+                    Telefone = (entidade.Telefone),
+                    CNPJ_CPF = (entidade.CNPJ_CPF),
                     Endereco = $"{entidade.Endereco}, {entidade.Numero}",
                     Numero = entidade.Numero,
                     Bairro = entidade.Bairro,
                     Cidade = entidade.Cidade,
-                    CEP = RemoveMask(entidade.CEP),
+                    CEP = (entidade.CEP),
                     Latitude = entidade.Latitude,
                     Longitude = entidade.Longitude,
                     TpEntidade = entidade.TpEntidade,
@@ -268,25 +268,29 @@
         }
     }
 
-    private string RemoveMask(string value) =>
-        string.IsNullOrEmpty(value) ? value : Regex.Replace(value, @"[^\d]", "");
-
     private void ToggleAllPasswords() =>
         _showPassword = !_showPassword;
 
     private async Task BuscarEnderecoPorCep(ChangeEventArgs e)
     {
-        var cep = RemoveMask(e.Value?.ToString() ?? "");
-        if (string.IsNullOrWhiteSpace(cep) || cep.Length != 8) return;
+        var cep = (e.Value?.ToString() ?? "");
+        if (string.IsNullOrWhiteSpace(cep) || cep.Length != 8)
+        {
+            ToastService.ShowWarning("CEP inválido.");
+            return;
+        }
 
         try
         {
-            var response = await Http.GetFromJsonAsync<ViaCep>($"api/viacep/{cep}");
+            // Aqui estamos fazendo uma requisição para a API ViaCep
+            var response = await Http.GetFromJsonAsync<ViaCep>($"api/viacep/BuscarCep/{cep}");
+
             if (response != null)
             {
                 entidade.Bairro = response.Bairro;
-                entidade.Cidade = response.Localidade;
+                entidade.Cidade = response.Localidade; // Certifique-se de que a cidade está sendo preenchida corretamente
                 entidade.Endereco = response.Logradouro;
+                StateHasChanged();  // Isso força o Blazor a re-renderizar a página com os novos dados
             }
             else
             {
@@ -298,6 +302,7 @@
             ToastService.ShowError($"Erro ao buscar CEP: {ex.Message}");
         }
     }
+
 
     private async Task ObterLocalizacaoUsuario()
     {
