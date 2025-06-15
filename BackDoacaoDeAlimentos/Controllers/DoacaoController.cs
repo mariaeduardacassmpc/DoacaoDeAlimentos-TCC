@@ -131,18 +131,14 @@ namespace BackDoacaoDeAlimentos.Controllers
         }
 
         [HttpPut("cancelarDoacao/{id}")]
-        public async Task<IActionResult> CancelarDoacao(int id)
+        public async Task<IActionResult> CancelarDoacao(int id, [FromBody] string motivoCancelamento)
         {
             try
             {
                 if (id <= 0)
                     throw new ArgumentException("ID inválido");
 
-                var doacao = await _doacaoService.ObterDoacaoPorId(id);
-                if (doacao == null)
-                    return NotFound();
-
-                await _doacaoService.CancelarDoacao(id);
+                await _doacaoService.CancelarDoacao(id, motivoCancelamento);
                 return NoContent();
             }
             catch (Exception ex)

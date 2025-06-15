@@ -31,7 +31,7 @@
 
                                 <div class="mb-3">
                                     <label for="nome" class="form-label d-flex align-items-center gap-2 text-success">
-                                        <i class="bi bi-person-fill"></i> @(entidade.TpEntidade == "O" ? "Razão Social *" : "Nome Completo *")
+                                        <i class="bi bi-person-fill"></i> @(entidade.TpEntidade == "O" ? "Razão Social " : "Nome Completo ")
                                     </label>
                                     <InputText @bind-Value="entidade.RazaoSocial" class="form-control" id="nome"
                                                placeholder="@(entidade.TpEntidade == "O" ? "Razão Social" : "Nome Completo")" />
@@ -97,7 +97,15 @@
                                                    placeholder="contato@entidade.org" />
                                     </div>
                                 </div>
-                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label d-flex align-items-center gap-2 text-success">
+                                            <i class="bi bi-geo-alt-fill"></i> CEP
+                                        </label>
+                                        <InputText @bind-Value="entidade.CEP" class="form-control" id="cep"
+                                                   placeholder="CEP" maxlength="8" @onchange="BuscarEnderecoPorCep" />
+                                    </div>
+                                </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label d-flex align-items-center gap-2 text-success">
@@ -122,13 +130,6 @@
                                         </label>
                                         <InputText @bind-Value="entidade.Endereco" class="form-control" id="endereco"
                                                    placeholder="Endereço completo" />
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label d-flex align-items-center gap-2 text-success">
-                                            <i class="bi bi-123"></i> Número 
-                                        </label>
-                                        <InputText @bind-Value="entidade.Numero" class="form-control" id="numero"
-                                                   placeholder="Nº" />
                                     </div>
                                 </div>
 
@@ -192,12 +193,12 @@
                     RazaoSocial = entidade.RazaoSocial,
                     Responsavel = entidade.Responsavel,
                     Email = entidade.Email,
-                    Telefone = RemoveMask(entidade.Telefone),
-                    CNPJ_CPF = RemoveMask(entidade.CNPJ_CPF),
+                    Telefone = entidade.Telefone,
+                    CNPJ_CPF = entidade.CNPJ_CPF,
                     Endereco = $"{entidade.Endereco}, {entidade.Numero}",
                     Bairro = entidade.Bairro,
                     Cidade = entidade.Cidade,
-                    CEP = RemoveMask(entidade.CEP),
+                    CEP = entidade.CEP,
                     Sexo = entidade.Sexo
                 };
 

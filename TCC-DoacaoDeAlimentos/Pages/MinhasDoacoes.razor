@@ -17,8 +17,10 @@
                     <div class="card-body p-5">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h1 class="card-title mb-0">
+                                <i class="bi bi-box-seam me-2"></i>
                                 @(TpEntidade == "O" ? "Doações Recebidas" : "Minhas Doações")
                             </h1>
+
                             @if (TpEntidade == "D")
                             {
                                 <button class="btn btn-success" @onclick="NavigateToCadastro">
@@ -48,7 +50,7 @@
                                         <option value="">Todos</option>
                                         <option value="1">Pendente</option>
                                         <option value="2">Cancelada</option>
-                                        <option value="3">Concluida</option>
+                                        <option value="3">Finalizada</option>
                                     </select>
                                 </div>
                             </div>
@@ -77,7 +79,7 @@
                                         <th>ONG</th>
                                         <th>Data</th>
                                         <th>Status</th>
-                                        <th>Detalhes</th>
+                                        <th>Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -94,21 +96,13 @@
                                             </td>
                                             <td>
                                                 <button class="btn btn-outline-success btn-sm me-1"
-                                                @onclick="() => VerDetalhes(doacao.Id)">
+                                                        @onclick="() => VerDetalhes(doacao.Id)">
                                                     Detalhes
                                                 </button>
-                                                @if (TpEntidade == "O")
-                                                {
-                                                    <button class="btn btn-sm btn-success"
-                                                    @onclick="() => FinalizarDoacao(doacao.Id)">
-                                                        Finalizar
-                                                    </button>
-                                                }
                                             </td>
-
-
                                         </tr>
                                     }
+
                                 </tbody>
                             </table>
                         </div>
@@ -150,46 +144,67 @@
                     {
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <h6>Informações da ONG</h6>
-                                <p><strong>Nome:</strong> @ObterNomeOng(DoacaoSelecionada.IdOng)</p>
-                                <p><strong>Responsável: </strong> 
-                                    @if (OngSelecionada != null && !string.IsNullOrEmpty(OngSelecionada.Responsavel))
-                                    {
-                                        @OngSelecionada.Responsavel
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">Não informado</span>
-                                    }
-                                </p> 
-                                <p>
-                                    <strong>Telefone: </strong>
-                                    @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Telefone))
-                                    {
-                                        <a href="tel:@OngSelecionada.Telefone">
-                                            @OngSelecionada.Telefone
-                                            <i class="bi bi-telephone-fill ms-1"></i>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">Não informado</span>
-                                    }
-                                </p>
-                                <p>
-                                    <strong>Endereço: </strong>
-                                    @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Endereco))
-                                    {
-                                        <a href="https://www.google.com/maps/search/@(Uri.EscapeDataString(OngSelecionada.Endereco))" target="_blank" rel="noopener">
-                                            @OngSelecionada.Endereco
-                                            <i class="bi bi-geo-alt-fill ms-1"></i>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">Não informado</span>
-                                    }
-                                </p>
+                                <h6>@(TpEntidade == "O" ? "Informações do Doador" : "Informações da ONG")</h6>
+                                @if (TpEntidade == "O")
+                                {
+                                    <p><strong>Nome:</strong> @(DoadorSelecionado != null && !string.IsNullOrWhiteSpace(DoadorSelecionado.NomeFantasia) ? DoadorSelecionado.NomeFantasia : "Desconhecido")</p>
+                                    <p>
+                                        <i class="bi bi-telephone-fill ms-1"></i>
+                                        <strong>Telefone:</strong>
+                                        @(string.IsNullOrWhiteSpace(DoadorSelecionado?.Telefone)
+                                            ? "Não informado"
+                                            : DoadorSelecionado.Telefone)
+                                    </p>
+                                    <p>
+                                        <i class="bi bi-envelope-fill ms-1"></i>
+                                        <strong>Email:</strong>
+                                        @(string.IsNullOrWhiteSpace(DoadorSelecionado?.Email)
+                                            ? "Não informado"
+                                            : DoadorSelecionado.Email)
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p><strong>Nome:</strong> @ObterNomeOng(DoacaoSelecionada.IdOng)</p>
+                                    <p>
+                                        <strong>Responsável: </strong>
+                                        @if (OngSelecionada != null && !string.IsNullOrEmpty(OngSelecionada.Responsavel))
+                                        {
+                                            @OngSelecionada.Responsavel
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Não informado</span>
+                                        }
+                                    </p>
+                                    <p>
+                                        <i class="bi bi-telephone-fill ms-1"></i><strong> Telefone: </strong>
+                                        @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Telefone))
+                                        {
+                                            <a href="tel:@OngSelecionada.Telefone" style="text-decoration: underline; color: #000;">
+                                                @OngSelecionada.Telefone
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Não informado</span>
+                                        }
+                                    </p>
+                                    <p>
+                                        <i class="bi bi-geo-alt-fill ms-1"></i><strong> Endereço: </strong>
+                                        @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Endereco))
+                                        {
+                                            <a href="https://www.google.com/maps/search/@(Uri.EscapeDataString(OngSelecionada.Endereco))" target="_blank" rel="noopener"
+                                                style="text-decoration: underline; color: #000;">
+                                                @OngSelecionada.Endereco
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Não informado</span>
+                                        }
+                                    </p>
+                                }
                             </div>
                             <div class="col-md-6">
                                 <h6>Informações da Doação</h6>
@@ -226,8 +241,14 @@
                     }
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger me-2" @onclick="AbrirModalMotivo">Cancelar Doação</button>
-                    <button type="button" class="btn btn-secondary" @onclick="FecharModal">Fechar</button>
+                    @if (DoacaoSelecionada != null && DoacaoSelecionada.Status == StatusDoacao.Pendente)
+                    {   
+                        @if(TpEntidade == "O")
+                        {
+                            <button type="button" class="btn btn-success me-2" @onclick="() => FinalizarDoacao(DoacaoSelecionada.Id)">Finalizar</button>
+                        }
+                        <button type="button" class="btn btn-danger me-2" @onclick="AbrirModalMotivo">Cancelar Doação</button>
+                    }
                 </div>
             </div>
         </div>
@@ -248,11 +269,12 @@
                     {
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" id="@motivo" name="motivoCancelamento"
-                            value="@motivo" @onchange="() => MotivoCancelamento = motivo"
-                            checked="@(MotivoCancelamento == motivo)" />
+                                   value="@motivo" @onchange="() => MotivoCancelamento = motivo"
+                                   checked="@(MotivoCancelamento == motivo)" />
                             <label class="form-check-label" for="@motivo">@motivo</label>
                         </div>
                     }
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary me-2" @onclick="FecharModalMotivo">Voltar</button>
@@ -276,18 +298,29 @@
     private bool MostrarModalMotivo { get; set; } = false;
     private string? MotivoCancelamento { get; set; }
     private bool UsuarioLogado { get; set; }
+    private UsuarioDto? DoadorSelecionado { get; set; }
 
-    private string[] Motivos = new[]
+    private string[] MotivosDoador = new[]
     {
-           "Alimento estragou/perdeu a validade",
-            "Problemas logísticos (transporte, horário)",
-            "Erro no cadastro da doação",
-            "Instituição não entrou em contato/desistiu",
-            "Doador não desistiu",
-            "Mudança de planejamento pessoal",
-            "Preocupação com a qualidade do alimento",
-            "Outro motivo"
+        "Mudança de planos",
+        "Problemas pessoais",
+        "Erro no cadastro da doação",
+        "Outro motivo"
     };
+
+    private string[] MotivosOng = new[]
+    {
+        "Alimento estragou/perdeu a validade",
+        "Problemas logísticos (transporte, horário)",
+        "Erro no cadastro da doação",
+        "Instituição não entrou em contato/desistiu",
+        "Doador desistiu",
+        "Mudança de planejamento pessoal",
+        "Preocupação com a qualidade do alimento",
+        "Outro motivo"
+    };
+
+    private string[] Motivos => TpEntidade == "O" ? MotivosOng : MotivosDoador;
 
     private void NavigateToCadastro()
     {
@@ -355,7 +388,8 @@
 
     private async Task ObterDoacoes()
     {
-        if (Filtro.IdDoador == null || Filtro.IdDoador == 0)
+        if ((TpEntidade == "D" && (Filtro.IdDoador == null || Filtro.IdDoador == 0)) ||
+            (TpEntidade == "O" && (Filtro.IdOng == null || Filtro.IdOng == 0)))
         {
             DoacoesSalvas = new List<Doacao>();
             return;
@@ -380,7 +414,6 @@
         }
     }
 
-
     private IEnumerable<Doacao> DoacoesFiltradas =>
         DoacoesSalvas
             .Where(d => !Filtro.IdOng.HasValue || d.IdOng == Filtro.IdOng.Value)
@@ -398,7 +431,7 @@
         return ListaDeOngs.FirstOrDefault(o => o.Id == idOng)?.RazaoSocial ?? "Desconhecida";
     }
 
-  private string ObterNomeAlimento(int alimentoId)
+    private string ObterNomeAlimento(int alimentoId)
     {
         return ListaDeAlimentos.FirstOrDefault(a => a.Id == alimentoId)?.Nome ?? $"Alimento {alimentoId}";
     }
@@ -407,7 +440,7 @@
     {
         return status switch
         {
-            StatusDoacao.Pendente => "bg-warning text-dark",
+            StatusDoacao.Pendente => "bg-warning"   ,
             StatusDoacao.Finalizada => "bg-success",
             StatusDoacao.Cancelada => "bg-danger",
             _ => "bg-secondary"
@@ -422,16 +455,22 @@
     private async Task VerDetalhes(int idDoacao)
     {
         DoacaoSelecionada = DoacoesFiltradas.FirstOrDefault(d => d.Id == idDoacao);
-        
+
         if (DoacaoSelecionada != null)
         {
-            OngSelecionada = ListaDeOngs.FirstOrDefault(o => o.Id == DoacaoSelecionada.IdOng);
+            if (TpEntidade == "O")
+            {
+                DoadorSelecionado = await Http.GetFromJsonAsync<UsuarioDto>($"api/usuario/{DoacaoSelecionada.IdDoador}");
+            }
+            else
+            {
+                OngSelecionada = ListaDeOngs.FirstOrDefault(o => o.Id == DoacaoSelecionada.IdOng);
+            }
             var alimentos = await Http.GetFromJsonAsync<List<AlimentoDoacao>>($"api/alimentoDoacao/obterTodosPorDoacao/{idDoacao}");
             DoacaoSelecionada.Alimentos = alimentos ?? new List<AlimentoDoacao>();
             MostrarModal = true;
-            StateHasChanged(); 
+            StateHasChanged();
         }
-  
     }
     
     private void FecharModal()

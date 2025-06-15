@@ -67,7 +67,6 @@ public class DoacaoService : IDoacaoService
         }
     }
 
-
     public async Task<Doacao> ObterDoacaoPorId(int id)
     {
         try
@@ -110,20 +109,30 @@ public class DoacaoService : IDoacaoService
         }
     }
 
-    public async Task CancelarDoacao(int id)
+    public async Task<bool> CancelarDoacao(int id, string motivoCancelamento)
     {
         try
         {
             if (id <= 0)
                 throw new ArgumentException("O ID da doação deve ser maior que zero.", nameof(id));
 
+            var doacao = await ObterDoacaoPorId(id);
+            doacao.Observacao = motivoCancelamento;
+
             await _doacaoRepositorio.CancelarDoacao(id);
-            //_notificacaoService.EnviarEmailCancelamentoDoacao(
-            //    )
+            var doacaoAtualizada = await ObterDoacaoPorId(id);
+
+            if (doacaoAtualizada.Status == StatusDoacao.Cancelada)
+            {
+                await _notificacaoService.EnviarEmailCancelamentoDoacao(doacao);
+                return true;
+            }
+
+            return false;
         }
         catch (Exception ex)
         {
-            throw new Exception($"Não foi possível deletar a doação com ID {id}. Por favor, verifique o ID e tente novamente.", ex);
+            throw new Exception("Não foi possível deletar a doação com ID");
         }
     }
 

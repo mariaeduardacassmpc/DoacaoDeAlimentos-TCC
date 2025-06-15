@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace TCCDoacaoDeAlimentos.Shared.Models
 {
-    public class RequisicaoAutenticacao
+    public class RequisicaoLogin
     {
-        public string Login { get; set; } = "";
+        public string Email { get; set; } = "";
         public string Senha { get; set; } = "";
     }
 }
