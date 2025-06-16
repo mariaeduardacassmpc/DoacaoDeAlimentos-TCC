@@ -28,7 +28,7 @@
                                 @foreach (var usuario in usuariosPaginated)
                                 {
                                     <tr>
-                                        <td>@usuario.RazaoSocial</td>
+                                        <td>@usuario.NomeFantasia</td>
                                         <td>@FormatarTipoEntidade(usuario.TpEntidade.ToString())</td>
                                         <td>@usuario.Telefone</td>
                                         <td>@usuario.Email</td>
@@ -115,7 +115,7 @@
                         <div class="row mb-3">
                             <div class="col-md-9">
                                 <label class="form-label">Nome/Razão Social</label>
-                                <input class="form-control" @bind="usuarioEditando.RazaoSocial" />
+                                <input class="form-control" @bind="usuarioEditando.NomeFantasia" />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Tipo</label>
@@ -251,7 +251,7 @@
         usuarioEditando = new Entidade
         {
             Id = usuario.Id,
-            RazaoSocial = usuario.RazaoSocial,
+            NomeFantasia = usuario.NomeFantasia,
             CNPJ_CPF = usuario.CNPJ_CPF,
             TpEntidade = usuario.TpEntidade,
             Telefone = usuario.Telefone,
@@ -286,7 +286,7 @@
             {
                 Id = usuarioEditando.Id,
                 TpEntidade = usuarioEditando.TpEntidade.ToString(),
-                RazaoSocial = usuarioEditando.RazaoSocial,
+                NomeFantasia = usuarioEditando.NomeFantasia,
                 CNPJ_CPF = usuarioEditando.CNPJ_CPF,
                 Telefone = usuarioEditando.Telefone,
                 Endereco = usuarioEditando.Endereco,

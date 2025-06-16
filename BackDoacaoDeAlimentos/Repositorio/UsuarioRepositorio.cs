@@ -34,7 +34,7 @@ namespace BackDoacaoDeAlimentos.Repositorio
             var sql = @"
                         SELECT 
                                 u.Id, u.EntidadeId, u.Email, u.Senha,
-                                e.Id AS Entidade_Id, e.RazaoSocial, e.TpEntidade AS TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
+                                e.Id AS Entidade_Id, e.NomeFantasia, e.TpEntidade AS TpEntidade, e.CNPJ_CPF, e.Telefone, e.Endereco, e.Bairro, e.CEP, e.Cidade, e.Email AS Entidade_Email, e.Responsavel, e.Longitude, e.Latitude
                             FROM Usuario u
                             INNER JOIN Entidade e ON u.EntidadeId = e.Id
                         WHERE u.Email = @Email AND u.Ativo = 1

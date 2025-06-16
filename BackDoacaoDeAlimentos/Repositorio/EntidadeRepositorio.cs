@@ -106,7 +106,6 @@ namespace BackDoacaoDeAlimentos.Repositorios
                 var parametros = new
                 {
                     TpEntidade = entidade.TpEntidade.ToString(),
-                    RazaoSocial = entidade.RazaoSocial,
                     CNPJ_CPF = entidade.CNPJ_CPF,
                     Telefone = entidade.Telefone,
                     Endereco = entidade.Endereco,
@@ -197,8 +196,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
         {
             try
             {
-                var sql = "SELECT COUNT(1) FROM Entidade WHERE CNPJ_CPF = @Documento OR Email = @Email";
-                var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento, Email = email });
+                var sql = "SELECT COUNT(1) FROM Entidade WHERE (CNPJ_CPF = @Documento OR Email = @Email) AND Ativo = 1"; var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento, Email = email });
                 return resultado > 0;
             }
             catch (Exception ex)
@@ -207,12 +205,10 @@ namespace BackDoacaoDeAlimentos.Repositorios
             }
         }
 
-        // Novo método para buscar ONGs próximas por latitude/longitude
         public async Task<IEnumerable<Entidade>> ObterOngsProximas(double latitude, double longitude, double raioKm = 20)
         {
             try
             {
-                // Haversine formula para calcular distância em km
                 var sql = @"
                     SELECT *, 
                         (6371 * acos(

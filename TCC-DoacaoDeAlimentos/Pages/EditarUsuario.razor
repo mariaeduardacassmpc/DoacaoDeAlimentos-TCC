@@ -33,7 +33,7 @@
                                     <label for="nome" class="form-label d-flex align-items-center gap-2 text-success">
                                         <i class="bi bi-person-fill"></i> @(entidade.TpEntidade == "O" ? "Razão Social " : "Nome Completo ")
                                     </label>
-                                    <InputText @bind-Value="entidade.RazaoSocial" class="form-control" id="nome"
+                                    <InputText @bind-Value="entidade.NomeFantasia" class="form-control" id="nome"
                                                placeholder="@(entidade.TpEntidade == "O" ? "Razão Social" : "Nome Completo")" />
                                 </div>
 
@@ -190,7 +190,7 @@
             var dadosParaEnvio = new EntidadeEdicaoDto
                 {
                     Id = entidade.Id,
-                    RazaoSocial = entidade.RazaoSocial,
+                    NomeFantasia = entidade.NomeFantasia,
                     Responsavel = entidade.Responsavel,
                     Email = entidade.Email,
                     Telefone = entidade.Telefone,
