@@ -1,0 +1,169 @@
+@import '_content/Blazored.Modal/Blazored.Modal.bundle.scp.css';
+@import '_content/Blazored.Toast/Blazored.Toast.bundle.scp.css';
+
+/* /Layout/MainLayout.razor.rz.scp.css */
+.page[b-f7ejyzq3z3] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+main[b-f7ejyzq3z3] {
+    flex: 1;
+}
+
+.sidebar[b-f7ejyzq3z3] {
+    background-image: #ffffff;
+}
+
+.sem-padding[b-f7ejyzq3z3] {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.top-row[b-f7ejyzq3z3] {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 1.5rem;
+    gap: 1rem;
+}
+
+    .top-row a:focus:not(:focus-visible)[b-f7ejyzq3z3],
+    .top-row .btn-link:focus:not(:focus-visible)[b-f7ejyzq3z3] {
+        outline: none;
+        box-shadow: none;
+    }
+
+.cadastre-se-wrapper[b-f7ejyzq3z3] {
+    position: relative;
+}
+
+/* Card dropdown exatamente no estilo da sua imagem da Claro */
+.cadastre-se-menu[b-f7ejyzq3z3] {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background-color: white;
+    border: 1.5px solid var(--primary-color);
+    border-radius: 1rem;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    padding: 1rem 1.5rem;
+    min-width: 230px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 1200;
+}
+
+/* Links dentro do card */
+.cadastre-se-link[b-f7ejyzq3z3] {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    user-select: none;
+}
+
+    .cadastre-se-link:hover[b-f7ejyzq3z3] {
+        background-color: #256d46; /* verde escuro */
+    }
+
+/* Bot�o Cadastre-se estilo outline verde */
+.btn-outline-success[b-f7ejyzq3z3] {
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .btn-outline-success:hover[b-f7ejyzq3z3] {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+/* Ajustes para o navbar links */
+.navbar-nav .nav-link[b-f7ejyzq3z3] {
+    font-weight: 600;
+    padding: 0.35rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .navbar-nav .nav-link.active[b-f7ejyzq3z3],
+    .navbar-nav .nav-link:hover[b-f7ejyzq3z3] {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+    }
+
+/* ========== Estilos para o modal Blazored posicionado como dropdown ========== */
+
+/* Remove o header do modal com o "x" */
+.blazored-modal-close[b-f7ejyzq3z3] {
+    display: none !important;
+}
+
+/* Posiciona o modal parecido com um dropdown abaixo do bot�o Cadastre-se */
+.blazored-modal[b-f7ejyzq3z3] {
+    display: flex !important;
+    align-items: flex-start !important; /* Alinha no topo da viewport */
+    justify-content: flex-end !important; /* Alinha � direita */
+    padding-top: 80px !important; /* Espa�o para navbar (ajuste se necess�rio) */
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+    padding-bottom: 0 !important;
+    z-index: 1500; /* Garante que fique acima da navbar e outros elementos */
+}
+
+    /* Estilo da caixa do modal */
+    .blazored-modal .modal-content[b-f7ejyzq3z3] {
+        border-radius: 1rem;
+        margin: 0;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        width: 240px;
+        max-width: 100%;
+        padding: 1.5rem 1.5rem 2rem 1.5rem;
+        background-color: white;
+    }
+
+/* Conte�do do modal - centralizado com espa�amento */
+.modal-body.text-center[b-f7ejyzq3z3] {
+    padding: 0;
+}
+
+    .modal-body.text-center h5[b-f7ejyzq3z3] {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+/* Bot�es estilizados no modal */
+.modal-body .btn[b-f7ejyzq3z3] {
+    min-width: 100px;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.modal-body .btn-success[b-f7ejyzq3z3] {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+    .modal-body .btn-success:hover[b-f7ejyzq3z3] {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+.modal-body .btn-primary[b-f7ejyzq3z3] {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+    .modal-body .btn-primary:hover[b-f7ejyzq3z3] {
+        background-color: #276749;
+        border-color: #22543d;
+    }

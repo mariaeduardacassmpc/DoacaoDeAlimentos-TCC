@@ -107,42 +107,44 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="cep" class="form-label">CEP *</label>
-                                <InputText @bind-Value="entidade.CEP" class="form-control" id="cep"
-                                           placeholder="00000-000" @oninput="BuscarEnderecoPorCep" />
-                                <ValidationMessage For="@(() => entidade.CEP)" class="text-danger" />
-                            </div>
-
                             <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Cidade *</label>
+                                <div class="col-md-4">
+                                    <label for="cep" class="form-label">
+                                        <i class="bi bi-geo-alt-fill text-success"></i> CEP *
+                                    </label>
+                                    <InputText @bind-Value="entidade.CEP" class="form-control" id="cep"
+                                               placeholder="00000-000" @oninput="BuscarEnderecoPorCep" />
+                                    <ValidationMessage For="@(() => entidade.CEP)" class="text-danger" />
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label">
+                                        <i class="bi bi-geo-alt-fill text-success"></i> Cidade *
+                                    </label>
                                     <InputText @bind-Value="entidade.Cidade" class="form-control" id="cidade"
                                                placeholder="Sua cidade" />
                                     <ValidationMessage For="@(() => entidade.Cidade)" class="text-danger" />
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Bairro *</label>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <label class="form-label">
+                                        <i class="bi bi-geo-alt-fill text-success"></i> Endereço *
+                                    </label>
+                                    <InputText @bind-Value="entidade.Endereco" class="form-control" id="endereco"
+                                               placeholder="Endereço completo" />
+                                    <ValidationMessage For="@(() => entidade.Endereco)" class="text-danger" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">
+                                        <i class="bi bi-geo-alt-fill text-success"></i> Bairro *
+                                    </label>
                                     <InputText @bind-Value="entidade.Bairro" class="form-control" id="bairro"
                                                placeholder="Bairro" />
                                     <ValidationMessage For="@(() => entidade.Bairro)" class="text-danger" />
                                 </div>
                             </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-10">
-                                    <label class="form-label">Endereço *</label>
-                                    <InputText @bind-Value="entidade.Endereco" class="form-control" id="endereco"
-                                               placeholder="Endereço completo" />
-                                    <ValidationMessage For="@(() => entidade.Endereco)" class="text-danger" />
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Número *</label>
-                                    <InputText @bind-Value="entidade.Numero" class="form-control" id="numero"
-                                               placeholder="Nº" />
-                                    <ValidationMessage For="@(() => entidade.Numero)" class="text-danger" />
-                                </div>
-                            </div>
+                        
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
