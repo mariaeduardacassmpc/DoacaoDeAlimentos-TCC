@@ -16,6 +16,11 @@ button.page-link:focus {
     box-shadow: none !important;
 }
 
+.btn-close:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 #perfilMenu:focus, #perfilMenu:active {
     box-shadow: none !important;
     outline: none !important;

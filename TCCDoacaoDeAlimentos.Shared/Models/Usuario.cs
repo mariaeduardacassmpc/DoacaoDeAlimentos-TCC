@@ -6,7 +6,6 @@ namespace TCCDoacaoDeAlimentos.Shared.Models
     public class Usuario
     {
         public int Id { get; set; }
-
         public int EntidadeId { get; set; }
 
         [Required(ErrorMessage = "O e-mail é obrigatório")]
@@ -19,8 +18,7 @@ namespace TCCDoacaoDeAlimentos.Shared.Models
         [MaxLength(20, ErrorMessage = "A senha deve ter no máximo 20 caracteres")]
         public string Senha { get; set; }
         public string SenhaHash { get; set; }
-        public string RazaoSocial { get; set; }
+        public string NomeFantasia { get; set; }
         public string TpEntidade { get; set; } 
-
     }
 }

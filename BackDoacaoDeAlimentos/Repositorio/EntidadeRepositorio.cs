@@ -96,9 +96,9 @@ namespace BackDoacaoDeAlimentos.Repositorios
             {
                 const string sql = @"
                     INSERT INTO Entidade (
-                        TpEntidade, RazaoSocial, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel, Latitude, Longitude, NomeFantasia
+                        TpEntidade, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel, Latitude, Longitude, NomeFantasia
                     ) VALUES (
-                        @TpEntidade, @RazaoSocial, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel, @Latitude, @Longitude, @NomeFantasia
+                        @TpEntidade, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel, @Latitude, @Longitude, @NomeFantasia
                     );
                     SELECT CAST(SCOPE_IDENTITY() AS int);
                 ";
@@ -106,7 +106,6 @@ namespace BackDoacaoDeAlimentos.Repositorios
                 var parametros = new
                 {
                     TpEntidade = entidade.TpEntidade.ToString(),
-                    RazaoSocial = entidade.RazaoSocial,
                     CNPJ_CPF = entidade.CNPJ_CPF,
                     Telefone = entidade.Telefone,
                     Endereco = entidade.Endereco,
@@ -146,7 +145,6 @@ namespace BackDoacaoDeAlimentos.Repositorios
                 const string sql = @"
                 UPDATE Entidade SET 
                     TpEntidade = @TpEntidade,
-                    RazaoSocial = @RazaoSocial,
                     CNPJ_CPF = @CNPJ_CPF,
                     Telefone = @Telefone,
                     Endereco = @Endereco,
@@ -207,12 +205,10 @@ namespace BackDoacaoDeAlimentos.Repositorios
             }
         }
 
-        // Novo método para buscar ONGs próximas por latitude/longitude
         public async Task<IEnumerable<Entidade>> ObterOngsProximas(double latitude, double longitude, double raioKm = 20)
         {
             try
             {
-                // Haversine formula para calcular distância em km
                 var sql = @"
                     SELECT *, 
                         (6371 * acos(

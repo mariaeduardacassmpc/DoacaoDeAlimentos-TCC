@@ -34,37 +34,18 @@
                                 <ValidationMessage For="@(() => entidade.TpEntidade)" class="text-danger" />
                             </div>
 
-
-                            @if (entidade.TpEntidade == "O" || entidade.TpPessoa == Entidade.TipoPessoa.J)
-                            {
-                                <div class="mb-3">
-                                    <label for="razaoSocial" class="form-label">Razão Social *</label>
-                                    <InputText @bind-Value="entidade.RazaoSocial" class="form-control" id="razaoSocial" placeholder="Razão Social" />
-                                    <ValidationMessage For="@(() => entidade.RazaoSocial)" class="text-danger" />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="nomeFantasia" class="form-label">Nome Fantasia *</label>
-                                    <InputText @bind-Value="entidade.NomeFantasia" class="form-control" id="nomeFantasia" placeholder="Nome Fantasia" />
-                                    <ValidationMessage For="@(() => entidade.NomeFantasia)" class="text-danger" />
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="mb-3">
-                                    <label for="nome" class="form-label">Nome Completo *</label>
-                                    <InputText @bind-Value="entidade.RazaoSocial" class="form-control" id="nome" placeholder="Nome Completo" />
-                                    <ValidationMessage For="@(() => entidade.RazaoSocial)" class="text-danger" />
-                                </div>
-                            }
-
-
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome Completo *</label>
+                                <InputText @bind-Value="entidade.NomeFantasia" class="form-control" id="nome" placeholder="Nome Completo" />
+                                <ValidationMessage For="@(() => entidade.NomeFantasia)" class="text-danger" />
+                            </div>
+                            
                             @if (entidade.TpEntidade == "O")
                             {
                                 <div class="mb-3">
                                     <label for="responsavel" class="form-label">Responsável *</label>
                                     <InputText @bind-Value="entidade.Responsavel" class="form-control" id="responsavel"
                                                placeholder="Nome do responsável" />
-                                    <ValidationMessage For="@(() => entidade.Responsavel)" class="text-danger" />
                                 </div>
                             }
                             @if (entidade.TpEntidade == "D" && entidade.TpPessoa == Entidade.TipoPessoa.F)
@@ -76,7 +57,6 @@
                                         <option value="F">Feminino</option>
                                         <option value="M">Masculino</option>
                                     </InputSelect>
-                                    <ValidationMessage For="@(() => entidade.Sexo)" class="text-danger" />
                                 </div>
                             }
 
@@ -228,23 +208,22 @@
 
             var dadosParaEnvio = new Entidade
                 {
-                    RazaoSocial = entidade.RazaoSocial,
+                    TpEntidade = entidade.TpEntidade,
+                    NomeFantasia = entidade.NomeFantasia,
+                    Sexo = entidade.Sexo,
                     Responsavel = entidade.Responsavel,
+                    CNPJ_CPF = entidade.CNPJ_CPF,
                     Senha = entidade.Senha,
                     ConfirmarSenha = entidade.ConfirmarSenha,
                     Email = entidade.Email,
-                    Telefone = (entidade.Telefone),
-                    CNPJ_CPF = (entidade.CNPJ_CPF),
+                    Telefone = entidade.Telefone,
                     Endereco = $"{entidade.Endereco}, {entidade.Numero}",
                     Numero = entidade.Numero,
                     Bairro = entidade.Bairro,
                     Cidade = entidade.Cidade,
-                    CEP = (entidade.CEP),
+                    CEP = entidade.CEP,
                     Latitude = entidade.Latitude,
                     Longitude = entidade.Longitude,
-                    TpEntidade = entidade.TpEntidade,
-                    Sexo = entidade.Sexo,
-                    NomeFantasia = entidade.NomeFantasia,
                     TpPessoa = entidade.TpPessoa
                 };
 
@@ -282,15 +261,14 @@
 
         try
         {
-            // Aqui estamos fazendo uma requisição para a API ViaCep
             var response = await Http.GetFromJsonAsync<ViaCep>($"api/viacep/BuscarCep/{cep}");
 
             if (response != null)
             {
                 entidade.Bairro = response.Bairro;
-                entidade.Cidade = response.Localidade; // Certifique-se de que a cidade está sendo preenchida corretamente
+                entidade.Cidade = response.Localidade; 
                 entidade.Endereco = response.Logradouro;
-                StateHasChanged();  // Isso força o Blazor a re-renderizar a página com os novos dados
+                StateHasChanged(); 
             }
             else
             {

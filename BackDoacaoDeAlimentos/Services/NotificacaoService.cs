@@ -49,7 +49,7 @@ namespace BackDoacaoDeAlimentos.Services
                 var link = $"https://localhost:7170/alterarsenha?token={token}";
 
                 return await _mailServico.EnviarEmailRecuperacaoSenha(
-                    usuario.RazaoSocial,
+                    usuario.NomeFantasia,
                     usuario.Email,
                     link
                 );
@@ -87,7 +87,7 @@ namespace BackDoacaoDeAlimentos.Services
                     usuario.NomeFantasia,
                     usuario.Email,
                     nomesAlimentosStr,
-                    instituicao.RazaoSocial,
+                    instituicao.NomeFantasia,
                     instituicao.Endereco,
                     instituicao.Telefone,
                     instituicao.Responsavel
@@ -121,7 +121,7 @@ namespace BackDoacaoDeAlimentos.Services
                 string nomesAlimentosStr = nomesAlimentos.Count > 0 ? string.Join(", ", nomesAlimentos) : "Alimento";
 
                 await _mailServico.EnviarEmailConfirmacaoDoacaoOng(
-                    usuarioInstituicao.RazaoSocial,
+                    usuarioInstituicao.NomeFantasia,
                     usuarioInstituicao.Email,
                     nomesAlimentosStr,
                     doador.NomeFantasia,
@@ -157,7 +157,7 @@ namespace BackDoacaoDeAlimentos.Services
                 string nomesAlimentosStr = nomesAlimentos.Count > 0 ? string.Join(", ", nomesAlimentos) : "Alimento";
 
                 await _mailServico.EnviarEmailCancelamentoDoacao(
-                    usuarioInstituicao.RazaoSocial,
+                    usuarioInstituicao.NomeFantasia,
                     usuarioInstituicao.Email,
                     nomesAlimentosStr,
                     doador.NomeFantasia,

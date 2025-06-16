@@ -17,7 +17,6 @@
                     <div class="card-body p-5">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h1 class="card-title mb-0">
-                                <i class="bi bi-box-seam me-2"></i>
                                 @(TpEntidade == "O" ? "Doações Recebidas" : "Minhas Doações")
                             </h1>
 
@@ -97,8 +96,9 @@
                                             <td>
                                                 <button class="btn btn-outline-success btn-sm me-1"
                                                         @onclick="() => VerDetalhes(doacao.Id)">
-                                                    Detalhes
+                                                    <i class="bi bi-eye-fill me-1"></i> Detalhes
                                                 </button>
+
                                             </td>
                                         </tr>
                                     }
@@ -133,42 +133,41 @@
 @if (MostrarModal)
 {
     <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title">Detalhes da Doação #@(DoacaoSelecionada?.Id ?? 0)</h5>
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow rounded-3">
+                <div class="modal-header bg-light border-bottom">
+                    <h5 class="modal-title fw-bold">
+                        Detalhes da Doação #@(DoacaoSelecionada?.Id ?? 0)
+                    </h5>
                     <button type="button" class="btn-close" @onclick="FecharModal"></button>
                 </div>
+
                 <div class="modal-body">
                     @if (DoacaoSelecionada != null)
                     {
-                        <div class="row mb-3">
+                        <div class="row mb-4">
                             <div class="col-md-6">
-                                <h6>@(TpEntidade == "O" ? "Informações do Doador" : "Informações da ONG")</h6>
+                                <h6 class="fw-semibold mb-3">
+                                    <i class="bi bi-person-fill me-1 text-secondary"></i>
+                                    @(TpEntidade == "O" ? "Informações do Doador" : "Informações da ONG")
+                                </h6>
+
                                 @if (TpEntidade == "O")
                                 {
-                                    <p><strong>Nome:</strong> @(DoadorSelecionado != null && !string.IsNullOrWhiteSpace(DoadorSelecionado.NomeFantasia) ? DoadorSelecionado.NomeFantasia : "Desconhecido")</p>
+                                    <p><strong>Nome:</strong> @(DoadorSelecionado?.NomeFantasia ?? "Desconhecido")</p>
                                     <p>
-                                        <i class="bi bi-telephone-fill ms-1"></i>
-                                        <strong>Telefone:</strong>
-                                        @(string.IsNullOrWhiteSpace(DoadorSelecionado?.Telefone)
-                                            ? "Não informado"
-                                            : DoadorSelecionado.Telefone)
+                                        <strong>Telefone:</strong> @(string.IsNullOrWhiteSpace(DoadorSelecionado?.Telefone) ? "Não informado" : DoadorSelecionado.Telefone)
                                     </p>
                                     <p>
-                                        <i class="bi bi-envelope-fill ms-1"></i>
-                                        <strong>Email:</strong>
-                                        @(string.IsNullOrWhiteSpace(DoadorSelecionado?.Email)
-                                            ? "Não informado"
-                                            : DoadorSelecionado.Email)
+                                        <strong>Email:</strong> @(string.IsNullOrWhiteSpace(DoadorSelecionado?.Email) ? "Não informado" : DoadorSelecionado.Email)
                                     </p>
                                 }
                                 else
                                 {
                                     <p><strong>Nome:</strong> @ObterNomeOng(DoacaoSelecionada.IdOng)</p>
                                     <p>
-                                        <strong>Responsável: </strong>
-                                        @if (OngSelecionada != null && !string.IsNullOrEmpty(OngSelecionada.Responsavel))
+                                        <strong>Responsável:</strong>
+                                        @if (!string.IsNullOrEmpty(OngSelecionada?.Responsavel))
                                         {
                                             @OngSelecionada.Responsavel
                                         }
@@ -178,10 +177,10 @@
                                         }
                                     </p>
                                     <p>
-                                        <i class="bi bi-telephone-fill ms-1"></i><strong> Telefone: </strong>
+                                        <strong>Telefone:</strong>
                                         @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Telefone))
                                         {
-                                            <a href="tel:@OngSelecionada.Telefone" style="text-decoration: underline; color: #000;">
+                                            <a href="tel:@OngSelecionada.Telefone" class="text-decoration-underline text-dark">
                                                 @OngSelecionada.Telefone
                                             </a>
                                         }
@@ -191,11 +190,10 @@
                                         }
                                     </p>
                                     <p>
-                                        <i class="bi bi-geo-alt-fill ms-1"></i><strong> Endereço: </strong>
+                                        <strong>Endereço:</strong>
                                         @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Endereco))
                                         {
-                                            <a href="https://www.google.com/maps/search/@(Uri.EscapeDataString(OngSelecionada.Endereco))" target="_blank" rel="noopener"
-                                                style="text-decoration: underline; color: #000;">
+                                            <a href="https://www.google.com/maps/search/@(Uri.EscapeDataString(OngSelecionada.Endereco))" target="_blank" rel="noopener" class="text-decoration-underline text-dark">
                                                 @OngSelecionada.Endereco
                                             </a>
                                         }
@@ -206,54 +204,76 @@
                                     </p>
                                 }
                             </div>
+
                             <div class="col-md-6">
-                                <h6>Informações da Doação</h6>
+                                <h6 class="fw-semibold mb-3">
+                                    <i class="bi bi-info-circle-fill me-1 text-secondary"></i>
+                                    Informações da Doação
+                                </h6>
                                 <p><strong>Data:</strong> @DoacaoSelecionada.DataDoacao.ToString("dd/MM/yyyy")</p>
-                                <p><strong>Status:</strong> <span class="badge @GetStatusBadgeClass(DoacaoSelecionada.Status)">@DoacaoSelecionada.Status</span></p>
+                                @if (!string.IsNullOrWhiteSpace(DoacaoSelecionada.Observacao))
+                                {
+                                    <p><strong>Observação:</strong> @DoacaoSelecionada.Observacao</p>
+                                }
+                                <p>
+                                    <strong>Status:</strong>
+                                    <span class="badge @GetStatusBadgeClass(DoacaoSelecionada.Status)">
+                                        @DoacaoSelecionada.Status
+                                    </span>
+                                </p>
                             </div>
                         </div>
 
                         <div class="border-top pt-3">
-                            <h6>Alimentos Doados</h6>
+                            <h6 class="fw-semibold mb-3">
+                                <i class="bi bi-basket-fill me-1 text-black"></i>
+                                Alimentos Doados
+                            </h6>
                             <table class="table table-sm">
                                 <thead>
                                     <tr>
-                                        <th class="ps-4">Alimento</th>
-                                        <th class="ps-4">Quantidade</th>
-                                        <th class="ps-4">Unidade</th>
-                                        <th class="ps-4">Validade</th>
+                                        <th>Alimento</th>
+                                        <th>Quantidade</th>
+                                        <th>Unidade</th>
+                                        <th>Validade</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var item in DoacaoSelecionada.Alimentos)
                                     {
                                         <tr>
-                                            <td class="ps-4">@ObterNomeAlimento(item.AlimentoId)</td>
-                                            <td class="ps-4">@item.Quantidade</td>
-                                            <td class="ps-4">@item.UnidadeMedida</td>
-                                            <td class="ps-4">@item.Validade.ToString("dd/MM/yyyy")</td>
+                                            <td>@ObterNomeAlimento(item.AlimentoId)</td>
+                                            <td>@item.Quantidade</td>
+                                            <td>@item.UnidadeMedida</td>
+                                            <td>@item.Validade.ToString("dd/MM/yyyy")</td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
-
                         </div>
+
                     }
                 </div>
+
                 <div class="modal-footer">
                     @if (DoacaoSelecionada != null && DoacaoSelecionada.Status == StatusDoacao.Pendente)
-                    {   
-                        @if(TpEntidade == "O")
+                    {
+                        @if (TpEntidade == "O")
                         {
-                            <button type="button" class="btn btn-success me-2" @onclick="() => FinalizarDoacao(DoacaoSelecionada.Id)">Finalizar</button>
+                            <button type="button" class="btn btn-success me-2" @onclick="() => FinalizarDoacao(DoacaoSelecionada.Id)">
+                                <i class="bi bi-check-circle-fill me-1"></i> Finalizar Doação
+                            </button>
                         }
-                        <button type="button" class="btn btn-danger me-2" @onclick="AbrirModalMotivo">Cancelar Doação</button>
+                        <button type="button" class="btn btn-danger me-2" @onclick="AbrirModalMotivo">
+                            <i class="bi bi-x-circle-fill me-1"></i> Cancelar Doação
+                        </button>
                     }
                 </div>
             </div>
         </div>
-    </div>
+    </div>  
 }
+
 @if (MostrarModalMotivo)
 {
     <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" tabindex="-1">

@@ -119,7 +119,7 @@ public class DoacaoService : IDoacaoService
             var doacao = await ObterDoacaoPorId(id);
             doacao.Observacao = motivoCancelamento;
 
-            await _doacaoRepositorio.CancelarDoacao(id);
+            await _doacaoRepositorio.CancelarDoacao(id, motivoCancelamento);
             var doacaoAtualizada = await ObterDoacaoPorId(id);
 
             if (doacaoAtualizada.Status == StatusDoacao.Cancelada)

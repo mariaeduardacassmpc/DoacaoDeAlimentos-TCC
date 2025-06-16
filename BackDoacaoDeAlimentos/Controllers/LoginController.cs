@@ -52,7 +52,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             return Ok(new
             {
                 token,
-                NomeUsuario = usuario.RazaoSocial ?? usuario.Email,
+                NomeUsuario = usuario.NomeFantasia ?? usuario.Email,
                 usuario.Email,
                 TpEntidade = usuario.TpEntidade,
                 Cidade = cidade

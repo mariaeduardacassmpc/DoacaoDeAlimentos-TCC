@@ -10,6 +10,6 @@ public interface IDoacaoRepositorio
     Task<IEnumerable<Doacao>> ObterDoacoesPorDoadorOuOng(FiltroDoacaoDto filtroDoacaoDto);
     Task<IEnumerable<Doacao>> ObterTodasDoacao();
     Task AtualizarDoacao(Doacao doacao);
-    Task CancelarDoacao(int id);
+    Task CancelarDoacao(int id, string motivoCancelamento);
     Task<EstatisticasDto> ObterEstatisticas();
 }

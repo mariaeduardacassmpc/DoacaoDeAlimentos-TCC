@@ -17,9 +17,6 @@ public class Entidade : IValidatableObject
     public TipoPessoa? TpPessoa { get; set; }
 
     [Required(ErrorMessage = "Nome é obrigatório.")]
-    public string RazaoSocial { get; set; }
-
-    [Required(ErrorMessage = "Nome é obrigatório.")]
     public string NomeFantasia { get; set; }
 
     [Required(ErrorMessage = "A senha é obrigatória.")]
