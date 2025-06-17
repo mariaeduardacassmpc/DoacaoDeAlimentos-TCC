@@ -251,6 +251,7 @@
         usuarioEditando = new Entidade
         {
             Id = usuario.Id,
+            NomeFantasia = usuario.NomeFantasia,
             CNPJ_CPF = usuario.CNPJ_CPF,
             TpEntidade = usuario.TpEntidade,
             Telefone = usuario.Telefone,
@@ -285,6 +286,7 @@
             {
                 Id = usuarioEditando.Id,
                 TpEntidade = usuarioEditando.TpEntidade.ToString(),
+                NomeFantasia = usuarioEditando.NomeFantasia,
                 CNPJ_CPF = usuarioEditando.CNPJ_CPF,
                 Telefone = usuarioEditando.Telefone,
                 Endereco = usuarioEditando.Endereco,

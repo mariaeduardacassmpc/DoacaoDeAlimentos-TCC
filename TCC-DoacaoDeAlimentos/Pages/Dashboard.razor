@@ -1,0 +1,82 @@
+﻿@page "/dashboard"
+@using TCCDoacaoDeAlimentos.Shared.Models;
+
+@code {
+    private int totalDoacoesMes = 37; // Exemplo, você pode buscar do banco
+    private int usuariosLogados = 12; // Exemplo, consulta viria da API ou banco
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Aqui você faria a consulta real ao banco de dados ou API
+        // Exemplo:
+        // totalDoacoesMes = await _dashboardService.ObterTotalDoacoesMes();
+    }
+    private List<Alimento> alimentosRecebidos = new List<Alimento>
+    {
+        new Alimento { Categoria = "Cereais", QuantidadeKg = 10 },
+        new Alimento { Categoria = "Frutas", QuantidadeKg = 15 },
+        new Alimento { Categoria = "Legumes", QuantidadeKg = 8 },
+        new Alimento { Categoria = "Carnes", QuantidadeKg = 5 }
+    };
+
+    private double TotalGeral => alimentosRecebidos.Sum(a => a.QuantidadeKg);
+
+    public class Alimento
+    {
+        public string Categoria { get; set; } = string.Empty;
+        public double QuantidadeKg { get; set; }
+    }
+
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Dashboard</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Doações Recebidas este Mês</h5>
+                    <p class="card-text display-4">@totalDoacoesMes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="card text-white bg-info mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Usuários</h5>
+            <p class="card-text display-4">@usuariosLogados</p>
+        </div>
+    </div>
+</div>
+
+                <div class="container mt-5">
+    <h2 class="mb-4">Relatório de Alimentos Recebidos</h2>
+
+    <table class="table table-bordered">
+        <thead class="table-secondary">
+            <tr>
+                <th>Categoria</th>
+                <th>Quantidade Recebida (Kg)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var alimento in alimentosRecebidos)
+            {
+                <tr>
+                    <td>@alimento.Categoria</td>
+                    <td>@alimento.QuantidadeKg Kg</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="table-success">
+                <th>Total Geral</th>
+                <th>@TotalGeral Kg</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>

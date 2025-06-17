@@ -47,6 +47,14 @@
                             </li>
                         }
 
+                        @if (TpEntidade == "D")
+                        {
+                            <li class="nav-item mx-2">
+                                <NavLink class="nav-link" href="/dashboard" @onclick="FecharMenu">Dash</NavLink>
+                            </li>
+                        }
+
+
                         <li class="nav-item mx-2">
                             <NavLink class="nav-link" href="/CadastroDeEntidade" @onclick="FecharMenu">Cadastrar</NavLink>
                         </li>
