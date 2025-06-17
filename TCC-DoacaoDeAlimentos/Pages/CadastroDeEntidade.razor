@@ -36,19 +36,19 @@
                                 <ValidationMessage For="@(() => entidade.TpEntidade)" class="text-danger" />
                             </div>
 
-                                <div class="mb-3">
+                            <div class="mb-3">
                                 <label class="form-label">
                                     <i class="fas fa-check-circle text-success me-1"></i>Nome Fantasia *
                                 </label>
                                 <InputText @bind-Value="entidade.NomeFantasia" class="form-control" id="nomeFantasia" placeholder="Nome Fantasia" />
-                                    <ValidationMessage For="@(() => entidade.NomeFantasia)" class="text-danger" />
-                                </div>
-                  
+                                <ValidationMessage For="@(() => entidade.NomeFantasia)" class="text-danger" />
+                            </div>
+
                             @if (entidade.TpEntidade == "O")
                             {
                                 <div class="mb-3">
                                     <label for="responsavel" class="form-label"><i class="fas fa-check-circle text-success me-1"></i>Responsável *</label>                                    <InputText @bind-Value="entidade.Responsavel" class="form-control" id="responsavel"
-                                               placeholder="Nome do responsável" />
+                                                                                                                                                                                                         placeholder="Nome do responsável" />
                                     <ValidationMessage For="@(() => entidade.Responsavel)" class="text-danger" />
                                 </div>
                             }
@@ -102,14 +102,14 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label"><i class="fas fa-check-circle text-success me-1"></i>E-mail *</label>                                    <InputText @bind-Value="entidade.Email" class="form-control" id="email"
-                                               placeholder="contato@entidade.org" />
+                                                                                                                                                                                  placeholder="contato@entidade.org" />
                                     <ValidationMessage For="@(() => entidade.Email)" class="text-danger" />
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="cep" class="form-label"><i class="fas fa-check-circle text-success me-1"></i>CEP *</label>                                <InputText @bind-Value="entidade.CEP" class="form-control" id="cep"
-                                           placeholder="00000-000" @oninput="BuscarEnderecoPorCep" />
+                                                                                                                                                                                 placeholder="00000-000" @oninput="BuscarEnderecoPorCep" />
                                 <ValidationMessage For="@(() => entidade.CEP)" class="text-danger" />
                             </div>
 
@@ -124,7 +124,7 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label"><i class="fas fa-check-circle text-success me-1"></i>Bairro *</label>                                    <InputText @bind-Value="entidade.Bairro" class="form-control" id="bairro"
-                                               placeholder="Bairro" />
+                                                                                                                                                                                  placeholder="Bairro" />
                                     <ValidationMessage For="@(() => entidade.Bairro)" class="text-danger" />
                                 </div>
                             </div>
@@ -132,12 +132,12 @@
                             <div class="row mb-3">
                                 <div class="col-md-10">
                                     <label class="form-label"><i class="fas fa-check-circle text-success me-1"></i>Endereço *</label>                                    <InputText @bind-Value="entidade.Endereco" class="form-control" id="endereco"
-                                               placeholder="Endereço completo" />
+                                                                                                                                                                                    placeholder="Endereço completo" />
                                     <ValidationMessage For="@(() => entidade.Endereco)" class="text-danger" />
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label"><i class="fas fa-check-circle text-success me-1"></i>Número *</label>                                    <InputText @bind-Value="entidade.Numero" class="form-control" id="numero"
-                                               placeholder="Nº" />
+                                                                                                                                                                                  placeholder="Nº" />
                                     <ValidationMessage For="@(() => entidade.Numero)" class="text-danger" />
                                 </div>
                             </div>

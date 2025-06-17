@@ -195,7 +195,7 @@
                                         @if (!string.IsNullOrWhiteSpace(OngSelecionada?.Endereco))
                                         {
                                             <a href="https://www.google.com/maps/search/@(Uri.EscapeDataString(OngSelecionada.Endereco))" target="_blank" rel="noopener"
-                                                style="text-decoration: underline; color: #000;">
+                                               style="text-decoration: underline; color: #000;">
                                                 @OngSelecionada.Endereco
                                             </a>
                                         }
@@ -248,8 +248,8 @@
                 </div>
                 <div class="modal-footer">
                     @if (DoacaoSelecionada != null && DoacaoSelecionada.Status == StatusDoacao.Pendente)
-                    {   
-                        @if(TpEntidade == "O")
+                    {
+                        @if (TpEntidade == "O")
                         {
                             <button type="button" class="btn btn-success me-2" @onclick="() => FinalizarDoacao(DoacaoSelecionada.Id)">Finalizar</button>
                         }
@@ -366,11 +366,11 @@
     {
         try
         {
-          
-                ListaDeOngs = await Http.GetFromJsonAsync<List<OngDto>>(
-            $"api/entidade/ObterTodasInstituicoes"
-                )?? new List<OngDto>();
-           
+
+            ListaDeOngs = await Http.GetFromJsonAsync<List<OngDto>>(
+        $"api/entidade/ObterTodasInstituicoes"
+            ) ?? new List<OngDto>();
+
         }
         catch (Exception ex)
         {
@@ -447,7 +447,7 @@
     {
         return status switch
         {
-            StatusDoacao.Pendente => "bg-warning"   ,
+            StatusDoacao.Pendente => "bg-warning",
             StatusDoacao.Finalizada => "bg-success",
             StatusDoacao.Cancelada => "bg-danger",
             _ => "bg-secondary"
@@ -458,7 +458,7 @@
     {
         MostrarModalMotivo = true;
     }
-    
+
     private async Task VerDetalhes(int idDoacao)
     {
         DoacaoSelecionada = DoacoesFiltradas.FirstOrDefault(d => d.Id == idDoacao);
@@ -479,11 +479,11 @@
             StateHasChanged();
         }
     }
-    
+
     private void FecharModal()
     {
         MostrarModal = false;
-        StateHasChanged(); 
+        StateHasChanged();
     }
 
     private void FecharModalMotivo()
