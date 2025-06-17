@@ -47,11 +47,12 @@ public class DoacaoRepositorio : IDoacaoRepositorio
         await _db.ExecuteAsync(sql, doacao);
     }
 
-    public async Task CancelarDoacao(int id)
+    public async Task CancelarDoacao(int id, string motivoCancelamento)
     {
-        var sql = "UPDATE Doacao SET Status = 2 WHERE Id = @Id";
+        var sql = "UPDATE Doacao SET Status = 2, Observacao = @motivoCancelamento WHERE Id = @Id";
         await _db.ExecuteAsync(sql, new { Id = id });
     }
+
 
     public async Task<IEnumerable<Doacao>> ObterDoacoesPorDoadorOuOng(FiltroDoacaoDto filtroDoacaoDto)
     {

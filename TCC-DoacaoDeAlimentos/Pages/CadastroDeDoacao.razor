@@ -168,6 +168,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+         await VerificarUsuarioAutenticado();
+
         if (Itens.Count == 0)
         {
             Itens.Add(new AlimentoDoacao
