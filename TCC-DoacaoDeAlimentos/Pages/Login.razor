@@ -6,7 +6,6 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @inject HttpClient Http
 @inject NavigationManager Navigation
-@inject Blazored.Toast.Services.IToastService ToastService
 @inject IJSRuntime JSRuntime
 @inject AuthenticationStateProvider AuthStateProvider
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
@@ -98,6 +97,7 @@
 
                     sucesso = true;
                     await JSRuntime.InvokeVoidAsync("alert", $"Login realizado com sucesso!");
+                    await Task.Yield();
                     Navigation.NavigateTo("/", true);
                 }
                 else

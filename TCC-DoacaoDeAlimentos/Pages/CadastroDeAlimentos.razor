@@ -2,7 +2,6 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
-@inject Blazored.Toast.Services.IToastService ToastService
 @using TCCDoacaoDeAlimentos.Shared.Models;
 
 <div class="min-vh-100 py-5" style="background-color: #d4edda;">
@@ -181,7 +180,6 @@
         }
         catch (Exception ex)
         {
-            ToastService.ShowError("Erro inesperado: " + ex.Message);
             await JSRuntime.InvokeVoidAsync("alert", $"Erro ao remover alimento.");
         }
     }

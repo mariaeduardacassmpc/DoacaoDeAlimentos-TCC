@@ -37,7 +37,7 @@
                                         <option value="">Todas</option>
                                         @foreach (var ong in ListaDeOngs)
                                         {
-                                            <option value="@ong.Id.ToString()">@ong.RazaoSocial</option>
+                                            <option value="@ong.Id.ToString()">@ong.NomeFantasia</option>
                                         }
                                     </select>
                                 </div>
@@ -57,14 +57,6 @@
                                 <label class="form-label">Data da Doação</label>
                                 <div class="d-flex align-items-center">
                                     <input type="date" class="form-control me-2" @bind="Filtro.DataDoacao" />
-                                    @* @if (TpEntidade == "O") *@
-                                    @* { *@
-                                    @*     <button class="btn btn-outline-success" *@
-                                    @*     style="white-space: nowrap; height: 38px" *@
-                                    @*     @onclick="BaixarRelatorioPdf"> *@
-                                    @*         <i class="bi bi-file-earmark-pdf me-2"></i> Relatório *@
-                                    @*     </button> *@
-                                    @* } *@
                                 </div>
                             </div>
                         </div>
@@ -211,10 +203,11 @@
                                     Informações da Doação
                                 </h6>
                                 <p><strong>Data:</strong> @DoacaoSelecionada.DataDoacao.ToString("dd/MM/yyyy")</p>
-                                @if (!string.IsNullOrWhiteSpace(DoacaoSelecionada.Observacao))
-                                {
-                                    <p><strong>Observação:</strong> @DoacaoSelecionada.Observacao</p>
-                                }
+                                <p>
+                                    <strong>Observação:</strong>
+                                    @(!string.IsNullOrWhiteSpace(DoacaoSelecionada.Observacao)
+                                        ? DoacaoSelecionada.Observacao : "Nenhuma observação")
+                                </p>
                                 <p>
                                     <strong>Status:</strong>
                                     <span class="badge @GetStatusBadgeClass(DoacaoSelecionada.Status)">
@@ -372,23 +365,21 @@
         }
 
         await ObterAlimentos();
-        await ObterInstituicoesPorCidade(cidadeUsuario);
+        await ObterInstituicoes();
         await ObterDoacoes();
     }
 
-    private async Task ObterInstituicoesPorCidade(string cidade)
+    private async Task ObterInstituicoes()
     {
         try
         {
-           if (!string.IsNullOrWhiteSpace(cidade))
-           {
-                ListaDeOngs = await Http.GetFromJsonAsync<List<OngDto>>(
-                $"api/entidade/buscarInstituicoesPorCidade/{Uri.EscapeDataString(cidade)}"
-                ) ?? new List<OngDto>();
-           }
+            ListaDeOngs = await Http.GetFromJsonAsync<List<OngDto>>(
+              $"api/entidade/ObterTodasInstituicoes"
+                  ) ?? new List<OngDto>();
         }
         catch (Exception ex)
         {
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao obter instituições.");
             ListaDeOngs = new List<OngDto>();
         }
     }
@@ -448,7 +439,7 @@
 
     private string ObterNomeOng(int idOng)
     {
-        return ListaDeOngs.FirstOrDefault(o => o.Id == idOng)?.RazaoSocial ?? "Desconhecida";
+        return ListaDeOngs.FirstOrDefault(o => o.Id == idOng)?.NomeFantasia ?? "Desconhecida";
     }
 
     private string ObterNomeAlimento(int alimentoId)

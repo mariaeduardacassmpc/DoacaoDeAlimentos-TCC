@@ -2,7 +2,6 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
-@inject Blazored.Toast.Services.IToastService ToastService
 @using System.Text.RegularExpressions
 @using TCCDoacaoDeAlimentos.Shared.Models
 @using TCCDoacaoDeAlimentos.Shared.Dto
@@ -244,7 +243,6 @@
         }
         catch (Exception ex)
         {
-            ToastService.ShowError($"Erro crítico: {ex.Message}");
             await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
         }
     }
@@ -257,7 +255,6 @@
         var cep = (e.Value?.ToString() ?? "");
         if (string.IsNullOrWhiteSpace(cep) || cep.Length != 8)
         {
-            ToastService.ShowWarning("CEP inválido.");
             return;
         }
 
@@ -274,12 +271,14 @@
             }
             else
             {
-                ToastService.ShowWarning("CEP não encontrado.");
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico.");
+
             }
         }
         catch (Exception ex)
         {
-            ToastService.ShowError($"Erro ao buscar CEP: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
+
         }
     }
 
@@ -296,7 +295,8 @@
         }
         catch (Exception ex)
         {
-            ToastService.ShowWarning($"Erro ao obter localização: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
+
         }
     }
 

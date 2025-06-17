@@ -196,11 +196,11 @@ public class MailService : IMailService
             {
                 HtmlBody = $@"
                     <p>Olá {nomeDoador},</p>
-                    <p>Parabéns! Sua doação com o(s) alimento(s): <strong>{alimento}</strong> foi efetuada para a ONG <strong>{nomeOng}</strong>.</p>
-                    <p>Endereço da ONG: <strong>{enderecoOng}</strong></p>
+                    <p>Parabéns! Sua doação com o(s) alimento(s): <strong>{alimento}</strong> foi efetuada para a Instituição  <strong>{nomeOng}</strong>.</p>
+                    <p>Endereço da Instituição : <strong>{enderecoOng}</strong></p>
                     <p>Telefone de contato: <strong>{telefoneOng}</strong></p>
                     <p>Responsável: <strong>{responsavelOng}</strong></p>
-                    <p>Aguarde a ONG entrar em contato para finalizar o processo.</p>
+                    <p>Aguarde a Instituição entrar em contato para finalizar o processo.</p>
                     <p>Obrigado por sua colaboração!</p>
                     <p><strong>Equipe de Suporte AlimentAção </strong></p>"
 
@@ -254,7 +254,7 @@ public class MailService : IMailService
             var mail = new MimeMessage();
             mail.From.Add(new MailboxAddress("Suporte AlimentAção", remetente));
             mail.To.Add(new MailboxAddress(nomeOng, emailDestino));
-            mail.Subject = "Nova Doação Recebida";
+            mail.Subject = "Cancelamento de Doação";
 
             var body = new BodyBuilder
             {

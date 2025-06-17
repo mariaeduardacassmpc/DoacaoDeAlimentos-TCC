@@ -5,6 +5,7 @@ using TCCDoacaoDeAlimentos.Shared.Dto;
 using BackDoacaoDeAlimentos.Repositorio;
 using TCCDoacaoDeAlimentos.Shared.Models;
 using BackDoacaoDeAlimentos.Interfaces.Repositorios;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace BackDoacaoDeAlimentos.Repositorios
 {
@@ -195,7 +196,13 @@ namespace BackDoacaoDeAlimentos.Repositorios
         {
             try
             {
-                var sql = "SELECT COUNT(1) FROM Entidade WHERE CNPJ_CPF = @Documento OR Email = @Email";
+                var sql = @"SELECT COUNT(1)
+                              FROM Entidade E
+                              INNER JOIN Usuario U ON U.EntidadeId = E.Id
+                              WHERE (E.CNPJ_CPF = @Documento OR E.Email = @Email)
+                                AND U.Ativo = 1"
+                ;
+
                 var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento, Email = email });
                 return resultado > 0;
             }
@@ -204,6 +211,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
                 throw new Exception("Erro ao verificar documento ou email existente: " + ex.Message, ex);
             }
         }
+
 
         public async Task<IEnumerable<Entidade>> ObterOngsProximas(double latitude, double longitude, double raioKm = 20)
         {

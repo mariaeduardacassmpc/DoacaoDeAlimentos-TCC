@@ -5,7 +5,6 @@
 @using System.Security.Claims
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthStateProvider
-@inject Blazored.Toast.Services.IToastService ToastService
 @using TCCDoacaoDeAlimentos.Shared.Dto
 @using TCCDoacaoDeAlimentos.Shared.Models
 @using Microsoft.AspNetCore.Components.Authorization
@@ -42,7 +41,7 @@
                                         <option value="">Selecione a Instituição...</option>
                                         @foreach (var instituicao in Instituicoes)
                                         {
-                                            <option value="@instituicao.Id">@instituicao.RazaoSocial</option>
+                                            <option value="@instituicao.Id">@instituicao.NomeFantasia</option>
                                         }
                                     </InputSelect>
                                     <ValidationMessage For="@(() => NovaDoacao.IdOng)" class="text-danger" />
@@ -168,6 +167,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await VerificarUsuarioAutenticado();
+
         if (Itens.Count == 0)
         {
             Itens.Add(new AlimentoDoacao
@@ -178,19 +179,25 @@
             });
         }
 
-        try
+        if (Id.HasValue)
         {
-            await VerificarUsuarioAutenticado();
-            string cidadeUsuario = usuarioLogado.FindFirst("cidade")?.Value ?? "";
+            var ong = await Http.GetFromJsonAsync<OngDto>($"api/entidade/obterPorId/{Id}");
+            if (ong != null)
+            {
+                Instituicoes = new List<OngDto> { ong };
+                NovaDoacao.IdOng = ong.Id;
+            }
+            else
+            {
+                Instituicoes = new List<OngDto>();
+            }
+        }
+        else
+        {
+            await CarregarInstituicoes();
+        }
 
-            await CarregarInstituicoes(cidadeUsuario);
-            await CarregarAlimentos();
-            await CarregarInstituicaoPorId();
-        }
-        catch (Exception ex)
-        {
-            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao inicializar a tela de doação.");
-        }
+        await CarregarAlimentos();
     }
 
     private async Task VerificarUsuarioAutenticado()
@@ -213,10 +220,10 @@
         }
     }
 
-    private async Task CarregarInstituicoes(string cidade)
+    private async Task CarregarInstituicoes()
     {
         Instituicoes = await Http.GetFromJsonAsync<List<OngDto>>(
-            $"api/entidade/buscarInstituicoesPorCidade/{Uri.EscapeDataString(cidade)}"
+            $"api/entidade/obterTodasInstituicoes"
         ) ?? new List<OngDto>();
 
         if (!Instituicoes.Any())
@@ -281,7 +288,6 @@
         {
             erroSalvar = true;
             mensagemErro = "Preencha todos os campos obrigatórios da doação e dos itens.";
-            ToastService.ShowError(mensagemErro);
             return;
         }
 

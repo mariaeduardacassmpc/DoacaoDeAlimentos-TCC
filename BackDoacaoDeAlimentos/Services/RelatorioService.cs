@@ -1,14 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Xml.Linq;
+using BackDoacaoDeAlimentos.Interfaces.Repositorios;
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using TCCDoacaoDeAlimentos.Shared.Models;
+using TCCDoacaoDeAlimentos.Shared.Dto;
 
-public class RelatorioDeDoacoesService
+public class RelatorioService : IRelatorioService
 {
+    private readonly IRelatorioRepositorio _relatorioRepositorio;
+
+    public RelatorioService(IRelatorioRepositorio relatorioRepositorio)
+    {
+        _relatorioRepositorio = relatorioRepositorio;
+    }
+
     public void GerarRelatorio(string caminhoArquivo, string nomeUsuario, List<Doacao> doacoes, bool ehDoador)
     {
         var doc = new iTextSharp.text.Document();
@@ -86,7 +97,56 @@ public class RelatorioDeDoacoesService
         doc.Close();
     }
 
-    private string GetStatusMaisComum(List<Doacao> doacoes)
+    public async Task<int> ObterTotalDoacoesMes(int id)
+    {
+        try
+        {
+            return await _relatorioRepositorio.ObterTotalDoacoesMes(id);
+        }
+        catch (Exception ex)
+        {
+            throw new ApplicationException("Erro ao obter total de doações do mês.", ex);
+        }
+    }
+
+    public async Task<int> ObterTotalUsuarios()
+    {
+        try
+        {
+            return await _relatorioRepositorio.ObterTotalUsuarios();
+        }
+        catch (Exception ex)
+        {
+            throw new ApplicationException("Erro ao obter total de usuários.", ex);
+        }
+    }
+
+    public async Task<IEnumerable<AlimentoPorCategoriaDto>> ObterAlimentosPorCategoria(int id)
+    {
+        try
+        {
+            return await _relatorioRepositorio.ObterAlimentosPorCategoria(id);
+        }
+        catch (Exception ex)
+        {
+            throw new ApplicationException("Erro ao obter alimentos por categoria.", ex);
+        }
+    }
+
+    public async Task<double> ObterTotalKgAlimentos(int id)
+    {
+        try
+        {
+            return await _relatorioRepositorio.ObterTotalKgAlimentos(id);
+        }
+        catch (Exception ex)
+        {
+            throw new ApplicationException("Erro ao obter total em kg dos alimentos.", ex);
+        }
+    }
+
+
+private string GetStatusMaisComum(List<Doacao> doacoes)
     {
         var counts = new Dictionary<string, int>();
         foreach (var d in doacoes)
@@ -109,4 +169,8 @@ public class RelatorioDeDoacoesService
         return status;
     }
 
+    string IRelatorioService.GetStatusMaisComum(List<Doacao> doacoes)
+    {
+        throw new NotImplementedException();
+    }
 }
