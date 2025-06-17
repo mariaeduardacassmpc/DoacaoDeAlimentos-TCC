@@ -63,7 +63,7 @@ window.addMarkers = function (ongs) {
 
         try {
             const marker = L.marker([ong.latitude, ong.longitude], {
-                title: ong.razaoSocial,
+                title: ong.nomeFantasia,
                 icon: greenIcon 
             }).addTo(window.leafletMap);
 
@@ -78,7 +78,7 @@ window.addMarkers = function (ongs) {
                 font-size: 0.85rem;
             ">
                 <div style="font-weight: 700; margin-bottom: 6px; color: #28a745; font-size: 0.95rem;">
-                    ${ong.razaoSocial}
+                    ${ong.nomeFantasia}
                 </div>
                 <div style="line-height: 1.4;">
                     <i class="fas fa-map-marker-alt" style="color:#28a745; margin-right:4px;"></i> ${ong.endereco || 'Não informado'}<br>
@@ -118,3 +118,4 @@ window.addMarkers = function (ongs) {
         }
     }
 };
+ache

@@ -196,7 +196,13 @@ namespace BackDoacaoDeAlimentos.Repositorios
         {
             try
             {
-                var sql = "SELECT COUNT(1) FROM Entidade WHERE (CNPJ_CPF = @Documento OR Email = @Email) AND Ativo = 1"; var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento, Email = email });
+                var sql = @"SELECT COUNT(1)
+                              FROM Entidade E
+                              INNER JOIN Usuario U ON U.EntidadeId = E.Id
+                              WHERE (E.CNPJ_CPF = @Documento OR E.Email = @Email)
+                                AND U.Ativo = 1";
+
+                var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento, Email = email });
                 return resultado > 0;
             }
             catch (Exception ex)
