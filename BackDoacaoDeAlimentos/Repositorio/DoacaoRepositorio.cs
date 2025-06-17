@@ -38,7 +38,6 @@ public class DoacaoRepositorio : IDoacaoRepositorio
         var id = await _db.ExecuteScalarAsync<int>(sql, doacao);
         return id;
     }
-
     public async Task AtualizarDoacao(Doacao doacao)
     {
         var sql = @"UPDATE Doacao
@@ -48,11 +47,12 @@ public class DoacaoRepositorio : IDoacaoRepositorio
         await _db.ExecuteAsync(sql, doacao);
     }
 
-    public async Task CancelarDoacao(int id, string observacao)
+    public async Task CancelarDoacao(int id, string motivoCancelamento)
     {
-        var sql = "UPDATE Doacao SET Status = 2, Observacao = @Observacao WHERE Id = @Id";
-        await _db.ExecuteAsync(sql, new { Id = id, Observacao = observacao });
+        var sql = "UPDATE Doacao SET Status = 2, Observacao = @motivoCancelamento WHERE Id = @Id";
+        await _db.ExecuteAsync(sql, new { Id = id });
     }
+
 
     public async Task<IEnumerable<Doacao>> ObterDoacoesPorDoadorOuOng(FiltroDoacaoDto filtroDoacaoDto)
     {
@@ -73,6 +73,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
 
         return await _db.QueryAsync<Doacao>(sql, filtroDoacaoDto);
     }
+
 
     public async Task<EstatisticasDto> ObterEstatisticas()
     {

@@ -17,8 +17,8 @@ public class DoacaoService : IDoacaoService
 
     public DoacaoService
     (
-        IDoacaoRepositorio doacaoRepositorio, 
-        IAutenticacaoService autenticacaoService, 
+        IDoacaoRepositorio doacaoRepositorio,
+        IAutenticacaoService autenticacaoService,
         INotificacaoService notificacaoService,
         IAlimentoDoacaoService alimentiDoacaoService,
         IAlimentoDoacaoRepositorio alimentoDoacaoRepositorio

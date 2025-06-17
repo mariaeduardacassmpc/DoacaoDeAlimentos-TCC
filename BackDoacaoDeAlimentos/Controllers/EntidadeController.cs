@@ -10,7 +10,7 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 namespace BackDoacaoDeAlimentos.Controllers
 {
     [ApiController]
-    [Route("api/entidade")]  
+    [Route("api/entidade")]
     public class EntidadeController : ControllerBase
     {
         private readonly IEntidadeService _entidadeService;
@@ -26,7 +26,6 @@ namespace BackDoacaoDeAlimentos.Controllers
             _usuarioService = usuarioService;
             _geocodingService = geocodingService;
         }
-
 
         [HttpGet("obterTodasInstituicoes")]
         public async Task<IActionResult> ObterTodasInstituicoes()
@@ -62,16 +61,22 @@ namespace BackDoacaoDeAlimentos.Controllers
                 return StatusCode(500, new { success = false, message = "Erro ao obter entidades.", details = ex.Message });
             }
         }
-      
 
         [HttpGet("obterPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
-            var entidade = await _entidadeService.ObterEntidadePorId(id);
-            if (entidade == null)
-                return NotFound();
+            try
+            {
+                var entidade = await _entidadeService.ObterEntidadePorId(id);
+                if (entidade == null)
+                    return NotFound();
 
-            return Ok(entidade);
+                return Ok(entidade);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Erro ao obter entidade por ID.", details = ex.Message });
+            }
         }
 
         [HttpGet("obterPorEmail/{email}")]
@@ -108,7 +113,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { success = false, message = ex.Message });
+                return StatusCode(500, new { success = false, message = "Erro ao adicionar entidade.", details = ex.Message });
             }
         }
 
@@ -117,19 +122,15 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             try
             {
-                var usuario = new Usuario
-                {
-                    Email = entidade.Email,
-                    Senha = entidade.Senha
-                };
+                if (entidade == null || entidade.Id != id)
+                    return BadRequest();
 
-                await _entidadeService.AdicionarEntidade(entidade, usuario);
-
-                return Ok(new { success = true, message = "Cadastro atualizado com sucesso!" });
+                await _entidadeService.AtualizarEntidade(entidade);
+                return NoContent();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { success = false, message = "Erro ao adicionar entidade.", details = ex.Message });
+                return StatusCode(500, new { success = false, message = "Erro ao atualizar entidade.", details = ex.Message });
             }
         }
 
@@ -166,14 +167,13 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
         }
 
-
         [HttpGet("buscarInstituicoesPorCoordenadas/{latitude}/{longitude}")]
         public async Task<IActionResult> BuscarInstituicaoPorCoordenadas(string latitude, string longitude)
         {
             try
             {
                 if (!double.TryParse(latitude, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var lat) ||
-                !double.TryParse(longitude, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var lon))
+                    !double.TryParse(longitude, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var lon))
                 {
                     return BadRequest("Latitude ou longitude em formato inválido.");
                 }

@@ -57,7 +57,7 @@
 
                     @if (totalPages > 1)
                     {
-                        <div style="margin-top: 60px;"></div> 
+                        <div style="margin-top: 60px;"></div>
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-center">
                                 <li class="page-item @(currentPage == 1 ? "disabled" : "")">
@@ -249,21 +249,22 @@
     private void ObterUsuario(Entidade usuario)
     {
         usuarioEditando = new Entidade
-        {
-            Id = usuario.Id,
-            CNPJ_CPF = usuario.CNPJ_CPF,
-            TpEntidade = usuario.TpEntidade,
-            Telefone = usuario.Telefone,
-            Email = usuario.Email,
-            Ativo = usuario.Ativo,
-            Endereco = usuario.Endereco,
-            Bairro = usuario.Bairro,
-            CEP = usuario.CEP,
-            Sexo = usuario.Sexo,
-            Responsavel = usuario.Responsavel,
-            Senha = usuario.Senha,
-            Cidade = usuario.Cidade,
-        };
+            {
+                Id = usuario.Id,
+                NomeFantasia = usuario.NomeFantasia,
+                CNPJ_CPF = usuario.CNPJ_CPF,
+                TpEntidade = usuario.TpEntidade,
+                Telefone = usuario.Telefone,
+                Email = usuario.Email,
+                Ativo = usuario.Ativo,
+                Endereco = usuario.Endereco,
+                Bairro = usuario.Bairro,
+                CEP = usuario.CEP,
+                Sexo = usuario.Sexo,
+                Responsavel = usuario.Responsavel,
+                Senha = usuario.Senha,
+                Cidade = usuario.Cidade,
+            };
         showEditModal = true;
     }
 
@@ -282,20 +283,21 @@
         if (usuarioEditando != null)
         {
             var entidadeEdicao = new EntidadeEdicaoDto
-            {
-                Id = usuarioEditando.Id,
-                TpEntidade = usuarioEditando.TpEntidade.ToString(),
-                CNPJ_CPF = usuarioEditando.CNPJ_CPF,
-                Telefone = usuarioEditando.Telefone,
-                Endereco = usuarioEditando.Endereco,
-                Bairro = usuarioEditando.Bairro,
-                CEP = usuarioEditando.CEP,
-                Cidade = usuarioEditando.Cidade,
-                Email = usuarioEditando.Email,
-                Sexo = usuarioEditando.Sexo,
-                Responsavel = usuarioEditando.Responsavel,
-                Senha = usuarioEditando.Senha
-            };
+                {
+                    Id = usuarioEditando.Id,
+                    TpEntidade = usuarioEditando.TpEntidade.ToString(),
+                    NomeFantasia = usuarioEditando.NomeFantasia,
+                    CNPJ_CPF = usuarioEditando.CNPJ_CPF,
+                    Telefone = usuarioEditando.Telefone,
+                    Endereco = usuarioEditando.Endereco,
+                    Bairro = usuarioEditando.Bairro,
+                    CEP = usuarioEditando.CEP,
+                    Cidade = usuarioEditando.Cidade,
+                    Email = usuarioEditando.Email,
+                    Sexo = usuarioEditando.Sexo,
+                    Responsavel = usuarioEditando.Responsavel,
+                    Senha = usuarioEditando.Senha
+                };
 
             await Http.PutAsJsonAsync($"api/entidade/atualizar/{usuarioEditando.Id}", entidadeEdicao);
             usuarios = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasEntidades");
@@ -312,7 +314,7 @@
         {
             "D" => "Doador",
             "O" => "Ong",
-            _ => tipo 
+            _ => tipo
         };
     }
 
@@ -365,7 +367,7 @@
                 usuarios = await Http.GetFromJsonAsync<List<Entidade>>("api/entidade/obterTodasEntidades");
                 totalItems = usuarios?.Count ?? 0;
                 UpdatePagination();
-                StateHasChanged(); 
+                StateHasChanged();
             }
             catch (HttpRequestException ex)
             {

@@ -50,7 +50,7 @@
                                 <div class="col-md-4 mb-3">
                                     <label for="dataDoacao" class="form-label">Data da Doação</label>
                                     <InputDate @bind-Value="NovaDoacao.DataDoacao" class="form-control" id="dataDoacao"
-                                               @attributes="@(new Dictionary<string, object> { ["min"] = DateTime.Today.ToString("yyyy-MM-dd") })" />
+                                    @attributes="@(new Dictionary<string, object> { ["min"] = DateTime.Today.ToString("yyyy-MM-dd") })" />
                                     <ValidationMessage For="@(() => NovaDoacao.DataDoacao)" class="text-danger" />
                                 </div>
                             </div>
@@ -120,7 +120,7 @@
                                         <div class="col-md-3">
                                             <label class="form-label">Validade</label>
                                             <InputDate @bind-Value="item.Validade" class="form-control"
-                                                       @attributes="@(new Dictionary<string, object> { ["min"] = DateTime.Today.ToString("yyyy-MM-dd") })" />
+                                            @attributes="@(new Dictionary<string, object> { ["min"] = DateTime.Today.ToString("yyyy-MM-dd") })" />
                                             @if (erroSalvar && (item.Validade < new DateTime(2025, 4, 10) || item.Validade > new DateTime(2030, 12, 31)))
                                             {
                                                 <div class="text-danger">A validade deve estar entre 10/04/2025 e 31/12/2030.</div>
@@ -163,7 +163,7 @@
     private double userLat;
     private double userLng;
     [Parameter]
-    public int? Id { get; set; } 
+    public int? Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -172,11 +172,11 @@
         if (Itens.Count == 0)
         {
             Itens.Add(new AlimentoDoacao
-            {
-                Validade = DateTime.Today,
-                Quantidade = 1,
-                AlimentoId = 0
-            });
+                {
+                    Validade = DateTime.Today,
+                    Quantidade = 1,
+                    AlimentoId = 0
+                });
         }
 
         if (Id.HasValue)
@@ -239,9 +239,6 @@
 
     private async Task CarregarInstituicaoPorId()
     {
-        if (!Id.HasValue)
-            return;
-
         try
         {
             OngSelecionada = await Http.GetFromJsonAsync<OngDto>($"api/entidade/obterPorId/{Id}");

@@ -20,48 +20,69 @@
                             <hr />
 
                             <div class="mb-3">
-                                <label class="form-label">Tipo de Entidade *</label>
+                                <label class="form-label d-flex align-items-center gap-2 text-success">
+                                    <i class="bi bi-check-circle"></i> Tipo de Entidade *
+                                </label>
                                 <InputRadioGroup @bind-Value="entidade.TpEntidade" class="form-check">
                                     <div class="form-check form-check-inline">
-                                        <InputRadio Value="@( "O" )" class="form-check-input" id="ong" />
-                                        <label class="form-check-label" for="ong">ONG</label>
+                                        <InputRadio Value="@( "I" )" class="form-check-input" id="instituicao" />
+                                        <label class="form-check-label" for="instituicao">Instituição</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <InputRadio Value="@( "D" )" class="form-check-input" id="doador" />                                        <label class="form-check-label" for="doador">Doador</label>
+                                        <InputRadio Value="@( "D" )" class="form-check-input" id="doador" />
+                                        <label class="form-check-label" for="doador">Doador</label>
                                     </div>
                                 </InputRadioGroup>
                                 <ValidationMessage For="@(() => entidade.TpEntidade)" class="text-danger" />
                             </div>
 
                             <div class="mb-3">
-                                <label for="nome" class="form-label">Nome Completo *</label>
-                                <InputText @bind-Value="entidade.NomeFantasia" class="form-control" id="nome" placeholder="Nome Completo" />
+                                <label class="form-label d-flex align-items-center gap-2 text-success">
+                                    <i class="bi bi-person-fill"></i>
+                                    @if (entidade.TpEntidade == "I")
+                                    {
+                                        <span>Nome Fantasia *</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Nome Completo *</span>
+                                    }
+                                </label>
+                                <InputText @bind-Value="entidade.NomeFantasia" class="form-control" id="nomeFantasia" placeholder="Nome Fantasia" />
                                 <ValidationMessage For="@(() => entidade.NomeFantasia)" class="text-danger" />
                             </div>
-                            
-                            @if (entidade.TpEntidade == "O")
+
+                            @if (entidade.TpEntidade == "I")
                             {
                                 <div class="mb-3">
-                                    <label for="responsavel" class="form-label">Responsável *</label>
-                                    <InputText @bind-Value="entidade.Responsavel" class="form-control" id="responsavel"
-                                               placeholder="Nome do responsável" />
+                                    <label for="responsavel" class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-person-circle"></i> Responsável *
+                                    </label>
+                                    <InputText @bind-Value="entidade.Responsavel" class="form-control" id="responsavel" placeholder="Nome do responsável" />
+                                    <ValidationMessage For="@(() => entidade.Responsavel)" class="text-danger" />
                                 </div>
                             }
+
                             @if (entidade.TpEntidade == "D" && entidade.TpPessoa == Entidade.TipoPessoa.F)
                             {
                                 <div class="mb-3">
-                                    <label for="sexo" class="form-label">Sexo *</label>
+                                    <label for="sexo" class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-check-circle"></i> Sexo *
+                                    </label>
                                     <InputSelect @bind-Value="entidade.Sexo" class="form-control" id="sexo">
                                         <option value="" selected disabled>Selecione...</option>
                                         <option value="F">Feminino</option>
                                         <option value="M">Masculino</option>
                                     </InputSelect>
+                                    <ValidationMessage For="@(() => entidade.Sexo)" class="text-danger" />
                                 </div>
                             }
 
                             @if (entidade.TpEntidade == "D")
                             {
-                                <label class="form-label">Tipo de Pessoa *</label>
+                                <label class="form-label d-flex align-items-center gap-2 text-success">
+                                    <i class="bi bi-person-check-fill"></i> Tipo de Pessoa *
+                                </label>
                                 <InputRadioGroup @bind-Value="entidade.TpPessoa" class="form-check">
                                     <div class="form-check form-check-inline">
                                         <InputRadio Value="Entidade.TipoPessoa.F" class="form-check-input" id="pessoaFisica" />
@@ -72,13 +93,15 @@
                                         <label class="form-check-label" for="pessoaJuridica">Jurídica</label>
                                     </div>
                                 </InputRadioGroup>
-
                                 <ValidationMessage For="@(() => entidade.TpPessoa)" class="text-danger" />
                             }
-                            @if (entidade.TpEntidade == "O" || entidade.TpPessoa == Entidade.TipoPessoa.J)
+
+                            @if (entidade.TpEntidade == "I" || entidade.TpPessoa == Entidade.TipoPessoa.J)
                             {
                                 <div class="mb-3">
-                                    <label for="cnpj" class="form-label">CNPJ *</label>
+                                    <label for="cnpj" class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-file-earmark-text-fill"></i> CNPJ *
+                                    </label>
                                     <MaskedInput @bind-Value="entidade.CNPJ_CPF" Mask="00.000.000/0000-00" Placeholder="00.000.000/0000-00" />
                                     <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
                                 </div>
@@ -86,7 +109,9 @@
                             else if (entidade.TpEntidade == "D" && entidade.TpPessoa == Entidade.TipoPessoa.F)
                             {
                                 <div class="mb-3">
-                                    <label for="cpf" class="form-label">CPF *</label>
+                                    <label for="cpf" class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-file-earmark-text-fill"></i> CPF *
+                                    </label>
                                     <MaskedInput @bind-Value="entidade.CNPJ_CPF" Mask="000.000.000-00" Placeholder="000.000.000-00" />
                                     <ValidationMessage For="@(() => entidade.CNPJ_CPF)" class="text-danger" />
                                 </div>
@@ -94,60 +119,69 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Telefone *</label>
+                                    <label class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-telephone-fill"></i> Telefone *
+                                    </label>
                                     <MaskedInput @bind-Value="entidade.Telefone" Mask="(00) 00000-0000" Placeholder="(00) 00000-0000" />
                                     <ValidationMessage For="@(() => entidade.Telefone)" class="text-danger" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">E-mail *</label>
+                                    <label class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-envelope-fill"></i> E-mail *
+                                    </label>
                                     <InputText @bind-Value="entidade.Email" class="form-control" id="email"
                                                placeholder="contato@entidade.org" />
                                     <ValidationMessage For="@(() => entidade.Email)" class="text-danger" />
                                 </div>
                             </div>
 
+                            <div class="mb-3">
+                                <label class="form-label d-flex align-items-center gap-2 text-success">
+                                    <i class="bi bi-geo-alt-fill"></i> CEP *
+                                </label>
+                                <InputText @bind-Value="entidade.CEP" class="form-control" id="cep" placeholder="00000-000" @oninput="BuscarEnderecoPorCep" />
+                                <ValidationMessage For="@(() => entidade.CEP)" class="text-danger" />
+                            </div>
+
                             <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label for="cep" class="form-label">
-                                        <i class="bi bi-geo-alt-fill text-success"></i> CEP *
+                                <div class="col-md-6">
+                                    <label class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-geo-alt-fill"></i> Cidade *
                                     </label>
-                                    <InputText @bind-Value="entidade.CEP" class="form-control" id="cep"
-                                               placeholder="00000-000" @oninput="BuscarEnderecoPorCep" />
-                                    <ValidationMessage For="@(() => entidade.CEP)" class="text-danger" />
-                                </div>
-                                <div class="col-md-8">
-                                    <label class="form-label">
-                                        <i class="bi bi-geo-alt-fill text-success"></i> Cidade *
-                                    </label>
-                                    <InputText @bind-Value="entidade.Cidade" class="form-control" id="cidade"
-                                               placeholder="Sua cidade" />
+                                    <InputText @bind-Value="entidade.Cidade" class="form-control" id="cidade" placeholder="Sua cidade" />
                                     <ValidationMessage For="@(() => entidade.Cidade)" class="text-danger" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-geo-alt-fill"></i> Bairro *
+                                    </label>
+                                    <InputText @bind-Value="entidade.Bairro" class="form-control" id="bairro" placeholder="Bairro" />
+                                    <ValidationMessage For="@(() => entidade.Bairro)" class="text-danger" />
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <div class="col-md-8">
-                                    <label class="form-label">
-                                        <i class="bi bi-geo-alt-fill text-success"></i> Endereço *
+                                <div class="col-md-10">
+                                    <label class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-house-door-fill"></i> Endereço *
                                     </label>
-                                    <InputText @bind-Value="entidade.Endereco" class="form-control" id="endereco"
-                                               placeholder="Endereço completo" />
+                                    <InputText @bind-Value="entidade.Endereco" class="form-control" id="endereco" placeholder="Endereço completo" />
                                     <ValidationMessage For="@(() => entidade.Endereco)" class="text-danger" />
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        <i class="bi bi-geo-alt-fill text-success"></i> Bairro *
-                                    </label>
-                                    <InputText @bind-Value="entidade.Bairro" class="form-control" id="bairro"
-                                               placeholder="Bairro" />
-                                    <ValidationMessage For="@(() => entidade.Bairro)" class="text-danger" />
+                                <div class="col-md-2">
+                                    <label class="form-label"><i class="fas fa-check-circle text-success me-1"></i>Número *</label>
+                                    <InputText @bind-Value="entidade.Numero" class="form-control" id="numero" placeholder="Nº" />
+                                    <ValidationMessage For="@(() => entidade.Numero)" class="text-danger" />
                                 </div>
                             </div>
                         
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Senha *</label>
+                                    <label class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-lock-fill"></i> Senha *
+                                    </label>
                                     <div class="position-relative">
                                         <InputText type="@(_showPassword ? "text" : "password")"
                                                    @bind-Value="entidade.Senha"
@@ -163,7 +197,9 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label">Confirme sua senha *</label>
+                                    <label class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-lock-fill"></i> Confirmar Senha *
+                                    </label>
                                     <div class="position-relative">
                                         <InputText type="@(_showPassword ? "text" : "password")"
                                                    @bind-Value="entidade.ConfirmarSenha"
@@ -190,6 +226,8 @@
     </div>
 </div>
 
+
+
 @code {
     private Entidade entidade = new Entidade
         {
@@ -209,22 +247,22 @@
 
             var dadosParaEnvio = new Entidade
                 {
-                    TpEntidade = entidade.TpEntidade,
-                    NomeFantasia = entidade.NomeFantasia,
-                    Sexo = entidade.Sexo,
                     Responsavel = entidade.Responsavel,
-                    CNPJ_CPF = entidade.CNPJ_CPF,
                     Senha = entidade.Senha,
                     ConfirmarSenha = entidade.ConfirmarSenha,
                     Email = entidade.Email,
-                    Telefone = entidade.Telefone,
+                    Telefone = (entidade.Telefone),
+                    CNPJ_CPF = (entidade.CNPJ_CPF),
                     Endereco = $"{entidade.Endereco}, {entidade.Numero}",
                     Numero = entidade.Numero,
                     Bairro = entidade.Bairro,
                     Cidade = entidade.Cidade,
-                    CEP = entidade.CEP,
+                    CEP = (entidade.CEP),
                     Latitude = entidade.Latitude,
                     Longitude = entidade.Longitude,
+                    TpEntidade = entidade.TpEntidade,
+                    Sexo = entidade.Sexo,
+                    NomeFantasia = entidade.NomeFantasia,
                     TpPessoa = entidade.TpPessoa
                 };
 
@@ -260,14 +298,15 @@
 
         try
         {
+            // Aqui estamos fazendo uma requisição para a API ViaCep
             var response = await Http.GetFromJsonAsync<ViaCep>($"api/viacep/BuscarCep/{cep}");
 
             if (response != null)
             {
                 entidade.Bairro = response.Bairro;
-                entidade.Cidade = response.Localidade; 
+                entidade.Cidade = response.Localidade; // Certifique-se de que a cidade está sendo preenchida corretamente
                 entidade.Endereco = response.Logradouro;
-                StateHasChanged(); 
+                StateHasChanged();  // Isso força o Blazor a re-renderizar a página com os novos dados
             }
             else
             {
