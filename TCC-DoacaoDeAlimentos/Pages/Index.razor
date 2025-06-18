@@ -343,6 +343,14 @@
         modalAberto = null;
     }
 
+     protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("document.activeElement.blur");
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         try

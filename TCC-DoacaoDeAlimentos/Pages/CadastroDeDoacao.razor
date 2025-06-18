@@ -2,10 +2,10 @@
 @page "/CadastroDeDoacao/{Id:int}"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
-@using System.Security.Claims
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthStateProvider
 @using TCCDoacaoDeAlimentos.Shared.Dto
+@using System.Security.Claims
 @using TCCDoacaoDeAlimentos.Shared.Models
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Text.Json
@@ -170,9 +170,15 @@
 {
     if (firstRender && !_verificacaoFeita)
     {
+            if (firstRender)
+            {
+                await JSRuntime.InvokeVoidAsync("document.activeElement.blur");
+            }
+
         _verificacaoFeita = true;
         await VerificarUsuarioAutenticado();
         StateHasChanged();
+
     }
 }
     protected override async Task OnInitializedAsync()
@@ -274,7 +280,8 @@
             await JSRuntime.InvokeVoidAsync("alert", "Erro ao carregar a Instituição.");
         }
     }
-    
+
+
     private void AdicionarItem()
     {
         Itens.Add(new AlimentoDoacao
