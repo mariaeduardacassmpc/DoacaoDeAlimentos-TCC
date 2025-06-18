@@ -4,11 +4,12 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthStateProvider
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 
 <div class="container-fluid py-4" style="background-color: #d4edda; min-height: 100vh;">
     <div class="container bg-white rounded-4 shadow-sm p-4 mb-4">
         <h2 class="text-success mb-4 pb-2 border-bottom border-success border-2">
-          Dashboard
+            Dashboard
         </h2>
 
         <div class="row g-4">
@@ -45,189 +46,187 @@
             </div>
         </div>
     </div>
-  <div class="container bg-white rounded-4 shadow-sm p-4">
-    <div class="text-center mb-4">
-        <h2 class="text-success">
-            <i class="fas fa-utensils me-2"></i> Relatório de Alimentos Recebidos
-        </h2>
-        <p class="text-muted">Análise detalhada dos alimentos recebidos</p>
-    </div>
-     @foreach (var alimento in alimentosRecebidos)
-    {
-        <div class="col-md-6 col-lg-3">
-            <div class="card h-100 border-start border-warning border-5">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-wheat-awn text-warning fs-2 me-3"></i>
-                        <div>
-                            <h5 class="card-title mb-1">@alimento.Categoria</h5>
-                            <h4 class="mb-0">@alimento.QuantidadeKg kg</h4>
+    <div class="container bg-white rounded-4 shadow-sm p-4">
+        <div class="text-center mb-4">
+            <h2 class="text-success">
+                <i class="fas fa-utensils me-2"></i> Relatório de Alimentos Recebidos
+            </h2>
+            <p class="text-muted">Análise detalhada dos alimentos recebidos</p>
+        </div>
+        @foreach (var alimento in alimentosRecebidos)
+        {
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-start border-warning border-5">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-wheat-awn text-warning fs-2 me-3"></i>
+                            <div>
+                                <h5 class="card-title mb-1">@alimento.Categoria</h5>
+                                <h4 class="mb-0">@alimento.QuantidadeKg kg</h4>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+        @* <div class="row g-4"> *@
+        @*     <div class="col-md-6 col-lg-3"> *@
+        @*         <div class="card h-100 border-start border-warning border-5"> *@
+        @*             <div class="card-body"> *@
+        @*                 <div class="d-flex align-items-center"> *@
+        @*                     <i class="fas fa-wheat-awn text-warning fs-2 me-3"></i> *@
+        @*                     <div> *@
+        @*                         <h5 class="card-title mb-1">Grãos e Cereais</h5> *@
+        @*                         <p class="text-muted small mb-2">Arroz, Feijão, Trigo</p> *@
+        @*                         <h4 class="mb-0">150 kg</h4> *@
+        @*                     </div> *@
+        @*                 </div> *@
+        @*             </div> *@
+        @*         </div> *@
+        @*     </div> *@
 
-    @* <div class="row g-4"> *@
-    @*     <div class="col-md-6 col-lg-3"> *@
-    @*         <div class="card h-100 border-start border-warning border-5"> *@
-    @*             <div class="card-body"> *@
-    @*                 <div class="d-flex align-items-center"> *@
-    @*                     <i class="fas fa-wheat-awn text-warning fs-2 me-3"></i> *@
-    @*                     <div> *@
-    @*                         <h5 class="card-title mb-1">Grãos e Cereais</h5> *@
-    @*                         <p class="text-muted small mb-2">Arroz, Feijão, Trigo</p> *@
-    @*                         <h4 class="mb-0">150 kg</h4> *@
-    @*                     </div> *@
-    @*                 </div> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*     </div> *@
+        @*     <div class="col-md-6 col-lg-3"> *@
+        @*         <div class="card h-100 border-start border-danger border-5"> *@
+        @*             <div class="card-body"> *@
+        @*                 <div class="d-flex align-items-center"> *@
+        @*                     <i class="fas fa-drumstick-bite text-danger fs-2 me-3"></i> *@
+        @*                     <div> *@
+        @*                         <h5 class="card-title mb-1">Proteínas</h5> *@
+        @*                         <p class="text-muted small mb-2">Carnes, Ovos, Peixes</p> *@
+        @*                         <h4 class="mb-0">90 kg</h4> *@
+        @*                     </div> *@
+        @*                 </div> *@
+        @*             </div> *@
+        @*         </div> *@
+        @*     </div> *@
 
-    @*     <div class="col-md-6 col-lg-3"> *@
-    @*         <div class="card h-100 border-start border-danger border-5"> *@
-    @*             <div class="card-body"> *@
-    @*                 <div class="d-flex align-items-center"> *@
-    @*                     <i class="fas fa-drumstick-bite text-danger fs-2 me-3"></i> *@
-    @*                     <div> *@
-    @*                         <h5 class="card-title mb-1">Proteínas</h5> *@
-    @*                         <p class="text-muted small mb-2">Carnes, Ovos, Peixes</p> *@
-    @*                         <h4 class="mb-0">90 kg</h4> *@
-    @*                     </div> *@
-    @*                 </div> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*     </div> *@
+        @*     <div class="col-md-6 col-lg-3"> *@
+        @*         <div class="card h-100 border-start border-primary border-5"> *@
+        @*             <div class="card-body"> *@
+        @*                 <div class="d-flex align-items-center"> *@
+        @*                     <i class="fas fa-cheese text-primary fs-2 me-3"></i> *@
+        @*                     <div> *@
+        @*                         <h5 class="card-title mb-1">Laticínios</h5> *@
+        @*                         <p class="text-muted small mb-2">Leite, Queijo, Iogurte</p> *@
+        @*                         <h4 class="mb-0">75 kg</h4> *@
+        @*                     </div> *@
+        @*                 </div> *@
+        @*             </div> *@
+        @*         </div> *@
+        @*     </div> *@
 
-    @*     <div class="col-md-6 col-lg-3"> *@
-    @*         <div class="card h-100 border-start border-primary border-5"> *@
-    @*             <div class="card-body"> *@
-    @*                 <div class="d-flex align-items-center"> *@
-    @*                     <i class="fas fa-cheese text-primary fs-2 me-3"></i> *@
-    @*                     <div> *@
-    @*                         <h5 class="card-title mb-1">Laticínios</h5> *@
-    @*                         <p class="text-muted small mb-2">Leite, Queijo, Iogurte</p> *@
-    @*                         <h4 class="mb-0">75 kg</h4> *@
-    @*                     </div> *@
-    @*                 </div> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*     </div> *@
+        @*     <div class="col-md-6 col-lg-3"> *@
+        @*         <div class="card h-100 border-start border-success border-5"> *@
+        @*             <div class="card-body"> *@
+        @*                 <div class="d-flex align-items-center"> *@
+        @*                     <i class="fas fa-apple-alt text-success fs-2 me-3"></i> *@
+        @*                     <div> *@
+        @*                         <h5 class="card-title mb-1">Frutas e Verduras</h5> *@
+        @*                         <p class="text-muted small mb-2">Banana, Maçã, Alface</p> *@
+        @*                         <h4 class="mb-0">120 kg</h4> *@
+        @*                     </div> *@
+        @*                 </div> *@
+        @*             </div> *@
+        @*         </div> *@
+        @*     </div> *@
 
-    @*     <div class="col-md-6 col-lg-3"> *@
-    @*         <div class="card h-100 border-start border-success border-5"> *@
-    @*             <div class="card-body"> *@
-    @*                 <div class="d-flex align-items-center"> *@
-    @*                     <i class="fas fa-apple-alt text-success fs-2 me-3"></i> *@
-    @*                     <div> *@
-    @*                         <h5 class="card-title mb-1">Frutas e Verduras</h5> *@
-    @*                         <p class="text-muted small mb-2">Banana, Maçã, Alface</p> *@
-    @*                         <h4 class="mb-0">120 kg</h4> *@
-    @*                     </div> *@
-    @*                 </div> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*     </div> *@
+        @*     <div class="col-md-6 col-lg-3"> *@
+        @*         <div class="card h-100 border-start border-secondary border-5"> *@
+        @*             <div class="card-body"> *@
+        @*                 <div class="d-flex align-items-center"> *@
+        @*                     <i class="fas fa-pasta text-secondary fs-2 me-3"></i> *@
+        @*                     <div> *@
+        @*                         <h5 class="card-title mb-1">Massas</h5> *@
+        @*                         <p class="text-muted small mb-2">Macarrão</p> *@
+        @*                         <h4 class="mb-0">60 kg</h4> *@
+        @*                     </div> *@
+        @*                 </div> *@
+        @*             </div> *@
+        @*         </div> *@
+        @*     </div> *@
 
-    @*     <div class="col-md-6 col-lg-3"> *@
-    @*         <div class="card h-100 border-start border-secondary border-5"> *@
-    @*             <div class="card-body"> *@
-    @*                 <div class="d-flex align-items-center"> *@
-    @*                     <i class="fas fa-pasta text-secondary fs-2 me-3"></i> *@
-    @*                     <div> *@
-    @*                         <h5 class="card-title mb-1">Massas</h5> *@
-    @*                         <p class="text-muted small mb-2">Macarrão</p> *@
-    @*                         <h4 class="mb-0">60 kg</h4> *@
-    @*                     </div> *@
-    @*                 </div> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*     </div> *@
+        @*     <div class="col-md-6 col-lg-3"> *@
+        @*         <div class="card h-100 border-start border-info border-5"> *@
+        @*             <div class="card-body"> *@
+        @*                 <div class="d-flex align-items-center"> *@
+        @*                     <i class="fas fa-oil-can text-info fs-2 me-3"></i> *@
+        @*                     <div> *@
+        @*                         <h5 class="card-title mb-1">Óleos e Gorduras</h5> *@
+        @*                         <p class="text-muted small mb-2">Óleo, Manteiga</p> *@
+        @*                         <h4 class="mb-0">40 kg</h4> *@
+        @*                     </div> *@
+        @*                 </div> *@
+        @*             </div> *@
+        @*         </div> *@
+        @*     </div> *@
 
-    @*     <div class="col-md-6 col-lg-3"> *@
-    @*         <div class="card h-100 border-start border-info border-5"> *@
-    @*             <div class="card-body"> *@
-    @*                 <div class="d-flex align-items-center"> *@
-    @*                     <i class="fas fa-oil-can text-info fs-2 me-3"></i> *@
-    @*                     <div> *@
-    @*                         <h5 class="card-title mb-1">Óleos e Gorduras</h5> *@
-    @*                         <p class="text-muted small mb-2">Óleo, Manteiga</p> *@
-    @*                         <h4 class="mb-0">40 kg</h4> *@
-    @*                     </div> *@
-    @*                 </div> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*     </div> *@
+        @*     <div class="col-md-6 col-lg-3"> *@
+        @*         <div class="card h-100 border-start border-dark border-5"> *@
+        @*             <div class="card-body"> *@
+        @*                 <div class="d-flex align-items-center"> *@
+        @*                     <i class="fas fa-wine-bottle text-dark fs-2 me-3"></i> *@
+        @*                     <div> *@
+        @*                         <h5 class="card-title mb-1">Bebidas</h5> *@
+        @*                         <p class="text-muted small mb-2">Suco, Água, Café, Refrigerante</p> *@
+        @*                         <h4 class="mb-0">80 kg</h4> *@
+        @*                     </div> *@
+        @*                 </div> *@
+        @*             </div> *@
+        @*         </div> *@
+        @*     </div> *@
 
-    @*     <div class="col-md-6 col-lg-3"> *@
-    @*         <div class="card h-100 border-start border-dark border-5"> *@
-    @*             <div class="card-body"> *@
-    @*                 <div class="d-flex align-items-center"> *@
-    @*                     <i class="fas fa-wine-bottle text-dark fs-2 me-3"></i> *@
-    @*                     <div> *@
-    @*                         <h5 class="card-title mb-1">Bebidas</h5> *@
-    @*                         <p class="text-muted small mb-2">Suco, Água, Café, Refrigerante</p> *@
-    @*                         <h4 class="mb-0">80 kg</h4> *@
-    @*                     </div> *@
-    @*                 </div> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*     </div> *@
+        @*     <div class="col-md-6 col-lg-3"> *@
+        @*         <div class="card h-100 border-start border-warning border-5"> *@
+        @*             <div class="card-body"> *@
+        @*                 <div class="d-flex align-items-center"> *@
+        @*                     <i class="fas fa-cookie text-warning fs-2 me-3"></i> *@
+        @*                     <div> *@
+        @*                         <h5 class="card-title mb-1">Padaria</h5> *@
+        @*                         <p class="text-muted small mb-2">Pão, Bolo, Bolacha</p> *@
+        @*                         <h4 class="mb-0">50 kg</h4> *@
+        @*                     </div> *@
+        @*                 </div> *@
+        @*             </div> *@
+        @*         </div> *@
+        @*     </div> *@
+        @* </div> *@
 
-    @*     <div class="col-md-6 col-lg-3"> *@
-    @*         <div class="card h-100 border-start border-warning border-5"> *@
-    @*             <div class="card-body"> *@
-    @*                 <div class="d-flex align-items-center"> *@
-    @*                     <i class="fas fa-cookie text-warning fs-2 me-3"></i> *@
-    @*                     <div> *@
-    @*                         <h5 class="card-title mb-1">Padaria</h5> *@
-    @*                         <p class="text-muted small mb-2">Pão, Bolo, Bolacha</p> *@
-    @*                         <h4 class="mb-0">50 kg</h4> *@
-    @*                     </div> *@
-    @*                 </div> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*     </div> *@
-    @* </div> *@
+        <div class="d-flex justify-content-center align-items-center mt-7">
+            <div>
+                <h3 class="text-success mb-0 text-center mt-5">@($"{totalKg} kg")</h3>
 
-    <div class="d-flex justify-content-center align-items-center mt-7">
-        <i class="fas fa-box-open text-success fs-1 me-4"></i>
-        <div>
-            <h3 class="mb-2 mt-4">Total Recebido</h3>
-            <h6 class="display-4 text-success mb-0">665 kg</h6>
+            </div>
         </div>
     </div>
-  </div>
 
 
     <div class="row mt-4">
-    <div class="col-md-8">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <h3 class="card-title text-success">
-                    <i class="fas fa-file-export text-success me-2"></i> Gerar Relatório Completo
-                </h3>
-                <p class="text-muted mb-4">Exporte relatórios detalhados sobre doações de alimentos</p>
-                <div class="d-flex flex-wrap gap-2">
-                    <button class="btn btn-outline-success">
-                        <i class="fas fa-file-pdf me-2"></i> PDF - Relatório de Doações Mensal
-                    </button>
-                    <button class="btn btn-outline-success">
-                        <i class="fas fa-file-pdf me-2"></i> PDF - Relatório de Kg de Alimentos recebidos
-                    </button>
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-success">
+                        <i class="fas fa-file-export text-success me-2"></i> Gerar Relatório Completo
+                    </h3>
+                    <p class="text-muted mb-4">Exporte relatórios detalhados sobre doações de alimentos</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-outline-success">
+                            <i class="fas fa-file-pdf me-2"></i> PDF - Relatório de Doações Mensal
+                        </button>
+                        <button class="btn btn-outline-success">
+                            <i class="fas fa-file-pdf me-2"></i> PDF - Relatório de Kg de Alimentos recebidos
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 
 @code {
     private int totalDoacoesMes;
     private int usuariosLogados;
     private List<AlimentoPorCategoriaDto> alimentosRecebidos = new();
-
+    private int totalKg;
     private double TotalGeral => alimentosRecebidos.Sum(a => a.QuantidadeKg);
     private int idOng;
 
@@ -236,8 +235,9 @@
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        var ongIdClaim = user.FindFirst("OngId");
-        if (ongIdClaim != null && int.TryParse(ongIdClaim.Value, out var id))
+        var idClaim = user.FindFirst("sub") ?? user.FindFirst("userid") ?? user.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (idClaim != null && int.TryParse(idClaim.Value, out var id))
         {
             idOng = id;
         }
@@ -246,25 +246,18 @@
             Console.Error.WriteLine("OngId não encontrado no usuário logado.");
             return;
         }
-        try
-        {
-            await Task.WhenAll(
-                CarregarTotalDoacoesMes(idOng),
-                CarregarUsuariosCadastrados(),
-                CarregarAlimentosRecebidos(idOng)
-            );
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"Erro ao carregar dados do dashboard: {ex.Message}");
-        }
+
+        await CarregarTotalDoacoesMes(idOng);
+        await CarregarUsuariosCadastrados();
+        await CarregarAlimentosRecebidos(idOng);
+        await CarregarTotalKg(idOng);
     }
 
     private async Task CarregarTotalDoacoesMes(int idOng)
     {
         try
         {
-            totalDoacoesMes = await Http.GetFromJsonAsync<int>($"api/relatorio/doacoesNoMes/{idOng}");
+            totalDoacoesMes = await Http.GetFromJsonAsync<int>($"api/relatorio/totalDoacoesNoMes?id={idOng}");
         }
         catch (Exception ex)
         {
@@ -272,11 +265,22 @@
         }
     }
 
+    private async Task CarregarTotalKg(int idOng)
+    {
+        try
+        {
+           totalKg = await Http.GetFromJsonAsync<int>($"api/relatorio/totalKgAlimentos?id={idOng}");
+        }
+        catch (Exception ex)
+        {
+           Console.WriteLine($"Erro ao carregar total de kg: {ex.Message}");
+        }
+   }
     private async Task CarregarUsuariosCadastrados()
     {
         try
         {
-            usuariosLogados = await Http.GetFromJsonAsync<int>("api/relatorio/usuariosCadastrados");
+            usuariosLogados = await Http.GetFromJsonAsync<int>("api/relatorio/totalUsuarios");
         }
         catch (Exception ex)
         {
@@ -288,8 +292,8 @@
     {
         try
         {
-            alimentosRecebidos = await Http.GetFromJsonAsync<List<AlimentoPorCategoriaDto>>($"api/relatorio/alimentos-recebidos/{idOng}")
-                ?? new List<AlimentoPorCategoriaDto>();
+            alimentosRecebidos = await Http.GetFromJsonAsync<List<AlimentoPorCategoriaDto>>($"api/relatorio/alimentosPorCategoria?id={idOng}")
+                            ?? new List<AlimentoPorCategoriaDto>();
         }
         catch (Exception ex)
         {

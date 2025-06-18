@@ -6,7 +6,7 @@ using BackDoacaoDeAlimentos.Interfaces.Repositorios;
 using TCCDoacaoDeAlimentos.Shared.Dto;
 using System.Security.Cryptography;
 
-namespace BackDoacaoDeAlimentos.Data.Repositorios
+namespace BackDoacaoDeAlimentos.Repositorios
 {
     public class RelatorioRepositorio : IRelatorioRepositorio
     {

@@ -162,12 +162,21 @@
     private string mensagemErro = string.Empty;
     private double userLat;
     private double userLng;
+    private bool _verificacaoFeita = false;
     [Parameter]
     public int? Id { get; set; }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+    if (firstRender && !_verificacaoFeita)
+    {
+        _verificacaoFeita = true;
+        await VerificarUsuarioAutenticado();
+        StateHasChanged();
+    }
+}
     protected override async Task OnInitializedAsync()
     {
-        await VerificarUsuarioAutenticado();
 
         if (Itens.Count == 0)
         {
@@ -222,15 +231,28 @@
 
     private async Task CarregarInstituicoes()
     {
-        Instituicoes = await Http.GetFromJsonAsync<List<OngDto>>(
-            $"api/entidade/obterTodasInstituicoes"
-        ) ?? new List<OngDto>();
-
-        if (!Instituicoes.Any())
+        try
         {
-            await JSRuntime.InvokeVoidAsync("alert", "Nenhuma Instituição cadastrada ainda.");
+            Instituicoes = await Http.GetFromJsonAsync<List<OngDto>>(
+                $"api/entidade/obterTodasInstituicoes"
+            ) ?? new List<OngDto>();
+
+            StateHasChanged();
+
+            if (!Instituicoes.Any())
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Nenhuma Instituição cadastrada ainda.");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar instituições: {ex.Message}");
+            Instituicoes = new List<OngDto>();
+            StateHasChanged();
         }
     }
+
+
 
     private async Task CarregarAlimentos()
     {

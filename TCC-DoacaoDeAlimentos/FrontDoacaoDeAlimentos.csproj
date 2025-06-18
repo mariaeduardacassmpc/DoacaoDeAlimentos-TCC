@@ -20,6 +20,7 @@
   <ItemGroup>
     <Content Remove="Pages\CadastroDeDoador.razor" />
     <Content Remove="Pages\CadastroDeOng.razor" />
+    <Content Remove="Pages\Dashboard.razor" />
     <Content Remove="Pages\DoacoesRecebidas.razor" />
     <Content Remove="Pages\Home.razor" />
   </ItemGroup>

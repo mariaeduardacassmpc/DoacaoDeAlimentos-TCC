@@ -17,7 +17,7 @@
                     <div class="card-body p-5">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h1 class="card-title mb-0">
-                                <i class="bi bi-box-seam me-2 text-sucess"</i>
+                                <i class="bi bi-box-seam me-2 text-success"></i>
                                 @(TpEntidade == "O" ? "Doações Recebidas" : "Minhas Doações")
                             </h1>
 
@@ -136,7 +136,7 @@
                     {
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <h6>@(TpEntidade == "O" ? "Informações do Doador" : "Informações da ONG")</h6>
+                                <h6>@(TpEntidade == "O" ? "Informações do Doador" : "Informações da Instituição")</h6>
                                 @if (TpEntidade == "O")
                                 {
                                     <p><strong>Nome:</strong> @(DoadorSelecionado != null && !string.IsNullOrWhiteSpace(DoadorSelecionado.NomeFantasia) ? DoadorSelecionado.NomeFantasia : "Desconhecido")</p>
@@ -206,12 +206,7 @@
                                     @(!string.IsNullOrWhiteSpace(DoacaoSelecionada.Observacao)
                                         ? DoacaoSelecionada.Observacao : "Nenhuma observação")
                                 </p>
-                                <p>
-                                    <strong>Observação:</strong>
-                                    @(!string.IsNullOrWhiteSpace(DoacaoSelecionada.Observacao)
-                                        ? DoacaoSelecionada.Observacao
-                                        : "Nenhuma observação")
-                                </p>
+                               
                                 <p><strong>Status:</strong> <span class="badge @GetStatusBadgeClass(DoacaoSelecionada.Status)">@DoacaoSelecionada.Status</span></p>
                             </div>
                         </div>
@@ -302,6 +297,7 @@
     private string? MotivoCancelamento { get; set; }
     private bool UsuarioLogado { get; set; }
     private UsuarioDto? DoadorSelecionado { get; set; }
+    private int? IdDoador { get; set; }
 
     private string[] MotivosDoador = new[]
     {
@@ -337,7 +333,6 @@
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        string cidadeUsuario = user.FindFirst("cidade")?.Value ?? "";
 
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
@@ -347,8 +342,11 @@
 
             if (idClaim != null && int.TryParse(idClaim.Value, out int idUsuario))
             {
-                if (TpEntidade == "D")
+                if (TpEntidade == "D") 
+                {
                     Filtro = new FiltroDoacaoDto { IdDoador = idUsuario };
+                    IdDoador = idUsuario;
+                }
                 else if (TpEntidade == "O")
                     Filtro = new FiltroDoacaoDto { IdOng = idUsuario };
             }
@@ -364,8 +362,8 @@
         try
         {
             ListaDeOngs = await Http.GetFromJsonAsync<List<OngDto>>(
-              $"api/entidade/ObterTodasInstituicoes"
-                  ) ?? new List<OngDto>();
+                $"api/entidade/ObterTodasInstituicoes"
+            ) ?? new List<OngDto>();
         }
         catch (Exception ex)
         {
@@ -373,6 +371,7 @@
             ListaDeOngs = new List<OngDto>();
         }
     }
+
 
     private async Task ObterAlimentos()
     {

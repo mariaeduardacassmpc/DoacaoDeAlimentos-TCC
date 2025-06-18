@@ -71,6 +71,18 @@ public class EntidadeService : IEntidadeService
         }
     }
 
+    public async Task<IEnumerable<Entidade>> ObterNomesFantasiaDasInstituicoesQueDoadorDoou(int id)
+    {
+        try
+        {
+            return await _entidadeRepositorio.ObterNomesFantasiaDasInstituicoesQueDoadorDoou(id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Erro ao obter todas as instituições.");
+        }
+    }
+
     public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
     {
         try

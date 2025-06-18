@@ -53,6 +53,25 @@ namespace BackDoacaoDeAlimentos.Repositorios
             }
         }
 
+        public async Task<IEnumerable<Entidade>> ObterNomesFantasiaDasInstituicoesQueDoadorDoou(int idDoador)
+        {
+            try
+            {
+                const string sql = @"
+                        SELECT DISTINCT e.NomeFantasia
+                        FROM Entidade e
+                        INNER JOIN Doacao d ON e.Id = d.IdOng
+                        WHERE e.TpEntidade = 'O' AND d.IdDoador = @IdDoador
+                ";
+
+                return await _db.QueryAsync<Entidade>(sql, new { IdDoador = idDoador });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao obter nomes das ONGs: " + ex.Message, ex);
+            }
+        }
+
         public async Task<IEnumerable<Entidade>> ObterTodasEntidades()
         {
             try

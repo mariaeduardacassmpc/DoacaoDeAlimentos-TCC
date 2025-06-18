@@ -42,6 +42,8 @@ builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddHttpClient<IGeolocalizacaoService, GeolocalizacaoService>();
 builder.Services.AddHttpClient<ViaCepService>();
+builder.Services.AddScoped<IRelatorioService, RelatorioService>();
+builder.Services.AddScoped<IRelatorioRepositorio, RelatorioRepositorio>();
 
 builder.Services.AddAuthorizationCore();
 

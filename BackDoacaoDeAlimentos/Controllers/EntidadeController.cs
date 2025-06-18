@@ -62,6 +62,24 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
         }
 
+
+        [HttpGet("ObterNomesFantasiaDasInstituicoesQueDoadorDoou")]
+        public async Task<IActionResult> ObterNomesFantasiaDasInstituicoesQueDoadorDoou([FromQuery] int idDoador)
+        {
+            try
+            {
+                var entidades = await _entidadeService.ObterNomesFantasiaDasInstituicoesQueDoadorDoou(idDoador);
+                if (entidades == null)
+                    return NotFound();
+
+                return Ok(entidades);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Erro ao obter entidades.", details = ex.Message });
+            }
+        }
+
         [HttpGet("obterPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
@@ -125,7 +143,7 @@ namespace BackDoacaoDeAlimentos.Controllers
                 if (entidade == null || entidade.Id != id)
                     return BadRequest();
 
-                await _entidadeService.AtualizarEntidade(entidade);
+                //await _entidadeService.AtualizarEntidade(entidade);
                 return NoContent();
             }
             catch (Exception ex)

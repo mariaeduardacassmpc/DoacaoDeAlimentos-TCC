@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TCCDoacaoDeAlimentos.Shared.Models;
 using TCCDoacaoDeAlimentos.Shared.Dto;
+using BackDoacaoDeAlimentos.Interfaces.Servicos;
 
 namespace BackDoacaoDeAlimentos.Controllers
 {
     [ApiController]
-    [Route("api/Relatorio")]
+    [Route("api/relatorio")]
     public class RelatoriosController : Controller
     {
-        RelatorioService _relatorioService;
+        IRelatorioService _relatorioService;
         IDoacaoService _doacaoService;
 
-        public RelatoriosController(RelatorioService relatorioDeDoacoesService, IDoacaoService doacaoService)
+        public RelatoriosController(IRelatorioService relatorioDeDoacoesService, IDoacaoService doacaoService)
         {
             _relatorioService = relatorioDeDoacoesService;
             _doacaoService = doacaoService;
