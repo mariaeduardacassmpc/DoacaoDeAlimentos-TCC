@@ -12,11 +12,9 @@ public class Entidade : IValidatableObject
 
     [Required(ErrorMessage = "Selecione o tipo de entidade.")]
     public string TpEntidade { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "Selecione o tipo de pessoa.")]
     public TipoPessoa? TpPessoa { get; set; }
+    [Required(ErrorMessage = "Nome Fantasia é obrigatório.")]
 
-    [Required(ErrorMessage = "Nome é obrigatório.")]
     public string NomeFantasia { get; set; }
 
     [Required(ErrorMessage = "A senha é obrigatória.")]
@@ -32,7 +30,7 @@ public class Entidade : IValidatableObject
     public string CNPJ_CPF { get; set; }
 
     [Required(ErrorMessage = "Telefone é obrigatório.")]
-    [RegularExpression(@"^\d{10,11}$", ErrorMessage = "Telefone inválido")]
+    [RegularExpression(@"^(\(?\d{2}\)?\s?)?\d{4,5}-?\d{4}$", ErrorMessage = "Telefone inválido")]
     public string Telefone { get; set; }
 
     [Required(ErrorMessage = "O endereço é obrigatório.")]
@@ -44,7 +42,7 @@ public class Entidade : IValidatableObject
     public string Bairro { get; set; }
 
     [Required(ErrorMessage = "O CEP é obrigatório.")]
-    [RegularExpression(@"^\d{8}$", ErrorMessage = "CEP inválido")]
+    [RegularExpression(@"^\d{5}-?\d{3}$", ErrorMessage = "CEP inválido")]
     public string CEP { get; set; }
 
     [Required(ErrorMessage = "A Cidade é obrigatório.")]
@@ -52,14 +50,11 @@ public class Entidade : IValidatableObject
 
     [Required(ErrorMessage = "O E-mail é obrigatório.")]
     public string Email { get; set; }
-
     public string? Sexo { get; set; }
     public string? Responsavel { get; set; }
-
-    [Required(ErrorMessage = "O Número é obrigatório.")]
+    [Required(ErrorMessage = "O número é obrigatório.")]
     public string Numero { get; set; }
     public bool Ativo { get; set; }
-
     public enum TipoPessoa
     {
         F, // Física
@@ -68,24 +63,33 @@ public class Entidade : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        var documentoLimpo = Regex.Replace(CNPJ_CPF ?? "", "[^0-9]", "");
+        var documentoLimpo = Regex.Replace(CNPJ_CPF ?? string.Empty, "[^0-9]", "");
 
-        if ((TpEntidade == "D" && TpPessoa == TipoPessoa.F))
+        if (string.IsNullOrEmpty(documentoLimpo))
+        {
+            if (TpEntidade == "D" && TpPessoa == TipoPessoa.F)
+            {
+                yield return new ValidationResult("CPF é obrigatório para doador pessoa física.", new[] { nameof(CNPJ_CPF) });
+            }
+            else if (TpEntidade == "I" || (TpEntidade == "D" && TpPessoa == TipoPessoa.J))
+            {
+                yield return new ValidationResult("CNPJ é obrigatório para ONG ou doador pessoa jurídica.", new[] { nameof(CNPJ_CPF) });
+            }
+        }
+        else if (TpEntidade == "D" && TpPessoa == TipoPessoa.F)
         {
             if (!DocumentoValidator.ValidarCpf(documentoLimpo))
             {
                 yield return new ValidationResult("CPF inválido.", new[] { nameof(CNPJ_CPF) });
             }
         }
-        else if ((TpEntidade == "O") || (TpEntidade == "D" && TpPessoa == TipoPessoa.J))
+        else if (TpEntidade == "I" || (TpEntidade == "D" && TpPessoa == TipoPessoa.J))
         {
             if (!DocumentoValidator.ValidarCnpj(documentoLimpo))
             {
                 yield return new ValidationResult("CNPJ inválido.", new[] { nameof(CNPJ_CPF) });
             }
         }
-
     }
 }
-
 

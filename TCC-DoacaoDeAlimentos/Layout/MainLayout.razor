@@ -5,6 +5,8 @@
 @inject NavigationManager Navigation
 @inject Blazored.Modal.Services.IModalService Modal
 @inject AuthenticationStateProvider AuthStateProvider
+@inject HttpClient Http
+@inject Blazored.Modal.Services.IModalService Modal
 
 <div class="page">
     <main>
@@ -29,25 +31,25 @@
 
                         <li class="nav-item mx-2">
                             <NavLink class="nav-link" href="/MinhasDoacoes" @onclick="FecharMenu">
-                                @(TpEntidade == "O" ? "Doações Recebidas" : "Minhas Doações")
+                                @(TpEntidade == "I" ? "Doações Recebidas" : "Minhas Doações")
                             </NavLink>
                         </li>
 
-                        @if (TpEntidade == "O")
+                        @if (TpEntidade == "I")
                         {
                             <li class="nav-item mx-2">
                                 <NavLink class="nav-link" href="/CadastroDeAlimentos" @onclick="FecharMenu">Cadastro de Alimentos</NavLink>
                             </li>
                         }
 
-                        @if (TpEntidade != "O")
+                        @if (TpEntidade != "I")
                         {
                             <li class="nav-item mx-2">
                                 <NavLink class="nav-link" href="/Geolocalizacao" @onclick="FecharMenu">Geolocalização</NavLink>
                             </li>
                         }
 
-                        @if (TpEntidade == "O")
+                        @if (TpEntidade == "I")
                         {
                             <NavLink class="nav-link" href="/Dashboard" @onclick="FecharMenu">Dashboard</NavLink>
                         }
@@ -67,13 +69,13 @@
                         }
                     </ul>
 
-                                       <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center gap-2">
                         @if (!UsuarioEstaLogado)
                         {
                             <a class="btn btn-outline-success" href="/Login" @onclick="FecharMenu">Entrar</a>
                         }
 
-                        @if (TpEntidade != "O")
+                        @if (TpEntidade != "I")
                         {
                             <a class="btn btn-success me-2" href="/CadastroDeDoacao" @onclick="FecharMenu">
                                 <i class="bi bi-gift-fill me-1"></i> Doar
@@ -86,16 +88,26 @@
                         {
                             <div class="dropdown">
                                 <button class="btn border-0 p-0 bg-transparent" type="button" id="perfilMenu" data-bs-toggle="dropdown" aria-expanded="false"
-                                        style="box-shadow:none; outline:none;">
-                                        <i class="bi bi-person-circle fs-2 text-success"></i>
+                                style="box-shadow:none; outline:none;">
+                                    <i class="bi bi-person-circle fs-2 text-success"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilMenu">
                                     <li>
-                                        <a class="dropdown-item" @onclick="IrParaPerfil">Meu Perfil</a>
+                                        <a class="dropdown-item" @onclick="IrParaPerfil">
+                                           <i class="bi bi-file-person-fill text-success"></i> Meu Perfil
+                                        </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" @onclick="Logout">Sair</a>
+                                        <a class="dropdown-item" @onclick="InativarConta">
+                                            <i class="bi bi-trash-fill me-2 text-success"></i> Excluir Conta
+                                        </a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item" @onclick="Logout">
+                                            <i class="bi bi-box-arrow-right me-2 text-success"></i> Sair
+                                        </a>
+                                    </li>
+
                                 </ul>
                             </div>
                         }
@@ -121,55 +133,121 @@
 
     private async void IrParaPerfil()
     {
-        Navigation.NavigateTo($"/EditarUsuario");
+        try
+        {
+            Navigation.NavigateTo("/EditarUsuario");
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Erro ao tentar navegar para o perfil.");
+        }
     }
 
     private async Task Logout()
     {
-        await JS.InvokeVoidAsync("sessionStorage.removeItem", "token");
-        UsuarioEstaLogado = false;
-        TpEntidade = "";
-        EmailUsuarioLogado = "";
-        StateHasChanged();
-        Navigation.NavigateTo("/login", true);
+        try
+        {
+            await JS.InvokeVoidAsync("sessionStorage.removeItem", "token");
+            UsuarioEstaLogado = false;
+            TpEntidade = "";
+            EmailUsuarioLogado = "";
+            StateHasChanged();
+            Navigation.NavigateTo("/login", true);
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Erro ao realizar logout.");
+        }
     }
 
     private async Task FecharMenu()
     {
-        await JS.InvokeVoidAsync("fecharMenuNavbar");
+        try
+        {
+            await JS.InvokeVoidAsync("fecharMenuNavbar");
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Erro ao fechar o menu.");
+        }
     }
 
     private async Task AtualizarUsuario()
     {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", "token");
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            var token = await JS.InvokeAsync<string>("sessionStorage.getItem", "token");
 
-        UsuarioEstaLogado = (user.Identity?.IsAuthenticated == true) && !string.IsNullOrEmpty(token);
+            UsuarioEstaLogado = (user.Identity?.IsAuthenticated == true) && !string.IsNullOrEmpty(token);
 
-        TpEntidade = user.FindFirst("TpEntidade")?.Value ?? "";
-        EmailUsuarioLogado = user.Identity?.Name ?? "";
-        StateHasChanged();
+            TpEntidade = user.FindFirst("TpEntidade")?.Value ?? "";
+            EmailUsuarioLogado = user.Identity?.Name ?? "";
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Erro ao atualizar usuário.");
+        }
     }
 
 
     protected override async Task OnInitializedAsync()
     {
-        AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
-        await AtualizarUsuario();
-        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", new object[] { "token" }); UsuarioEstaLogado = !string.IsNullOrEmpty(token);
+        try
+        {
+            AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+            await AtualizarUsuario();
+            var token = await JS.InvokeAsync<string>("sessionStorage.getItem", new object[] { "token" });
+            UsuarioEstaLogado = !string.IsNullOrEmpty(token);
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Erro ao inicializar o componente: {ex.Message}");
+        }
     }
 
     private async void OnAuthenticationStateChanged(Task<AuthenticationState> task)
     {
-        await AtualizarUsuario();
-        var token = await JS.InvokeAsync<string>("sessionStorage.getItem", new object[] { "token" }); UsuarioEstaLogado = !string.IsNullOrEmpty(token);
-        StateHasChanged();
+        try
+        {
+            await AtualizarUsuario();
+            var token = await JS.InvokeAsync<string>("sessionStorage.getItem", new object[] { "token" });
+            UsuarioEstaLogado = !string.IsNullOrEmpty(token);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Erro ao mudar o estado de autenticação: {ex.Message}");
+        }
     }
 
     public void Dispose()
     {
         AuthStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+    }
+
+    public async void InativarConta()
+    {
+        try
+        {
+            // var response = await Http.PutAsync($"api/entidade/inativar/{entidadeId}", null);
+
+            // if (response.IsSuccessStatusCode)
+            // {
+            //     Console.WriteLine("Conta inativada com sucesso.");
+            // }
+            // else
+            // {
+            //     Console.WriteLine("Erro ao inativar conta.");
+            // }
+
+        }
+        catch (Exception ex)
+        {
+            
+        }
     }
 
 }

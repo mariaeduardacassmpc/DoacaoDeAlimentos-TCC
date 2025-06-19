@@ -117,6 +117,11 @@ public class EntidadeService : IEntidadeService
             if (entidade == null)
                 throw new Exception("Entidade para atualização não pode ser nula.");
 
+       
+            if (!string.IsNullOrWhiteSpace(entidade.Senha))
+            {
+                entidade.Senha = _usuarioService.CriptografarSenha(entidade.Senha);
+            }
             await _entidadeRepositorio.AtualizarEntidade(entidade);
         }
         catch (Exception ex)

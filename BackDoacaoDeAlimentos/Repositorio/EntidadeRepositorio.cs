@@ -28,9 +28,10 @@ namespace BackDoacaoDeAlimentos.Repositorios
             try
             {
                 var sql = @"SELECT * 
-                    FROM Entidade 
-                    WHERE Cidade = @Cidade 
-                    AND TpEntidade = 'O'";
+                                FROM Entidade 
+                                WHERE Cidade = @Cidade 
+                            AND TpEntidade = 'O'
+                ";
 
                 return await _db.QueryAsync<Entidade>(sql, new { Cidade = cidade });
             }
@@ -58,10 +59,10 @@ namespace BackDoacaoDeAlimentos.Repositorios
             try
             {
                 const string sql = @"
-                        SELECT DISTINCT e.NomeFantasia
-                        FROM Entidade e
-                        INNER JOIN Doacao d ON e.Id = d.IdOng
-                        WHERE e.TpEntidade = 'O' AND d.IdDoador = @IdDoador
+                      SELECT DISTINCT e.NomeFantasia
+                            FROM Entidade e
+                            INNER JOIN Doacao d ON e.Id = d.IdOng
+                       WHERE e.TpEntidade = 'O' AND d.IdDoador = @IdDoador
                 ";
 
                 return await _db.QueryAsync<Entidade>(sql, new { IdDoador = idDoador });
@@ -115,12 +116,11 @@ namespace BackDoacaoDeAlimentos.Repositorios
             try
             {
                 const string sql = @"
-                    INSERT INTO Entidade (
-                        TpEntidade, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, Cidade, Email, Sexo, Responsavel, Latitude, Longitude, NomeFantasia
-                    ) VALUES (
-                        @TpEntidade, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, @Email, @Sexo, @Responsavel, @Latitude, @Longitude, @NomeFantasia
-                    );
-                    SELECT CAST(SCOPE_IDENTITY() AS int);
+                            INSERT INTO Entidade (TpEntidade, CNPJ_CPF, Telefone, Endereco, Bairro, CEP, 
+                        Cidade, Email, Sexo, Responsavel, Latitude, Longitude, NomeFantasia) 
+                            VALUES (@TpEntidade, @CNPJ_CPF, @Telefone, @Endereco, @Bairro, @CEP, @Cidade, 
+                        @Email, @Sexo, @Responsavel, @Latitude, @Longitude, @NomeFantasia);
+                            SELECT CAST(SCOPE_IDENTITY() AS int);
                 ";
 
                 var parametros = new
@@ -178,13 +178,25 @@ namespace BackDoacaoDeAlimentos.Repositorios
 
                 await _db.ExecuteAsync(sql, entidade, transaction);
 
-                const string sqlUsuario = @"
-                    UPDATE Usuario SET 
-                        Email = @Email,
-                        Senha = @Senha
-                    WHERE EntidadeId = @Id";
+                if (!string.IsNullOrWhiteSpace(entidade.Senha))
+                {
+                    const string sqlUsuario = @"
+                        UPDATE Usuario SET 
+                            Email = @Email,
+                            Senha = @Senha
+                        WHERE EntidadeId = @Id";
 
-                await _db.ExecuteAsync(sqlUsuario, new { Email = entidade.Email, Senha = entidade.Senha, Id = entidade.Id }, transaction);
+                    await _db.ExecuteAsync(sqlUsuario, new { Email = entidade.Email, Senha = entidade.Senha, Id = entidade.Id }, transaction);
+                }
+                else
+                {
+                    const string sqlUsuario = @"
+                        UPDATE Usuario SET 
+                            Email = @Email
+                        WHERE EntidadeId = @Id";
+
+                    await _db.ExecuteAsync(sqlUsuario, new { Email = entidade.Email, Id = entidade.Id }, transaction);
+                }
 
                 transaction.Commit();
             }
@@ -219,8 +231,8 @@ namespace BackDoacaoDeAlimentos.Repositorios
                               FROM Entidade E
                               INNER JOIN Usuario U ON U.EntidadeId = E.Id
                               WHERE (E.CNPJ_CPF = @Documento OR E.Email = @Email)
-                                AND U.Ativo = 1"
-                ;
+                                AND U.Ativo = 1
+                ";
 
                 var resultado = await _db.ExecuteScalarAsync<int>(sql, new { Documento = documento, Email = email });
                 return resultado > 0;

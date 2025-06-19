@@ -24,65 +24,19 @@
                         }
                         else
                         {
-
                             <EditForm Model="@entidade" OnValidSubmit="@AtualizarEntidade">
                                 <DataAnnotationsValidator />
                                 <hr />
 
                                 <div class="mb-3">
                                     <label for="nome" class="form-label d-flex align-items-center gap-2 text-success">
-                                        <i class="bi bi-person-fill"></i> @(entidade.TpEntidade == "O" ? "Razão Social " : "Nome Completo ")
+                                        <i class="bi bi-person-fill"></i> @(entidade.TpEntidade == "I" ? "Nome Fantasia" : "Nome Completo ")
                                     </label>
                                     <InputText @bind-Value="entidade.NomeFantasia" class="form-control" id="nome"
-                                               placeholder="@(entidade.TpEntidade == "O" ? "Razão Social" : "Nome Completo")" />
+                                               placeholder="@(entidade.TpEntidade == "I" ? "Nome Fantasia" : "Nome Completo")" />
                                 </div>
 
-                                @if (entidade.TpEntidade == "O")
-                                {
-                                    <div class="mb-3">
-                                        <label for="responsavel" class="form-label d-flex align-items-center gap-2 text-success">
-                                            <i class="bi bi-person-fill"></i> Responsável 
-                                        </label>
-                                        <InputText @bind-Value="entidade.Responsavel" class="form-control" id="responsavel"
-                                                   placeholder="Nome do responsável" />
-                                    </div>
-                                }
-                             
-                                @{
-                                var documento = entidade.CNPJ_CPF?.Trim() ?? "";
-                            }
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="sexo" class="form-label d-flex align-items-center gap-2 text-success">
-                                        <i class="bi bi-gender-ambiguous"></i> Genero
-                                    </label>
-                                    <InputSelect @bind-Value="entidade.Sexo" class="form-select" id="sexo">
-                                        <option value="" selected disabled>Selecione...</option>
-                                        <option value="F">Feminino</option>
-                                        <option value="M">Masculino</option>
-                                    </InputSelect>
-                                </div>
-                                <div class="col-md-6">
-                                    @if (documento.Length == 11)
-                                    {
-                                        <label for="cpf" class="form-label d-flex align-items-center gap-2 text-success">
-                                            <i class="bi bi-credit-card-2-front-fill"></i> CPF
-                                        </label>
-                                        <InputText @bind-Value="entidade.CNPJ_CPF" class="form-control" id="cpf" placeholder="Somente números" maxlength="11" />
-                                    }
-                                    else
-                                    {
-                                        <label for="cnpj" class="form-label d-flex align-items-center gap-2 text-success">
-                                            <i class="bi bi-file-earmark-text-fill"></i> CNPJ
-                                        </label>
-                                        <InputText @bind-Value="entidade.CNPJ_CPF" class="form-control" id="cnpj" placeholder="Somente números" maxlength="14" />
-                                    }
-                                </div>
-                            </div>
-
-                    
-                                <div class="row mb-3">
+                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label d-flex align-items-center gap-2 text-success">
                                             <i class="bi bi-telephone-fill"></i> Telefone 
@@ -99,41 +53,80 @@
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
+                                        @if (entidade.TpEntidade == "I")
+                                        {
+                                            <label for="responsavel" class="form-label d-flex align-items-center gap-2 text-success">
+                                                <i class="bi bi-person-fill"></i> Responsável
+                                            </label>
+                                            <InputText @bind-Value="entidade.Responsavel" class="form-control" id="responsavel"
+                                                       placeholder="Nome do responsável" />
+                                        }
+                                        else
+                                        {
+                                            <label for="sexo" class="form-label d-flex align-items-center gap-2 text-success">
+                                                <i class="bi bi-gender-ambiguous"></i> Gênero
+                                            </label>
+                                            <InputSelect @bind-Value="entidade.Sexo" class="form-select" id="sexo">
+                                                <option value="" selected disabled>Selecione...</option>
+                                                <option value="F">Feminino</option>
+                                                <option value="M">Masculino</option>
+                                            </InputSelect>
+                                        }
+                                    </div>
+                                    <div class="col-md-6">
+                                        @{
+                                            var documento = entidade.CNPJ_CPF?.Trim() ?? "";
+                                        }
+                                        @if (documento.Length == 11)
+                                        {
+                                            <label for="cpf" class="form-label d-flex align-items-center gap-2 text-success">
+                                                <i class="bi bi-credit-card-2-front-fill"></i> CPF
+                                            </label>
+                                            <InputText @bind-Value="entidade.CNPJ_CPF" class="form-control" id="cpf" placeholder="Somente números" maxlength="11" />
+                                        }
+                                        else
+                                        {
+                                            <label for="cnpj" class="form-label d-flex align-items-center gap-2 text-success">
+                                                <i class="bi bi-file-earmark-text-fill"></i> CNPJ
+                                            </label>
+                                            <InputText @bind-Value="entidade.CNPJ_CPF" class="form-control" id="cnpj" placeholder="Somente números" maxlength="14" />
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
                                         <label class="form-label d-flex align-items-center gap-2 text-success">
                                             <i class="bi bi-geo-alt-fill"></i> CEP
                                         </label>
                                         <InputText @bind-Value="entidade.CEP" class="form-control" id="cep"
-                                                   placeholder="CEP" maxlength="8" @onchange="BuscarEnderecoPorCep" />
+                                                   placeholder="CEP" maxlength="9" @onchange="BuscarEnderecoPorCep" />
                                     </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <label class="form-label d-flex align-items-center gap-2 text-success">
-                                            <i class="bi bi-geo-alt-fill"></i> Cidade 
+                                            <i class="bi bi-geo-alt-fill"></i> Cidade
                                         </label>
                                         <InputText @bind-Value="entidade.Cidade" class="form-control" id="cidade"
                                                    placeholder="Sua cidade" />
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label d-flex align-items-center gap-2 text-success">
-                                            <i class="bi bi-geo-alt-fill"></i> Bairro 
-                                        </label>
-                                        <InputText @bind-Value="entidade.Bairro" class="form-control" id="bairro"
-                                                   placeholder="Bairro" />
-                                    </div>
                                 </div>
-
                                 <div class="row mb-3">
-                                    <div class="col-md-10">
-                                        <label class="form-label d-flex align-items-center gap-2 text-success">
-                                            <i class="bi bi-geo-alt-fill"></i> Endereço 
-                                        </label>
-                                        <InputText @bind-Value="entidade.Endereco" class="form-control" id="endereco"
-                                                   placeholder="Endereço completo" />
-                                    </div>
+                                <div class="col-md-8">
+                                    <label class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-geo-alt-fill"></i> Endereço 
+                                    </label>
+                                    <InputText @bind-Value="entidade.Endereco" class="form-control" id="endereco"
+                                               placeholder="Endereço completo" />
                                 </div>
-
-                                <div class="mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label d-flex align-items-center gap-2 text-success">
+                                        <i class="bi bi-geo-alt-fill"></i> Bairro 
+                                    </label>
+                                    <InputText @bind-Value="entidade.Bairro" class="form-control" id="bairro"
+                                               placeholder="Bairro" />
+                                </div>
+                            </div>
+                            <div class="mb-3">
                                 <label for="senha" class="form-label d-flex align-items-center gap-2 text-success">
                                     <i class="bi bi-lock-fill"></i> Nova Senha
                                 </label>
@@ -148,7 +141,7 @@
                                     <i class="bi bi-x-circle-fill me-1"></i> Cancelar
                                 </button>
                             </div>
-                            </EditForm>
+                        </EditForm>
                         }
                     </div>
                 </div>
@@ -158,7 +151,7 @@
 </div>
 
 @code {
-    private Entidade entidade = new Entidade();
+    private EntidadeEdicaoDto entidade = new EntidadeEdicaoDto();
     private bool _showPassword = false;
     private bool carregando = true;
 
@@ -170,7 +163,7 @@
 
             if (idClaim != null && int.TryParse(idClaim.Value, out int idUsuario))
             {
-                entidade = await Http.GetFromJsonAsync<Entidade>($"api/entidade/obterPorId/{idUsuario}");
+            entidade = await Http.GetFromJsonAsync<EntidadeEdicaoDto>($"api/entidade/obterPorId/{idUsuario}");
             }
             else
             {
@@ -180,8 +173,6 @@
         
         carregando = false;
     }
-
-
 
     private async Task AtualizarEntidade()
     {
@@ -195,11 +186,13 @@
                     Email = entidade.Email,
                     Telefone = entidade.Telefone,
                     CNPJ_CPF = entidade.CNPJ_CPF,
-                    Endereco = $"{entidade.Endereco}, {entidade.Numero}",
+                    Endereco = entidade.Endereco,
                     Bairro = entidade.Bairro,
                     Cidade = entidade.Cidade,
                     CEP = entidade.CEP,
-                    Sexo = entidade.Sexo
+                    Sexo = entidade.Sexo,
+                    Senha = entidade.Senha,
+                    TpEntidade = entidade.TpEntidade
                 };
 
             var response = await Http.PutAsJsonAsync($"api/entidade/atualizar/{entidade.Id}", dadosParaEnvio);
@@ -220,17 +213,14 @@
             await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
         }
     }
-
-    private string RemoveMask(string value) =>
-        string.IsNullOrEmpty(value) ? value : Regex.Replace(value, @"[^\d]", "");
-
     private void ToggleAllPasswords() =>
         _showPassword = !_showPassword;
 
-    private async Task BuscarEnderecoPorCep(ChangeEventArgs e)
+    private async Task BuscarEnderecoPorCep()
     {
-        var cep = RemoveMask(e.Value?.ToString() ?? "");
-        if (string.IsNullOrWhiteSpace(cep) || cep.Length != 8) return;
+        var cep = entidade.CEP?.Trim();
+        if (string.IsNullOrWhiteSpace(cep) || cep.Length != 8)
+            return;
 
         try
         {

@@ -131,19 +131,19 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { success = false, message = "Erro ao adicionar entidade.", details = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
         [HttpPut("atualizar/{id}")]
-        public async Task<IActionResult> Atualizar(int id, [FromBody] Entidade entidade)
+        public async Task<IActionResult> Atualizar(int id, [FromBody] EntidadeEdicaoDto entidade)
         {
             try
             {
                 if (entidade == null || entidade.Id != id)
                     return BadRequest();
 
-                //await _entidadeService.AtualizarEntidade(entidade);
+                await _entidadeService.AtualizarEntidade(entidade);
                 return NoContent();
             }
             catch (Exception ex)

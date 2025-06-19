@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/viacep")]
 public class ViaCepController : ControllerBase
 {
     private readonly ViaCepService _viaCepService;
@@ -12,7 +12,7 @@ public class ViaCepController : ControllerBase
         _viaCepService = viaCepService;
     }
 
-    [HttpGet("BuscarCep/{cep}")]
+    [HttpGet("{cep}")]
     public async Task<IActionResult> BuscarCep(string cep)
     {
         try
