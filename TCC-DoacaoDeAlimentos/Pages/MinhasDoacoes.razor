@@ -18,7 +18,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h1 class="card-title mb-0">
                                 <i class="bi bi-box-seam me-2 text-success"></i>
-                                @(TpEntidade == "O" ? "Doações Recebidas" : "Minhas Doações")
+                                @(TpEntidade == "I" ? "Doações Recebidas" : "Minhas Doações")
                             </h1>
 
                             @if (TpEntidade == "D")
@@ -136,8 +136,8 @@
                     {
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <h6>@(TpEntidade == "O" ? "Informações do Doador" : "Informações da Instituição")</h6>
-                                @if (TpEntidade == "O")
+                                <h6>@(TpEntidade == "I" ? "Informações do Doador" : "Informações da Instituição")</h6>
+                                @if (TpEntidade == "I")
                                 {
                                     <p><strong>Nome:</strong> @(DoadorSelecionado != null && !string.IsNullOrWhiteSpace(DoadorSelecionado.NomeFantasia) ? DoadorSelecionado.NomeFantasia : "Desconhecido")</p>
                                     <p>
@@ -241,7 +241,7 @@
                 <div class="modal-footer">
                     @if (DoacaoSelecionada != null && DoacaoSelecionada.Status == StatusDoacao.Pendente)
                     {
-                        @if (TpEntidade == "O")
+                        @if (TpEntidade == "I")
                         {
                             <button type="button" class="btn btn-success me-2" @onclick="() => FinalizarDoacao(DoacaoSelecionada.Id)">Finalizar</button>
                         }
@@ -319,7 +319,7 @@
         "Outro motivo"
     };
 
-    private string[] Motivos => TpEntidade == "O" ? MotivosOng : MotivosDoador;
+    private string[] Motivos => TpEntidade == "I" ? MotivosOng : MotivosDoador;
 
     private void NavigateToCadastro()
     {
@@ -347,7 +347,7 @@
                     Filtro = new FiltroDoacaoDto { IdDoador = idUsuario };
                     IdDoador = idUsuario;
                 }
-                else if (TpEntidade == "O")
+                else if (TpEntidade == "I")
                     Filtro = new FiltroDoacaoDto { IdOng = idUsuario };
             }
         }
@@ -458,7 +458,7 @@
 
         if (DoacaoSelecionada != null)
         {
-            if (TpEntidade == "O")
+            if (TpEntidade == "I")
             {
                 DoadorSelecionado = await Http.GetFromJsonAsync<UsuarioDto>($"api/usuario/{DoacaoSelecionada.IdDoador}");
             }

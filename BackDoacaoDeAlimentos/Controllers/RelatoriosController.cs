@@ -18,25 +18,32 @@ namespace BackDoacaoDeAlimentos.Controllers
             _doacaoService = doacaoService;
         }
 
-        [HttpGet("gerarPdf")]
-        public async Task<IActionResult> ObterRelatorio(int idOng)
+        [HttpGet("gerarPdfMensal")]
+        public async Task<IActionResult> ObterRelatorioMensal([FromQuery] int idOng)
         {
-            var filtro = new FiltroDoacaoDto { IdOng = idOng };
-            var doacoes = (await _doacaoService.ObterDoacoesComFiltro(filtro)).ToList();
+            var doacoesDetalhes = (await _doacaoService.ObterDoacoesDoMes(idOng)).ToList();
 
             string nomeOng = $"ONG {idOng}";
-            string caminhoArquivo = $"Relatorio_Ong_{idOng}.pdf";
+            string caminhoArquivo = $"Relatorio_Ong_{idOng}_Mensal.pdf";
 
+            // Corrigido: passar List<DoacaoComDetalhes> para o serviço
             _relatorioService.GerarRelatorio(
                 caminhoArquivo: caminhoArquivo,
                 nomeUsuario: nomeOng,
-                doacoes: doacoes,
-                ehDoador: false
+                doacoes: doacoesDetalhes
             );
 
+            await Task.Delay(100);
+            bool arquivoExiste = System.IO.File.Exists(caminhoArquivo);
+            long tamanho = new FileInfo(caminhoArquivo).Length;
+            Console.WriteLine($"Arquivo existe: {arquivoExiste}, Tamanho: {tamanho} bytes");
+
             var fileBytes = await System.IO.File.ReadAllBytesAsync(caminhoArquivo);
+
             return File(fileBytes, "application/pdf", Path.GetFileName(caminhoArquivo));
         }
+
+
 
         [HttpGet("totalDoacoesNoMes")]
         public async Task<IActionResult> ObterTotalDoacoesMes(int id)
@@ -48,7 +55,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro ao obter total de doações do mês: {ex.Message}");
+                return StatusCode(500, $"Erro ao obter total de doações do mês.");
             }
         }
 
@@ -62,7 +69,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro ao obter total de usuários: {ex.Message}");
+                return StatusCode(500, $"Erro ao obter total de usuários.");
             }
         }
 
@@ -76,7 +83,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro ao obter alimentos por categoria: {ex.Message}");
+                return StatusCode(500, $"Erro ao obter alimentos por categoria.");
             }
         }
 
@@ -90,7 +97,7 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro ao obter total de kg de alimentos: {ex.Message}");
+                return StatusCode(500, $"Erro ao obter total de kg de alimentos.");
             }
         }
     }

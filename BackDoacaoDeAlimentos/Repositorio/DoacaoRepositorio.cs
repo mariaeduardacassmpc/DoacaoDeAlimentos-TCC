@@ -85,4 +85,23 @@ public class DoacaoRepositorio : IDoacaoRepositorio
 
         return await _db.QueryFirstOrDefaultAsync<EstatisticasDto>(sql);
     }
+
+    public async Task<IEnumerable<DoacaoComDetalhes>> ObterDoacoesDoMes(int idOng)
+    {
+        var dataInicio = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        var dataFim = dataInicio.AddMonths(1).AddSeconds(-1);
+
+        const string sql = @"
+                SELECT d.*, a.Quantidade, a.UnidadeMedida, a.Validade,
+                       al.Id AS AlimentoId, al.Nome, e.NomeFantasia AS DoadorNome, o.NomeFantasia AS OngNome
+                FROM Doacao d
+                    LEFT JOIN AlimentoDoacao a ON a.IdDoacao = d.Id
+                    LEFT JOIN Alimento al ON al.Id = a.AlimentoId
+                    LEFT JOIN Entidade e ON e.Id = d.IdDoador
+                    LEFT JOIN Entidade o ON o.Id = d.IdOng
+                WHERE d.IdOng = @IdOng;
+        ";
+
+        return await _db.QueryAsync<DoacaoComDetalhes>(sql, new { IdOng = idOng, DataInicio = dataInicio, DataFim = dataFim });
+    }
 }

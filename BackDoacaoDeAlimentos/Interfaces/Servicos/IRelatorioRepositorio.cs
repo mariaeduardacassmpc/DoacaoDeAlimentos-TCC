@@ -10,7 +10,7 @@ namespace BackDoacaoDeAlimentos.Interfaces.Servicos
         Task<IEnumerable<AlimentoPorCategoriaDto>> ObterAlimentosPorCategoria(int id);
         Task<double> ObterTotalKgAlimentos(int id);
         string GetStatusMaisComum(List<Doacao> doacoes);
-        void GerarRelatorio(string caminhoArquivo, string nomeUsuario, List<Doacao> doacoes, bool ehDoador);
+        void GerarRelatorio(string caminhoArquivo, string nomeUsuario, List<DoacaoComDetalhes> doacoes);
 
     }
 }

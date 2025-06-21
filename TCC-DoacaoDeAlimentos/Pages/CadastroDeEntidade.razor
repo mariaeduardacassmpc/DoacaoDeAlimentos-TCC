@@ -290,14 +290,11 @@
     {
         var cep = Regex.Replace((e.Value?.ToString() ?? ""), "[^0-9]", "");
         if (string.IsNullOrWhiteSpace(cep) || cep.Length != 8)
-        {
             return;
-        }
 
         try
         {
             var response = await Http.GetFromJsonAsync<ViaCep>($"api/viacep/{cep}");
-
             if (response != null)
             {
                 entidade.Bairro = response.Bairro;
@@ -328,6 +325,7 @@
             }
         }
     }
+
     private async Task ObterLocalizacaoUsuario()
     {
         try

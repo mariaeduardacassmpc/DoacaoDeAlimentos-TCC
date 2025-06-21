@@ -30,7 +30,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
                 var sql = @"SELECT * 
                                 FROM Entidade 
                                 WHERE Cidade = @Cidade 
-                            AND TpEntidade = 'O'
+                            AND TpEntidade = 'I'
                 ";
 
                 return await _db.QueryAsync<Entidade>(sql, new { Cidade = cidade });
@@ -45,7 +45,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
         {
             try
             {
-                const string sql = "SELECT * FROM Entidade WHERE TpEntidade = 'O'";
+                const string sql = "SELECT * FROM Entidade WHERE TpEntidade = 'I'";
                 return await _db.QueryAsync<Entidade>(sql);
             }
             catch (Exception ex)
@@ -62,7 +62,7 @@ namespace BackDoacaoDeAlimentos.Repositorios
                       SELECT DISTINCT e.NomeFantasia
                             FROM Entidade e
                             INNER JOIN Doacao d ON e.Id = d.IdOng
-                       WHERE e.TpEntidade = 'O' AND d.IdDoador = @IdDoador
+                       WHERE e.TpEntidade = 'I' AND d.IdDoador = @IdDoador
                 ";
 
                 return await _db.QueryAsync<Entidade>(sql, new { IdDoador = idDoador });

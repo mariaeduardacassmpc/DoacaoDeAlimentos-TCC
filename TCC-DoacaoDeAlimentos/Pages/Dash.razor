@@ -5,6 +5,8 @@
 @inject AuthenticationStateProvider AuthStateProvider
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <div class="container-fluid py-4" style="background-color: #d4edda; min-height: 100vh;">
     <div class="container bg-white rounded-4 shadow-sm p-4 mb-4">
@@ -209,7 +211,7 @@
                     </h3>
                     <p class="text-muted mb-4">Exporte relatórios detalhados sobre doações de alimentos</p>
                     <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-outline-success">
+                        <button class="btn btn-outline-success" @onclick="() => BaixarRelatorioMensal(idOng)">
                             <i class="fas fa-file-pdf me-2"></i> PDF - Relatório de Doações Mensal
                         </button>
                         <button class="btn btn-outline-success">
@@ -300,4 +302,28 @@
             Console.Error.WriteLine($"Erro ao obter alimentos recebidos: {ex.Message}");
         }
     }
+    private async Task BaixarRelatorioMensal(int idOng)
+    {
+        try
+        {
+            var response = await Http.GetAsync($"api/relatorio/gerarPdfMensal?idOng={idOng}", HttpCompletionOption.ResponseHeadersRead);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var bytes = await response.Content.ReadAsByteArrayAsync();
+                var base64 = Convert.ToBase64String(bytes);
+
+                await JS.InvokeVoidAsync("blazorDownloadFile", $"Relatorio_Mensal_Ong_{idOng}.pdf", base64);
+            }
+            else
+            {
+                Console.WriteLine($"Erro ao gerar relatório. Status: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao baixar relatório: {ex.Message}");
+        }
+    }
+
 }

@@ -190,6 +190,7 @@ namespace BackDoacaoDeAlimentos.Controllers
         {
             try
             {
+                
                 if (!double.TryParse(latitude, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var lat) ||
                     !double.TryParse(longitude, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var lon))
                 {

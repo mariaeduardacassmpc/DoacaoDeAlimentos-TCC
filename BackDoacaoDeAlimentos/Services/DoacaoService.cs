@@ -159,4 +159,16 @@ public class DoacaoService : IDoacaoService
             throw new Exception($"Não foi possível obter as estatisticas");
         }
     }
+
+    public async Task<IEnumerable<DoacaoComDetalhes>> ObterDoacoesDoMes(int idOng)
+    {
+        try
+        {
+            return await _doacaoRepositorio.ObterDoacoesDoMes(idOng);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Não foi possível obter as doações");
+        }
+    }
 }

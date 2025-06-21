@@ -12,4 +12,5 @@ public interface IDoacaoService
     Task AtualizarDoacao(Doacao doacao);
     Task<bool> CancelarDoacao(int id, string motivoCancelamento);
     Task<EstatisticasDto> ObterEstatisticas();
+    Task<IEnumerable<DoacaoComDetalhes>> ObterDoacoesDoMes(int idOng);
 }

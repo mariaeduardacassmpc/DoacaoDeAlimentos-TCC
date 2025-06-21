@@ -6,7 +6,7 @@
 @inject Blazored.Modal.Services.IModalService Modal
 @inject AuthenticationStateProvider AuthStateProvider
 @inject HttpClient Http
-@inject Blazored.Modal.Services.IModalService Modal
+@using Blazored.Modal
 
 <div class="page">
     <main>
@@ -122,6 +122,28 @@
     </div>
 </div>
 
+@if (MostrarModalMotivo)
+{
+    <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title">Confirmação</h5>
+                    <button type="button" class="btn-close" @onclick="FecharModalMotivo"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Tem certeza que deseja excluir sua conta?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary me-2" @onclick="FecharModalMotivo">Não</button>
+                    <button type="button" class="btn btn-danger" @onclick="InativarConta">Sim, cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
 @code {
     private string EmailUsuarioLogado;
     private bool UsuarioEhAdmin => EmailUsuarioLogado == "mariaedurdamma@gmail.com";
@@ -130,6 +152,8 @@
     private bool EhAdmin = false;
     private bool modalAberto = false;
     private bool UsuarioEstaLogado;
+    private bool MostrarModalMotivo { get; set; } = false;
+    private int? EntidadeIdUsuarioLogado { get; set; }
 
     private async void IrParaPerfil()
     {
@@ -141,6 +165,11 @@
         {
             await JS.InvokeVoidAsync("alert", $"Erro ao tentar navegar para o perfil.");
         }
+    }
+
+    private void FecharModalMotivo()
+    {
+        MostrarModalMotivo = false;
     }
 
     private async Task Logout()
@@ -181,6 +210,9 @@
             var token = await JS.InvokeAsync<string>("sessionStorage.getItem", "token");
 
             UsuarioEstaLogado = (user.Identity?.IsAuthenticated == true) && !string.IsNullOrEmpty(token);
+            var entidadeIdClaim = user.FindFirst("EntidadeId");
+            if (entidadeIdClaim != null && int.TryParse(entidadeIdClaim.Value, out int entidadeId))
+                EntidadeIdUsuarioLogado = entidadeId;
 
             TpEntidade = user.FindFirst("TpEntidade")?.Value ?? "";
             EmailUsuarioLogado = user.Identity?.Name ?? "";
@@ -227,27 +259,33 @@
     {
         AuthStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
     }
-
     public async void InativarConta()
     {
         try
         {
-            // var response = await Http.PutAsync($"api/entidade/inativar/{entidadeId}", null);
+            if (EntidadeIdUsuarioLogado == null)
+            {
+                await JS.InvokeVoidAsync("alert", "Não foi possível identificar o usuário.");
+                return;
+            }
 
-            // if (response.IsSuccessStatusCode)
-            // {
-            //     Console.WriteLine("Conta inativada com sucesso.");
-            // }
-            // else
-            // {
-            //     Console.WriteLine("Erro ao inativar conta.");
-            // }
+            var response = await Http.PutAsync($"api/entidade/inativar/{EntidadeIdUsuarioLogado}", null);
 
+            if (response.IsSuccessStatusCode)
+            {
+                await JS.InvokeVoidAsync("alert", "Conta inativada com sucesso.");
+                await Logout();
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "Erro ao inativar conta.");
+            }
+
+            MostrarModalMotivo = false;
         }
         catch (Exception ex)
         {
-            
+            await JS.InvokeVoidAsync("alert", $"Erro ao inativar conta: {ex.Message}");
         }
     }
-
 }

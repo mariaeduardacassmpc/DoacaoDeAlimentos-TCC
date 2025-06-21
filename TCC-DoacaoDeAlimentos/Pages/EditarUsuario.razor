@@ -100,7 +100,7 @@
                                             <i class="bi bi-geo-alt-fill"></i> CEP
                                         </label>
                                         <InputText @bind-Value="entidade.CEP" class="form-control" id="cep"
-                                                   placeholder="CEP" maxlength="9" @onchange="BuscarEnderecoPorCep" />
+                                                   placeholder="CEP" maxlength="9" @oninput="BuscarEnderecoPorCep" />
                                     </div>
                                     <div class="col-md-8">
                                         <label class="form-label d-flex align-items-center gap-2 text-success">
@@ -216,9 +216,9 @@
     private void ToggleAllPasswords() =>
         _showPassword = !_showPassword;
 
-    private async Task BuscarEnderecoPorCep()
+    private async Task BuscarEnderecoPorCep(ChangeEventArgs e)
     {
-        var cep = entidade.CEP?.Trim();
+        var cep = Regex.Replace((e.Value?.ToString() ?? ""), "[^0-9]", "");
         if (string.IsNullOrWhiteSpace(cep) || cep.Length != 8)
             return;
 
@@ -230,6 +230,7 @@
                 entidade.Bairro = response.Bairro;
                 entidade.Cidade = response.Localidade;
                 entidade.Endereco = response.Logradouro;
+                StateHasChanged();
             }
             else
             {
