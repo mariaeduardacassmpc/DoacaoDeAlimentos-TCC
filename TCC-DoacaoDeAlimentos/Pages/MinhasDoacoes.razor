@@ -381,7 +381,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao carregar alimentos: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro ao carregar alimentos");
             ListaDeAlimentos = new List<Alimento>();
         }
     }
@@ -497,6 +497,8 @@
             var doacao = DoacoesSalvas.FirstOrDefault(d => d.Id == DoacaoSelecionada.Id);
             if (doacao != null)
                 doacao.Status = StatusDoacao.Cancelada;
+            
+            await ObterDoacoes();
             await JSRuntime.InvokeVoidAsync("alert", "Doação cancelada!");
 
         }

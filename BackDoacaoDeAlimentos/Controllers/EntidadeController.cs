@@ -114,18 +114,22 @@ namespace BackDoacaoDeAlimentos.Controllers
             }
         }
 
-            [HttpPost("adicionar")]
+        [HttpPost("adicionar")]
         public async Task<IActionResult> Adicionar([FromBody] Entidade entidade)
         {
             try
             {
+                var existe = await _entidadeService.VerificarDocumentoeEmailExistente(entidade.CNPJ_CPF, entidade.Email);
+                if (existe)
+                    return BadRequest(new { success = false, message = "E-mail ou CPF/CNPJ já cadastrado." });
+
                 var usuario = new Usuario
                 {
                     Email = entidade.Email,
                     Senha = entidade.Senha
                 };
 
-                await _entidadeService.AdicionarEntidade(entidade, usuario);
+                 await _entidadeService.AdicionarEntidade(entidade, usuario);
 
                 return Ok(new { success = true, message = "Cadastro realizado com sucesso!" });
             }

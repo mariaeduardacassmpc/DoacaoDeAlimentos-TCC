@@ -1,4 +1,6 @@
-﻿namespace TCCDoacaoDeAlimentos.Shared.Dto
+﻿using TCCDoacaoDeAlimentos.Shared.Models;
+
+namespace TCCDoacaoDeAlimentos.Shared.Dto
 {
     public class DoacaoComDetalhes
     {
@@ -10,7 +12,6 @@
         public string UnidadeMedida { get; set; }
         public DateTime Validade { get; set; }
 
-        public int AlimentoId { get; set; }
         public string AlimentoNome { get; set; }
 
         public string DoadorNome { get; set; }

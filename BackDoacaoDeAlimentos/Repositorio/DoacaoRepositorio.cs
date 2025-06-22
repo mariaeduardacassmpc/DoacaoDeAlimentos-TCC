@@ -50,7 +50,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
     public async Task CancelarDoacao(int id, string motivoCancelamento)
     {
         var sql = "UPDATE Doacao SET Status = 2, Observacao = @motivoCancelamento WHERE Id = @Id";
-        await _db.ExecuteAsync(sql, new { Id = id });
+        await _db.ExecuteAsync(sql, new { Id = id, motivoCancelamento });
     }
 
 
@@ -93,7 +93,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
 
         const string sql = @"
                 SELECT d.*, a.Quantidade, a.UnidadeMedida, a.Validade,
-                       al.Id AS AlimentoId, al.Nome, e.NomeFantasia AS DoadorNome, o.NomeFantasia AS OngNome
+                       al.Id AS AlimentoId, al.Nome AS AlimentoNome, e.NomeFantasia AS DoadorNome, o.NomeFantasia AS OngNome
                 FROM Doacao d
                     LEFT JOIN AlimentoDoacao a ON a.IdDoacao = d.Id
                     LEFT JOIN Alimento al ON al.Id = a.AlimentoId

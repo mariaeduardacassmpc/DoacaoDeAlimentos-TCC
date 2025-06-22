@@ -168,7 +168,8 @@ public class DoacaoService : IDoacaoService
         }
         catch (Exception ex)
         {
-            throw new Exception($"Não foi possível obter as doações");
+            throw new Exception($"Não foi possível obter as doações", ex);
         }
+
     }
 }

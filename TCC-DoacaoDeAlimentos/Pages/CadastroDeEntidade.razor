@@ -159,7 +159,7 @@
                                     <ValidationMessage For="@(() => entidade.Endereco)" class="text-danger" />
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label"><i class="bi bi-geo-alt-fill"></i>Número *</label>
+                                    <label class="form-label"><i class="bi bi-geo-alt-fill text-success"></i>Número *</label>
                                     <InputText @bind-Value="entidade.Numero" class="form-control" id="numero" placeholder="Nº" />
                                     <ValidationMessage For="@(() => entidade.Numero)" class="text-danger" />
                                 </div>
@@ -273,13 +273,28 @@
             }
             else
             {
-                var error = await response.Content.ReadAsStringAsync();
-                await JSRuntime.InvokeVoidAsync("alert", $"Erro no cadastro: {error}");
+                var errorContent = await response.Content.ReadAsStringAsync();
+                string mensagem = "Erro no cadastro.";
+
+                try
+                {
+                    var errorObj = System.Text.Json.JsonDocument.Parse(errorContent);
+                    if (errorObj.RootElement.TryGetProperty("message", out var msgProp))
+                    {
+                        mensagem = msgProp.GetString() ?? mensagem;
+                    }
+                }
+                catch
+                {
+                    mensagem = errorContent;
+                }
+                await JSRuntime.InvokeVoidAsync("alert", mensagem);
+
             }
         }
         catch (Exception ex)
         {
-            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico.");
         }
     }
 
@@ -310,7 +325,7 @@
         }
         catch (Exception ex)
         {
-            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico.");
 
         }
     }
@@ -338,7 +353,7 @@
         }
         catch (Exception ex)
         {
-            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro crítico.");
         }
     }
 

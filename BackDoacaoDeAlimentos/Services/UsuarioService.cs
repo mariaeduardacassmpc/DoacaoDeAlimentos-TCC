@@ -89,7 +89,7 @@ namespace BackDoacaoDeAlimentos.Servicos
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro ao autenticar usuário.", ex);
+                throw new Exception("Erro ao autenticar usuário.");
             }
         }
 

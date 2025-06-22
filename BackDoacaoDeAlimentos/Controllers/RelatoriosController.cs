@@ -25,24 +25,20 @@ namespace BackDoacaoDeAlimentos.Controllers
 
             string nomeOng = $"ONG {idOng}";
             string caminhoArquivo = $"Relatorio_Ong_{idOng}_Mensal.pdf";
+            
+            var nome = doacoesDetalhes.Where(d => d.AlimentoNome != null)
+                .SelectMany(d => d.AlimentoNome)
+                .ToList();
 
-            // Corrigido: passar List<DoacaoComDetalhes> para o serviço
-            _relatorioService.GerarRelatorio(
-                caminhoArquivo: caminhoArquivo,
-                nomeUsuario: nomeOng,
-                doacoes: doacoesDetalhes
+            _relatorioService.GerarRelatorio(caminhoArquivo: caminhoArquivo,
+                nomeUsuario: nomeOng, doacoes: doacoesDetalhes, alimentoNome: doacoesDetalhes
             );
 
             await Task.Delay(100);
-            bool arquivoExiste = System.IO.File.Exists(caminhoArquivo);
-            long tamanho = new FileInfo(caminhoArquivo).Length;
-            Console.WriteLine($"Arquivo existe: {arquivoExiste}, Tamanho: {tamanho} bytes");
-
             var fileBytes = await System.IO.File.ReadAllBytesAsync(caminhoArquivo);
 
             return File(fileBytes, "application/pdf", Path.GetFileName(caminhoArquivo));
         }
-
 
 
         [HttpGet("totalDoacoesNoMes")]

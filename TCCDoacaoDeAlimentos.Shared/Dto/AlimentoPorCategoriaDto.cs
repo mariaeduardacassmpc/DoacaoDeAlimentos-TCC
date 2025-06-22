@@ -3,6 +3,6 @@
     public class AlimentoPorCategoriaDto
     {
         public string Categoria { get; set; } = string.Empty;
-        public double QuantidadeKg { get; set; }
+        public double TotalKg { get; set; }
     }
 }

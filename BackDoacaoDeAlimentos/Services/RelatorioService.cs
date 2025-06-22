@@ -20,9 +20,9 @@ public class RelatorioService : IRelatorioService
         _relatorioRepositorio = relatorioRepositorio;
     }
 
-    public void GerarRelatorio(string caminhoArquivo, string nomeUsuario, List<DoacaoComDetalhes> doacoes)
+    public void GerarRelatorio(string caminhoArquivo, string nomeUsuario, List<DoacaoComDetalhes> doacoes, List<DoacaoComDetalhes> alimentoNome)
     {
-        var doc = new iTextSharp.text.Document();
+        var doc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate());
 
         using (var stream = new FileStream(caminhoArquivo, FileMode.Create, FileAccess.Write, FileShare.None))
         {
@@ -44,21 +44,23 @@ public class RelatorioService : IRelatorioService
             doc.Add(new Paragraph($"Data de geração: {DateTime.Now:dd/MM/yyyy HH:mm}", fonteNormal));
 
             // 2. Texto descritivo
-            string textoIntro = "Este relatório apresenta todas as doações recebidas por sua instituição, com informações sobre os doadores, datas, status e os alimentos recebidos.";
+            string textoIntro = "Este relatório apresenta todas as doações recebidas por sua instituição, com informações sobre os doadores, datas, status, entre outros.";
             doc.Add(new Paragraph(textoIntro, fonteNormal));
             doc.Add(new Paragraph("\n"));
 
             // 3. Tabela principal
-            PdfPTable tabela = new PdfPTable(5);
+            PdfPTable tabela = new PdfPTable(7);
             tabela.WidthPercentage = 100;
-            tabela.SetWidths(new float[] { 15, 35, 15, 25, 10 }); // proporcional
+            tabela.SetWidths(new float[] { 15, 35, 15, 25, 10, 10, 20 }); // proporcional
 
             // Cabeçalho da tabela
-            tabela.AddCell(new PdfPCell(new Phrase("Data da Doação", fonteSubtitulo)));
-            tabela.AddCell(new PdfPCell(new Phrase("Nome do Doador", fonteSubtitulo)));
+            tabela.AddCell(new PdfPCell(new Phrase("Data doação", fonteSubtitulo)));
+            tabela.AddCell(new PdfPCell(new Phrase("Nome doador", fonteSubtitulo)));
             tabela.AddCell(new PdfPCell(new Phrase("Status", fonteSubtitulo)));
             tabela.AddCell(new PdfPCell(new Phrase("Alimentos Doado(s)", fonteSubtitulo)));
             tabela.AddCell(new PdfPCell(new Phrase("Quantidade", fonteSubtitulo)));
+            tabela.AddCell(new PdfPCell(new Phrase("Unidade", fonteSubtitulo)));
+            tabela.AddCell(new PdfPCell(new Phrase("Validade", fonteSubtitulo)));
 
             // Dados
             var fontePequena = FontFactory.GetFont(FontFactory.HELVETICA, 10);
@@ -69,12 +71,14 @@ public class RelatorioService : IRelatorioService
                 tabela.AddCell(new PdfPCell(new Phrase(d.DoadorNome.ToString(), fontePequena)));
                 tabela.AddCell(new PdfPCell(new Phrase(d.Status.ToString(), fontePequena)));
 
-                var alimentos = d.AlimentoNome;
-         
+                var alimentos = string.Join(", ", d.AlimentoNome);
                 tabela.AddCell(new PdfPCell(new Phrase(alimentos, fontePequena)));
 
                 var quantidadeTotal = d.Quantidade.ToString("0.##");
                 tabela.AddCell(new PdfPCell(new Phrase(quantidadeTotal, fontePequena)));
+
+                tabela.AddCell(new PdfPCell(new Phrase(d.UnidadeMedida != null ? d.UnidadeMedida.ToString() : "N/A", fontePequena)));
+                tabela.AddCell(new PdfPCell(new Phrase(d.Validade.ToString(), fontePequena)));
             }
 
             doc.Add(tabela);

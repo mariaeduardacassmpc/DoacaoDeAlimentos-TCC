@@ -1,12 +1,14 @@
 ﻿@using FrontDoacaoDeAlimentos.Pages
+@using TCCDoacaoDeAlimentos.Shared.Models;
 @using Microsoft.AspNetCore.Components.Authorization
+@using Blazored.Modal
+@using System.Security.Claims
 @inherits LayoutComponentBase
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 @inject Blazored.Modal.Services.IModalService Modal
 @inject AuthenticationStateProvider AuthStateProvider
 @inject HttpClient Http
-@using Blazored.Modal
 
 <div class="page">
     <main>
@@ -259,17 +261,24 @@
     {
         AuthStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
     }
+
+
     public async void InativarConta()
     {
         try
         {
-            if (EntidadeIdUsuarioLogado == null)
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            var idClaim = user.FindFirst(ClaimTypes.NameIdentifier) ?? user.FindFirst("sub");
+            var id = idClaim?.Value;
+
+            if (string.IsNullOrEmpty(id))
             {
                 await JS.InvokeVoidAsync("alert", "Não foi possível identificar o usuário.");
                 return;
             }
 
-            var response = await Http.PutAsync($"api/entidade/inativar/{EntidadeIdUsuarioLogado}", null);
+            var response = await Http.PutAsync($"api/entidade/inativar/{id}", null);
 
             if (response.IsSuccessStatusCode)
             {

@@ -96,7 +96,6 @@
                     authProvider.NotifyUserAuthentication(usuarioLogado.Token);
 
                     sucesso = true;
-                    await JSRuntime.InvokeVoidAsync("alert", $"Login realizado com sucesso!");
                     await Task.Yield();
                     Navigation.NavigateTo("/", true);
                 }
@@ -109,7 +108,7 @@
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await JSRuntime.InvokeVoidAsync("alert", $"Erro no login {error}");
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro no login.");
             }
         }
         catch (Exception ex)

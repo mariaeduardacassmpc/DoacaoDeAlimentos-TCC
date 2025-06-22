@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="css/app.css" />
     <link href="TCC-DoacaoDeAlimentos.styles.css" rel="stylesheet" />
 
-    <link href="_content/Blazored.Toast/blazored-toast.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
     <!-- Meta Tags para SEO -->
     <meta name="description" content="Plataforma AlimentAção - Conectando doadores de alimentos a organizações que combatem a fome. Doe alimentos e transforme vidas.">
@@ -95,6 +95,8 @@
     <!-- Blazor -->
     <script src="_framework/blazor.webassembly.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
         // Animação para os contadores
         function animateCounters() {
@@ -153,20 +155,11 @@
             link.download = fileName;
             link.href = `data:${contentType};base64,${base64Data}`;
             document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
-    </script>
 
-    <script>
-        window.blazorDownloadFile = function (fileName, base64Data) {
-            const link = document.createElement('a');
-            link.download = fileName;
-            link.href = 'data:application/pdf;base64,' + base64Data;
-            document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         };
+
     </script>
 
 </body>

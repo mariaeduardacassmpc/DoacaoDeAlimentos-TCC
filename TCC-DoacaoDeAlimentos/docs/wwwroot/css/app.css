@@ -37,6 +37,29 @@ button.page-link:focus {
     text-decoration: none;
 }
 
+/*  do alerta */
+.swal2-popup.small-alert {
+    font-size: 14px; /* Reduz o tamanho da fonte */
+    padding: 20px; /* Ajuste o preenchimento */
+    width: 250px; /* Ajuste a largura do alerta */
+    height: auto; /* Ajuste a altura do alerta automaticamente */
+    text-align: right; /* Alinha o texto à direita */
+    border-radius: 10px; /* Bordas arredondadas */
+}
+
+.swal2-title {
+    text-align: right; /* Alinha o título à direita */
+}
+
+.swal2-content {
+    text-align: right; /* Alinha o conteúdo da mensagem à direita */
+}
+
+.swal2-popup {
+    background-color: #28a745 !important; /* Cor de fundo verde */
+    color: white; /* Cor do texto branco */
+}
+
 .btn-cancelar {
     background-color: white;
     border: 1px solid #6c757d; /* Borda cinza visível */
