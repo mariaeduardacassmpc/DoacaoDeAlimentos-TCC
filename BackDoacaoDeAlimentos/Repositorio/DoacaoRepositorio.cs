@@ -99,7 +99,7 @@ public class DoacaoRepositorio : IDoacaoRepositorio
                     LEFT JOIN Alimento al ON al.Id = a.AlimentoId
                     LEFT JOIN Entidade e ON e.Id = d.IdDoador
                     LEFT JOIN Entidade o ON o.Id = d.IdOng
-                WHERE d.IdOng = @IdOng;
+                WHERE d.IdOng = @IdOng AND d.Status = 3;
         ";
 
         return await _db.QueryAsync<DoacaoComDetalhes>(sql, new { IdOng = idOng, DataInicio = dataInicio, DataFim = dataFim });
