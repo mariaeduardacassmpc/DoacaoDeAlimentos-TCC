@@ -224,13 +224,13 @@
 
                             <div class="mb-4">
                                 <label for="nome" class="form-label">Nome</label>
-                                <InputText id="nome" @bind-Value="DepoimentoModel.Nome" class="form-control form-control-lg" />
+                                <InputText id="nome" @bind-Value="DepoimentoModel.Nome" class="form-control form-control-lg" placeholder="Seu nome" />
                                 <ValidationMessage For="@(() => DepoimentoModel.Nome)" class="text-danger" />
                             </div>
 
                             <div class="mb-4">
                                 <label for="email" class="form-label">Email</label>
-                                <InputText id="email" @bind-Value="DepoimentoModel.Email" class="form-control form-control-lg" />
+                                <InputText id="email" @bind-Value="DepoimentoModel.Email" class="form-control form-control-lg" placeholder="seu@email.com" />
                                 <ValidationMessage For="@(() => DepoimentoModel.Email)" class="text-danger" />
                             </div>
 
@@ -239,6 +239,7 @@
                                 <InputTextArea id="mensagem"
                                                @bind-Value="DepoimentoModel.Mensagem"
                                                class="form-control form-control-lg"
+                                               placeholder="Escreva seu depoimento aqui..."
                                                style="resize: none; overflow: hidden; min-height: 80px;"
                                                oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
                                                rows="1" />
