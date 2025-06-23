@@ -1,4 +1,4 @@
-Sistema de Doações de Alimentos - AlimentAção
+Sistema de Doações de Alimentos - AlimentAção 🥕
 
 O Sistema de Doações de Alimentos é uma aplicação web desenvolvida para conectar doadores (pessoas físicas ou jurídicas) com ONGs (Instituições de apoio) que distribuem alimentos a pessoas em situação de vulnerabilidade. A aplicação permite o registro de doações, gestão de alimentos, controle de instituições beneficiadas e geração de relatórios mensais.
 
