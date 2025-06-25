@@ -163,6 +163,7 @@
     private double userLat;
     private double userLng;
     private bool _verificacaoFeita = false;
+    private bool isLoading = false;
     [Parameter]
     public int? Id { get; set; }
 
@@ -319,11 +320,17 @@
 
         try
         {
+            
+            isLoading = true;
+            StateHasChanged();
+
+            await Task.Delay(4000);
+
             NovaDoacao.Alimentos = Itens;
             var options = new JsonSerializerOptions
-            {
+                {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
+                };
             var response = await Http.PostAsJsonAsync("api/doacao/adicionar", NovaDoacao, options);
 
             if (response.IsSuccessStatusCode)
@@ -341,5 +348,11 @@
         {
             await JSRuntime.InvokeVoidAsync("alert", "Erro ao realizar doação.");
         }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
     }
+
 }
