@@ -29,7 +29,13 @@
                                 <button type="button" class="btn-close float-end" @onclick="() => erroSalvar = false"></button>
                             </div>
                         }
-
+                        @if (isLoading)
+                        {
+                            <div class="text-center my-3">
+                                <span class="spinner-border text-success" role="status"></span>
+                                <span class="ms-2">Salvando doação...</span>
+                            </div>
+                        }
                         <EditForm Model="@NovaDoacao" OnValidSubmit="@SalvarDoacao">
                             <DataAnnotationsValidator />
                             <hr />
@@ -149,6 +155,8 @@
         </div>
     </div>
 </div>
+
+
 
 @code {
     private ClaimsPrincipal usuarioLogado;

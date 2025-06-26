@@ -11,7 +11,8 @@ using iTextSharp.text.pdf;
 using TCCDoacaoDeAlimentos.Shared.Models;
 using TCCDoacaoDeAlimentos.Shared.Dto;
 
-public class RelatorioService : IRelatorioService
+public class 
+    : IRelatorioService
 {
     private readonly IRelatorioRepositorio _relatorioRepositorio;
 
@@ -87,7 +88,6 @@ public class RelatorioService : IRelatorioService
             // 4. Totais e resumo
             int totalDoacoes = doacoes.Count;
             string statusMaisComum = GetStatusMaisComum(doacoes);
-            doc.Add(new Paragraph($"Total de doações: {totalDoacoes}", fonteNormal));
             doc.Add(new Paragraph("\n"));
 
             // 5. Rodapé
